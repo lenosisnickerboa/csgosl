@@ -1,0 +1,26 @@
+Img/linux:
+apt-get install libtk-img
+
+For steamcmd: see https://developer.valvesoftware.com/wiki/SteamCMD#Downloading_SteamCMD
+Ubuntu 64-bit:
+sudo apt-get install lib32gcc1
+
+
+Unzip 6.00:
+http://www.info-zip.org/UnZip.html
+ftp://ftp.info-zip.org/pub/infozip/win32/unz600xn.exe
+
+Sourcemod/Metamod:
+TODO:
+
+sdx.kit
+See respective makefile
+
+tclkit
+See respective makefile
+
+Img.kit
+http://www.tcl.tk/starkits/
+http://www.tcl.tk/starkits/img.kit
+
+

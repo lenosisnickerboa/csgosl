@@ -1,0 +1,11 @@
+*~
+*.kit
+*.exe
+tclkit
+out/
+*.tar.gz
+*.zip
+**/exclude_me
+**/exclude_me/*
+contribs.txt
+

@@ -1,0 +1,28 @@
+#!/bin/sh
+# -*- tcl -*-
+# The next line is executed by /bin/sh, but not tcl \
+exec wish "$0" ${1+"$@"}
+set windows_tclkit_version "8_6_4-twapi-4_1_27-x86-max"
+set windows_tclkit_home_url "http://sourceforge.net/projects/twapi"
+set windows_tclkit_url "http://downloads.sourceforge.net/project/twapi/Tcl%20binaries/Tclkits%20with%20TWAPI/Older%20Releases/tclkit-gui-8_6_4-twapi-4_1_27-x86-max.exe"
+set windows_sdx_version "20110317"
+set windows_sdx_home_url "http://code.google.com/archive/p/tclkit/"
+set windows_sdx_url "https://storage.googleapis.com/google-code-archive-downloads/v2/code.google.com/tclkit/sdx-20110317.kit"
+set windows_unzip_version "6.00"
+set windows_unzip_home_url "http://www.info-zip.org/UnZip.html"
+set windows_unzip_url "ftp://ftp.info-zip.org/pub/infozip/win32/unz600xn.exe"
+set windows_img_version "1.3"
+set windows_img_home_url "http://www.tcl.tk/starkits/"
+set windows_img_url "http://www.tcl.tk/starkits/img.kit"
+set linux_metamod_version "1.10.6"
+set linux_metamod_home_url "http://www.metamodsource.net/"
+set linux_metamod_url "http://www.gsptalk.com/mirror/sourcemod/mmsource-1.10.6-linux.tar.gz"
+set linux_sourcemod_version "1.7.3-git5302"
+set linux_sourcemod_home_url "http://www.sourcemod.net/"
+set linux_sourcemod_url "http://www.sourcemod.net/smdrop/1.7/sourcemod-1.7.3-git5302-linux.tar.gz"
+set windows_metamod_version "1.10.6"
+set windows_metamod_home_url "http://www.metamodsource.net/"
+set windows_metamod_url "http://mirror.pointysoftware.net/alliedmodders/mmsource-1.10.6-windows.zip"
+set windows_sourcemod_version "1.7.3-git5302"
+set windows_sourcemod_home_url "http://www.sourcemod.net/"
+set windows_sourcemod_url "https://www.sourcemod.net/smdrop/1.7/sourcemod-1.7.3-git5302-windows.zip"

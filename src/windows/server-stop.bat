@@ -1,0 +1,2 @@
+taskkill /im srcds.exe
+
