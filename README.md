@@ -1,2 +1,2 @@
 # csgosl
-A CSGO server launcher, one-click install &amp; run
+A CSGO server launcher for windows and linux, one-click install, maintain &amp; run
