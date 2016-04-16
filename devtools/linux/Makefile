@@ -1,6 +1,4 @@
 #Linux
-#Currently don't use tclkit/sdx for linux. Stuff below is remains from
-#an early tclkit/sdx test.
 
 TARGET=linux
 TCLKIT_HOME_URL="http://tclkits.rkeene.org"
@@ -10,10 +8,9 @@ TCLKIT_HOME_URL="http://code.google.com/archive/p/tclkit/"
 SDX_URL="http://storage.googleapis.com/google-code-archive-downloads/v2/code.google.com/tclkit/sdx-20110317.kit"
 SDX_VERSION="20110317"
 
-all: 
+all: tclkit sdx
 
 contribs:
-
 
 contribs-disabled:
 	@echo "$(TARGET) tclkit $(TCLKIT_VERSION) $(TCLKIT_HOME_URL) $(TCLKIT_URL)"
