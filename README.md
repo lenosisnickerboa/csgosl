@@ -19,7 +19,7 @@ csgosl features:
 
 If you feel this software served you well and saved  you a lot of time you could spend enjoying yourself instead of reading endless forum threads on how to setup your own server just right, why not show your appreciation and donate whatever amount you feel appropriate. Your appreciation is much appreciated :)
 
-[![](https://camo.githubusercontent.com/f896f7d176663a1559376bb56aac4bdbbbe85ed1/68747470733a2f2f7777772e70617970616c6f626a656374732e636f6d2f656e5f55532f692f62746e2f62746e5f646f6e61746543435f4c472e676966)](https://www.paypal.com/cgi-bin/webscr?cmd=_s-xclick&hosted_button_id=CAKK9XBYV6E5G)
+[![](https://camo.githubusercontent.com/f896f7d176663a1559376bb56aac4bdbbbe85ed1/68747470733a2f2f7777772e70617970616c6f626a656374732e636f6d2f656e5f55532f692f62746e2f62746e5f646f6e61746543435f4c472e676966)](https://www.paypal.com/cgi-bin/webscr?cmd=_s-xclick&hosted_button_id=NESCKT8B4C638)
 
 
 > Written with [StackEdit](https://stackedit.io/).
