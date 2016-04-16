@@ -13,7 +13,7 @@ csgosl features:
 * Greatly simplified server settings with reasonable defaults 
 * Advanced settings mode for the control freak
 * Override settings in one place for all game modes/types
-* Online support easily accessible from the application
+* [Online help](https://github.com/lenosisnickerboa/csgosl/wiki/csgosl-online-help) easily accessible from the application
 * Comes preinstalled with [sourcemod](https://www.sourcemod.net/) and [metamod](https://www.metamodsource.net/)
 
 > Written with [StackEdit](https://stackedit.io/).
