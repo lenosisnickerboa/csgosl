@@ -38,5 +38,15 @@ If you feel this software served you well and saved  you a lot of time you could
 
 ----------
 
+The following free software is part of csgosl:
+
+ - Sourcemod (Linux/Windows: installed automatically when server is installed)
+ - Metamod (Linux/Windows: installed automatically when server is installed)
+ - Unzip (Windows: for unzipping stuff)
+ - Img (Windows: image handling)
+ - Tclkit (Windows: Tcl execution environment)
+ - Sdx (Windows: For building the Starkit distributable)
+
+For exact versions and links to all of the above read this automatically generated [file](https://github.com/lenosisnickerboa/csgosl/blob/master/src/contribs.tcl).
 
 > Written with [StackEdit](https://stackedit.io/).
