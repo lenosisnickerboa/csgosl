@@ -69,6 +69,7 @@ case $TARGET in
 	install $DEST "$ROOT"/src/linux/csgosl.sh
 	install $DEST/bin "$ROOT"/src/linux/server.sh
 	(cd "$DEST"/.. ; zip -r csgosl.zip csgosl) || error "Failed to zip"
+	mv csgosl.zip csgosl-linux.zip
 	;;
     windows)
 	installdir $DEST/csgosl.vfs $DEST/csgosl.vfs/lib $DEST/bin $DEST/mods
@@ -89,6 +90,7 @@ case $TARGET in
 	    "$ROOT"/devtools/windows/unzip.exe $ROOT/devtools/windows/tclkit.exe
 	install $DEST "$ROOT"/src/windows/csgosl.vbs
 	(cd "$DEST"/.. ; zip -r csgosl.zip csgosl) || error "Failed to zip"
+	mv csgosl.zip csgosl-windows.zip
 	;;
     *)
 	error "Unknown target $TARGET!"
