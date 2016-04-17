@@ -8,7 +8,7 @@ source [file join $starkit::topdir browser.tcl]
 package require Tk
 
 proc Help {subject} {
-    Browser "http://www.google.se/webhp?sourceid=chrome-instant&ion=1&espv=2&ie=UTF-8#safe=off&q=$subject"
+    Browser "https://github.com/lenosisnickerboa/csgosl/wiki/Help-on-$subject"
 }
 
 proc GetDir {initialDir prompt} {

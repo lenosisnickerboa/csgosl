@@ -15,10 +15,12 @@ proc CreateLayout {pageOptions pageComponents} {
 proc CreatePageOptions {config} {
     set configName [dict get $config name]
     set prefix [dict get $config prefix]
+    #The prefix is hardcoded to Advanced-Tabs right now, these tabs are the only
+    #one using the default layout scheme
     return [list \
             configName "$configName" \
             tabName    "$prefix" \
-            help       "$prefix" \
+            help       "Advanced-Tabs" \
     ]
 }
 

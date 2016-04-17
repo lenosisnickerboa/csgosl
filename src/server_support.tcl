@@ -111,7 +111,8 @@ proc StartServer {} {
     } else {
         chan configure stdout -buffering none
         chan configure stderr -buffering none
-        exec >@stdout 2>@stderr "$serverControlScript" $control "$serverFolder/$srcdsName" \
+        Trace "Executing $serverControlScript $control \
+            $serverFolder/$srcdsName \
              -game csgo $consoleCommand $rconCommand \
              +game_type $gameType +game_mode $gameMode \
              $mapGroupOption \
@@ -120,7 +121,19 @@ proc StartServer {} {
              -maxplayers_override $players \
              -tickrate $tickRate \
              $passwordOption \
-             +hostname "\"$serverName\"" $serverPort $serverLan \
+             +hostname \"$serverName\" $serverPort $serverLan \
+             $options"
+        exec >@stdout 2>@stderr "$serverControlScript" $control \
+            $serverFolder/$srcdsName \
+             -game csgo $consoleCommand $rconCommand \
+             +game_type $gameType +game_mode $gameMode \
+             $mapGroupOption \
+             $mapOption \
+             $steamAccount $apiAuthKey \
+             -maxplayers_override $players \
+             -tickrate $tickRate \
+             $passwordOption \
+             +hostname \"$serverName\" $serverPort $serverLan \
              $options
     }
 }
@@ -224,6 +237,7 @@ proc UpdateServer {} {
     if {$currentOs == "windows"} {
         RunAssync "\"$steamcmdFolder/$steamCmdExe\" +runscript \"$filename\""
     } else {
+        Trace "$steamcmdFolder/$steamCmdExe +runscript $filename"
         exec >@stdout 2>@stderr "$steamcmdFolder/$steamCmdExe" +runscript "$filename"
     }
 

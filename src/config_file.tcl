@@ -146,7 +146,7 @@ proc SaveConfigFile {configName} {
             puts $fileId "$key \"$value\""            
         }
     }
-    set config [dict set config values $values]
+    set $configName [dict set config values $values]
     close $fileId
 }
 

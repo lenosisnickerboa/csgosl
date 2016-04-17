@@ -4,6 +4,7 @@
 exec wish "$0" ${1+"$@"}
 
 #Later:
+#Shouldn't use custom map group name on command line (only for workshop mapgroup)
 #Run: vote on/off
 #Try newer img toolkit:
 #IMG_URL="https://sourceforge.net/settings/mirror_choices?projectname=tkimg&filename=tkimg/1.4/tkimg%201.4.5/tkimg-1.4.5.zip"
