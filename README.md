@@ -22,7 +22,9 @@ csgosl features:
 
 To get started head over to the [wiki](https://github.com/lenosisnickerboa/csgosl/wiki).
 
-If you just want to download the latest version here are quick links: [Linux](https://github.com/lenosisnickerboa/csgosl/releases/download/v1.0/csgosl-linux.zip) [Windows](https://github.com/lenosisnickerboa/csgosl/releases/download/v1.0/csgosl-windows.zip)
+If you just want to upgrade to the latest version here are quick links: [Linux](https://github.com/lenosisnickerboa/csgosl/releases/download/v1.0/csgosl-linux.zip) [Windows](https://github.com/lenosisnickerboa/csgosl/releases/download/v1.0/csgosl-windows.zip)
+
+Simply unzip the downloaded archive in the same location as when you installed csgosl (overwriting all files) and it's updated!
 
 ----------
 
