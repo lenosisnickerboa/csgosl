@@ -3,7 +3,11 @@
 # The next line is executed by /bin/sh, but not tcl \
 exec wish "$0" ${1+"$@"}
 
+set version "1.0.2"
+
 #Later:
+#Investigate hosting of collections in general, skins, weapons, ...
+#When maps are added or removed automatically add/remove them to the map cache, need to restart csgosl now.
 #Shouldn't use custom map group name on command line (only for workshop mapgroup)
 #Run: vote on/off
 #Try newer img toolkit:
@@ -149,7 +153,6 @@ file mkdir $configFolder
 set binFolder "bin"
 file mkdir $binFolder
 
-set version "1.00"
 set name "csgosl"
 set currentDir [pwd]
 set windowWidth 800

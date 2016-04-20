@@ -4,6 +4,9 @@ CONTRIBOUTTCL=src/contribs.tcl
 
 all: clean contribs windows linux
 
+tag:
+	git tag -a v1.0.2 -m "Minor bug fixes"
+
 install:
 	$(MAKE) -C devtools/linux
 	$(MAKE) -C devtools/windows
