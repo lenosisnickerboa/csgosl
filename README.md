@@ -2,6 +2,8 @@
 
 *[I'm currently writing the documentation and started out testing new installation so current status is unknown. Large parts of the documentation is still missing, but go ahead and try it out! ]*
 
+Quickie: [Get started](https://github.com/lenosisnickerboa/csgosl/wiki). Download: [Linux](https://github.com/lenosisnickerboa/csgosl/releases/download/v1.0.1/csgosl-linux.zip) [Windows](https://github.com/lenosisnickerboa/csgosl/releases/download/v1.0.1/csgosl-windows.zip)
+
 csgosl is a graphical user interface for a [Counter Striker Global Offensive server](https://developer.valvesoftware.com/wiki/Counter-Strike:_Global_Offensive_Dedicated_Servers) (CSGO server from now on).  csgosl supports one-click install, update, start and stop server on windows and linux platforms ([supported platforms](https://github.com/lenosisnickerboa/csgosl/wiki/Platform-support)). If you just want your own CSGO server up and running in no time this is the place for you. csgosl provides a graphical user interface supporting most mainstream server options. For the control freak there is also an advanced mode providing support for nearly any imaginable setting.
 
 csgosl features:
@@ -49,4 +51,5 @@ The following free software is part of csgosl:
 
 For exact versions and links to all of the above read this automatically generated [file](https://github.com/lenosisnickerboa/csgosl/blob/master/src/contribs.tcl).
 
-> Written with [StackEdit](https://stackedit.io/).
+> Animated gifs in wiki created with [LICEcap](http://www.cockos.com/licecap/).
+> This readme was written with [StackEdit](https://stackedit.io/).
