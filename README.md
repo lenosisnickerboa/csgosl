@@ -1,6 +1,6 @@
 # csgosl
 
-*[I'm currently writing the documentation and started out testing new installation so current status is unknown. Large parts of the documentation is still missing, but go ahead and try it out! ]*
+*[This is still a prerelase and parts of the documentation is missing. Please report any issues you encounter and I will try and fix them ASAP. ]*
 
 Quickie: [Get started](https://github.com/lenosisnickerboa/csgosl/wiki). Download **1.0.2** : [Linux](https://github.com/lenosisnickerboa/csgosl/releases/download/v1.0.2/csgosl-linux.zip) [Windows](https://github.com/lenosisnickerboa/csgosl/releases/download/v1.0.2/csgosl-windows.zip)
 
