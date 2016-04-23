@@ -40,6 +40,10 @@ If you feel this software served you well and saved  you a lot of time you could
 
 ----------
 
+If you have a suggestion or just want to report a bug please don't hesitate to contact me!
+
+----------
+
 The following free software is part of csgosl:
 
  - Sourcemod (Linux/Windows: installed automatically when server is installed)
