@@ -12,15 +12,15 @@ variable serverConfig [CreateConfig \
         saveProc "SaveConfigFileServer" \
     ] \
     [list \
-        "string"    [list name "Your server at $hostName operated by $name" ""]\
-        "string"    [list password "" "Your server password, leave empty for no password."]\
+        "string"    [list name "Your server at $hostName operated by $name" "This is the server name which is presented in the list of servers in the csgo game."]\
+        "string"    [list password "" "Your server password which anyone connecting to your server must enter to log in and play.\nWhen running a LAN only server this can be left empty for no password.\nIf you run a public server it is *HIGHLY* recommended to set a password."]\
         "bool"      [list autorestart "0" "If enabled the server is auto restarted if it crashes (or is closed down, so you need to kill cmd.exe using ps/task manager prior to killing the server window)"]\
-        "int"       [list port "27015" "Your server port"]\
-        "bool"      [list lanonly "1" "If enabled server is only available on your LAN. Default for security reasons, disable when you want to play beyond your lan."]\
-        "int"       [list tickrate "128" "Server tickrate"]\
-        "bool"      [list rcon "0" "Enable servers Remote Console. You really should set a password!"]\
-        "string"    [list rconpassword "$hostName" "Your RCON password, set to your hostname by default."]\
-        "int"       [list netmaxfilesize "64" "Fix to allow clients to download maps without problems TBD"]\
+        "int"       [list port "27015" "Your server port."]\
+        "bool"      [list lanonly "1" "If enabled server is only available on your LAN. Default enabled for security reasons, disable when you want to play with friends over the Internet."]\
+        "int"       [list tickrate "128" "Server tickrate, that is the frequency with which the server and connecting clients communicate. Connecting clients are automatically instructed to use this frequency."]\
+        "bool"      [list rcon "0" "Enable servers Remote Console. This allows you (and anyone else with the rcon password) to connect to your server and control it using commands."]\
+        "string"    [list rconpassword "$hostName" "Your RCON password, set to your hostname by default. If you enable rcon set a better password!"]\
+        "int"       [list netmaxfilesize "64" "Controls how large maps clients are allowed to download from your server. Leave as is if you don't know what this is."]\
     ] \
 ]
 

@@ -74,8 +74,9 @@ proc StartServer {} {
     
     set rconEnable [GetConfigValue $serverConfig rcon]
     set rconCommand ""
-    if { $rconEnable == "1" } {        
-        set rconCommand "-usercon"
+    if { $rconEnable == "1" } {
+        #setting -ip 0.0.0.0 is a workaround on linux
+        set rconCommand "-usercon -condebug -ip 0.0.0.0"
     }
 
     global currentOs
@@ -247,6 +248,9 @@ proc UpdateServer {} {
         Trace "Installing mods..."
         Unzip "$modsArchive" "$serverFolder/csgo/"
     }
+    Trace "----------------"
+    Trace "UPDATE FINISHED!"
+    Trace "----------------"
 }
 
 proc DetectServerInstalled {sd} {

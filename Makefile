@@ -5,7 +5,7 @@ CONTRIBOUTTCL=src/contribs.tcl
 all: clean contribs windows linux
 
 tag:
-	git tag -a v1.0.2 -m "Minor bug fixes"
+	git tag -a v1.0.3 -m "cvar support, tooltips, bug fixes"
 
 install:
 	$(MAKE) -C devtools/linux
@@ -32,13 +32,15 @@ contribs-doit:
 zip:
 	(cd .. ; tar czvpf csgosl-`date +"%Y%m%d-%H%M%S"`.tgz csgosl --exclude csgosl/.git)
 
-windows:
+windows: src/cvars.tcl
 	devtools/build.sh . windows $(OUT)/windows/csgosl
 
-linux:
+linux: src/cvars.tcl
 	devtools/build.sh . linux $(OUT)/linux/csgosl
 
 clean:
 	\rm -rf $(OUT) >/dev/null 2>&1
 	find . -name *~ -exec \rm -f {} \;
 
+src/cvars.tcl:	devtools/cvarslist.txt
+	devtools/cvarslist2tcl.sh devtools/cvarslist.txt > src/cvars.tcl

@@ -12,10 +12,10 @@ variable applicationConfig [CreateConfig \
         saveProc "SaveConfigFileApplication" \
     ] \
     [list \
-        "bool"      [list fullconfig "0" "All csgo configuration files available as GUI tabs."]\
-        "bool"      [list tclconsole "0" "Open tcl console when starting csgosl."]\
-        "bool"      [list trace "0" "Control tracing."]\
-        "string"    [list mainwingeometry "800x600+100+100" ""]\
+        "bool"      [list fullconfig "0" "Enable this option to be able to fine tune all csgo server parameters.\nA number of new configuration pages, one per game mode, will be displayed.\nYou need to restart csgosl after this change."]\
+        "bool"      [list tclconsole "0" "Open tcl console when starting csgosl.\nWindows only"]\
+        "bool"      [list trace "0" "Control tracing. Traces are printed to the terminal (linux) and in the console tab (Windows)."]\
+        "string"    [list mainwingeometry "800x600+100+100" "last saved windows size and location."]\
     ] \
 ]
 

@@ -55,9 +55,9 @@ proc CreateConfig {configOptions metaDefs} {
     return $config
 }
 
-proc CreateSplitConfig {configOptions} {
-    set values [dict create]
-    set meta [dict create]
+proc CreateSplitConfig {configOptions defaultConfig} {
+    set values [dict get $defaultConfig values]
+    set meta [dict get $defaultConfig meta]
     set config [dict create values $values meta $meta]
     foreach {key value} $configOptions {
         set config [dict set config $key $value]

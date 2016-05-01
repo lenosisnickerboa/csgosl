@@ -12,19 +12,17 @@ variable runConfig [CreateConfig \
         saveProc "SaveConfigFileRun" \
     ] \
     [list \
-        "enum" [list gamemodetype "Classic Casual" "Which kind of game you want to play, mapped to game_mode and game_type." [dict keys $gameModeMapper]]\
-        "enum" [list mapgroup "mg_active" "Which maps you want to play, defined in the map group editor. If you enter a workshop collection id here that collection will be hosted." \
-                [dict keys $mapGroupsMapper]]\
-        "enum" [list startmap "de_dust2" "Which maps you want to play, defined in the map group editor. If you enter a workshop map id here that map will be hosted." \
-                $allMaps]\
-        "int"  [list players "16" "Defines max number of players"]\
-        "bool" [list fillwithbots "1" "Add bots until max number of players are reached"]\
-        "enum" [list botskill "Normal" "How intelligent bots dou you want?" [dict keys $botSkillMapper]]\
-        "bool" [list immediatestart "1" "Immediately start playing, no warmup time"]\
-        "bool" [list friendlyfire "0" "Want to be able to kill your team mates?"]\
-        "int"  [list roundtime "10" "Limit match time to this many minutes"]\
-        "bool" [list killcam "1" "Want to see who killed you and where he was located?"]\
-        "string" [list options "" "srcds options added at the end of the command line when starting server"]\
+        "enum" [list gamemodetype "Classic Casual" "Select the kind of game you want to play."]\
+        "enum" [list mapgroup "mg_active" "Select which maps you want to play, defined in the map group editor.\nIf you enter a workshop collection id here that collection will be hosted."]\
+        "enum" [list startmap "de_dust2" "The first maps the server starts hosting. If you enter a workshop map id here that map will be hosted." ]\
+        "int"  [list players "16" "Defines max number of players including bots."]\
+        "bool" [list fillwithbots "1" "Add bots until max number of players are reached."]\
+        "enum" [list botskill "Normal" "How intelligent bots dou you want?"]\
+        "bool" [list immediatestart "1" "Immediately start playing, no warmup time."]\
+        "bool" [list friendlyfire "0" "Enable this option to be able to hurt your team mates."]\
+        "int"  [list roundtime "10" "Limit match time to this many minutes."]\
+        "bool" [list killcam "1" "Enable this option to be able to see who killed you and where he was located."]\
+        "string" [list options "" "Expert option, everything added here is appended to the command line when starting the server."]\
     ] \
 ]
 

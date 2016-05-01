@@ -3,56 +3,6 @@
 # The next line is executed by /bin/sh, but not tcl \
 exec wish "$0" ${1+"$@"}
 
-set version "1.0.2"
-
-#Later:
-#Investigate hosting of collections in general, skins, weapons, ...
-#When maps are added or removed automatically add/remove them to the map cache, need to restart csgosl now.
-#Shouldn't use custom map group name on command line (only for workshop mapgroup)
-#Run: vote on/off
-#Try newer img toolkit:
-#IMG_URL="https://sourceforge.net/settings/mirror_choices?projectname=tkimg&filename=tkimg/1.4/tkimg%201.4.5/tkimg-1.4.5.zip"
-#Game Mode All: Only updated when SaveAll is performed.
-#Game Mode All: If an option is first set then unset the corresponding config
-# pages options are not restored, must be done manually
-#Global server status, improve so multiple servers can be run on same host
-#Windows server shutdown gives a lot of error messages...
-#Remember windows size and position not perfect, window moves upwards every restart
-#mapgroups editor (general stream lining in place...)
-#- linux: need to select twice to select map group
-#autorestart option seems to be default in linux? Investigate...
-#Warn if not saved config when exit or just save it always on exit
-#F1 -> help doesn't work on run page. A bind() already exists....
-#Introduce namespaces
-#config options should be stored under dict options like for layouts.
-# - fix CreateConfig like CreateLayout
-#Windows: When caching maps, no indication...
-#linux:scrollwheel doesn't work
-#windows:scrollwheel scrolls too far in tab views
-#Add sanity check script for checking build env and run env
-#-e.g check that wget, zip, unzip, ... are available
-#MacOs support: "almost linux", change steamcmd, metamod/sourcemod, srcds url
-#- look through all os checks and make sure they say "if windows else /*linux/mac*/..."
-#Advanced: URL patterns, other hardcoded stuff
-#Cleanup code, lots of duplicate code, e.g. in widgets.tcl
-#Cleanup widgets, dir picker, defaults button, ....
-#TODO-future: Allow multiple configs? Or is this handled by starting multiple apps?
-#        vertical tabbed notebook: http://wiki.tcl.tk/1913
-# When virtual option, e.g. immediatestart is saved it will always overwrite
-#   actual items. Need to be able to set a virtual option to not be "active",
-#   i.e. not influence other items at all.
-#Add hints section on wiki
-#-good training stuff, https://www.youtube.com/watch?v=Jo17VKLM4yI
-#-Links to maps
-#-----------------------------------
-#-Recoil Master: http://steamcommunity.com/sharedfiles...
-#-Fast Aim: http://steamcommunity.com/sharedfiles...
-#-Crosshair Generator: http://steamcommunity.com/sharedfiles...
-#-All workshop maps: http://steamcommunity.com/workshop/browse?appid=730
-#-All official workshop maps: http://steamcommunity.com/profiles/76561198082857351/myworkshopfiles/
-#-All workshop collections: https://steamcommunity.com/workshop/browse/?section=collections&appid=730
-#-All official workshop collections: https://steamcommunity.com/profiles/76561198082857351/myworkshopfiles/?section=collections&appid=730
-
 package require Tk
 package require Img
 
@@ -63,6 +13,7 @@ if {! [info exists topdir] } {
 }
 }
 
+source [file join $starkit::topdir version.tcl]
 source [file join $starkit::topdir os.tcl]
 source [file join $starkit::topdir unzip.tcl]
 source [file join $starkit::topdir untar.tcl]
@@ -253,6 +204,7 @@ EnsureConfigFile steamConfig
 LoadConfigFile steamConfig 
 proc SaveConfigFileSteam {} {
     SaveConfigFile steamConfig
+    SaveSourceModAdmins steamConfig
 }
 
 ## Maps config
@@ -327,17 +279,29 @@ proc SaveConfigFileRun {} {
     }
     
     set friendlyFire [GetConfigItem $runConfig friendlyfire]
-    if { $friendlyFire == "yes" } {
-        SetConfigItem $gameModeAllConfig mp_friendlyfire 1
-    } else {
-        SetConfigItem $gameModeAllConfig mp_friendlyfire 0        
-    }
+    SetConfigItem $gameModeAllConfig mp_friendlyfire $friendlyFire
 
+#    set vote [GetConfigItem $runConfig vote]
+#    SetConfigItem $gameModeAllConfig sv_allow_votes $vote
+#    SetConfigItem $gameModeAllConfig sv_vote_issue_kick_allowed $vote
+#    SetConfigItem $gameModeAllConfig sv_vote_issue_restart_game_allowed $vote
+#    SetConfigItem $gameModeAllConfig sv_vote_allow_spectators $vote
+#    SetConfigItem $gameModeAllConfig sv_vote_allow_in_warmup $vote
+#    SetConfigItem $gameModeAllConfig mp_endmatch_votenextmap_keepcurrent $vote
+#    SetConfigItem $gameModeAllConfig mp_endmatch_votenextmap $vote
+#    SetConfigItem $gameModeAllConfig mp_match_end_restart $vote
+#    SetConfigItem $gameModeAllConfig mp_match_end_changelevel $vote
+#    if {$vote == "1"} {
+#        SetConfigItem $gameModeAllConfig sv_vote_to_changelevel_before_match_point 0      
+#    } else {
+#        SetConfigItem $gameModeAllConfig sv_vote_to_changelevel_before_match_point 1
+#    }
+    
     set roundTime [GetConfigItem $runConfig roundtime]
     SetConfigItem $gameModeAllConfig mp_roundtime $roundTime
 
     set killCam [GetConfigItem $runConfig killcam]
-    if {$killCam == "yes"} {
+    if {$killCam == "1"} {
         SetConfigItem $gameModeAllConfig mp_forcecamera 0
     } else {
         SetConfigItem $gameModeAllConfig mp_forcecamera 1       
@@ -518,7 +482,7 @@ pack .config -side top -fill both -expand true
 
 if {$serverPresent} {
     set autoUpdateOnStart [GetConfigValue $steamConfig autoupdateonstart]
-    if { $autoUpdateOnStart == "yes" } {
+    if { $autoUpdateOnStart == "1" } {
         SetTitle "$name $version - auto updating..."
         if{$currentOs == "windows"} {
             $cp select $consolePage

@@ -4,6 +4,7 @@
 exec wish "$0" ${1+"$@"}
 
 source [file join $starkit::topdir browser.tcl]
+source [file join $starkit::topdir tooltip.tcl]
 
 package require Tk
 
@@ -37,7 +38,7 @@ proc CreateSetDefaultImage {} {
     setDefaultImage copy setDefaultImageOrig -subsample 2            
 }
 
-proc CreateEntry {at lead variableName default} {
+proc CreateEntry {at lead variableName default help} {
     frame $at 
     label $at.l -width 40 -anchor w -text "$lead" -padx 0
     global $variableName
@@ -49,7 +50,9 @@ proc CreateEntry {at lead variableName default} {
     }
     button $at.d -image setDefaultImage -command "set $variableName \"$default\""
     pack $at.l -side left -anchor w
+    SetTooltip $at.l "$help" 
     pack $at.e -side left -anchor w -fill x -expand true
+    SetTooltip $at.e "$help" 
     pack $at.d -side right 
     return $at
 }
@@ -59,7 +62,7 @@ proc UpdateDirEntry {lead variableName initialDir} {
     set $variableName [GetDir \"$initialDir\" \"$lead\"]
 }
 
-proc CreateDirEntry {at lead variableName default} {
+proc CreateDirEntry {at lead variableName default help} {
     frame $at 
     label $at.l -width 40 -anchor w -text "$lead" -padx 0
     global $variableName
@@ -74,7 +77,9 @@ proc CreateDirEntry {at lead variableName default} {
     button $at.gd -text "G" -command "UpdateDirEntry \"$lead\" $variableName \"$initialDir\""
     button $at.d -image setDefaultImage -command "set $variableName \"$default\""
     pack $at.l -side left
+    SetTooltip $at.l "$help" 
     pack $at.e -side left -fill x -expand true
+    SetTooltip $at.e "$help" 
     pack $at.gd -side left
     pack $at.d -side left
     return $at
@@ -96,7 +101,7 @@ proc SetCheckboxStatus {w variableName default} {
     UpdateCheckboxStatus $w $variableName $default
 }
 
-proc CreateCheckbox {at lead variableName default} {
+proc CreateCheckbox {at lead variableName default help} {
     frame $at 
     label $at.l -width 40 -anchor w -text "$lead" -padx 0
     global $variableName
@@ -108,7 +113,9 @@ proc CreateCheckbox {at lead variableName default} {
     }
     button $at.d -image setDefaultImage -command "SetCheckboxStatus $at.b $variableName \"$default\""
     pack $at.l -side left -anchor w
+    SetTooltip $at.l "$help" 
     pack $at.b -side left -anchor w -fill x -expand true
+    SetTooltip $at.b "$help" 
     pack $at.d -side right 
     return $at
 }
@@ -123,7 +130,7 @@ proc UpdateSelectorChangedStatus {w value default} {
     return true
 }
 
-proc CreateSelector {at lead variableName default selections} {
+proc CreateSelector {at lead variableName default help selections} {
     frame $at 
     label $at.l -width 40 -anchor w -text "$lead" -padx 0
     global $variableName
@@ -138,7 +145,9 @@ proc CreateSelector {at lead variableName default selections} {
     $at.sel configure -values $selections
     button $at.d -image setDefaultImage  -command "set $variableName \"$default\""
     pack $at.l -side left
+    SetTooltip $at.l "$help" 
     pack $at.sel -side left -fill x -expand true
+    SetTooltip $at.sel "$help" 
     pack $at.d -side left
     return $at
 }

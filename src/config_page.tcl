@@ -32,10 +32,10 @@ proc CreateConfigPageTabFromLayout {at layout enabled} {
     return $at
 }
 
-proc CreateConfigPageFunc {at layout parms} {
+proc CreateConfigPageFunc {at help layout parms} {
     set func [lindex $parms 0]
     #custom funcs do their own packing
-    $func $at $layout [Shift $parms]
+    $func $at $help $layout [Shift $parms]
 }
 
 proc CreateConfigPageH1 {at parms} {
@@ -67,19 +67,19 @@ proc CreateConfigPageUrl {at parms} {
     pack [Hyperlink $at -command [list Browser "$url"] -text "$text"] -side top -fill x -expand true
 }
 
-proc CreateConfigPageItem {at lead name value type default selections} {   
+proc CreateConfigPageItem {at lead name value type default help selections} {   
     if {$type == "directory"} {
-        pack [CreateDirEntry $at $lead $name $default] -side top -fill x -expand true            
+        pack [CreateDirEntry $at $lead $name $default $help] -side top -fill x -expand true            
     } elseif {$type == "url"} {
-        pack [CreateEntry $at $lead $name $default] -side top -fill x -expand true
+        pack [CreateEntry $at $lead $name $default $help] -side top -fill x -expand true
     } elseif {$type == "int"} {
-        pack [CreateEntry $at $lead $name $default] -side top -fill x -expand true
+        pack [CreateEntry $at $lead $name $default $help] -side top -fill x -expand true
     } elseif {$type == "bool"} {
-        pack [CreateCheckbox $at $lead $name $default] -side top -fill x -expand true
+        pack [CreateCheckbox $at $lead $name $default $help] -side top -fill x -expand true
     } elseif {$type == "enum"} {
-        pack [CreateSelector $at $lead $name $default $selections] -side top -fill x -expand true
+        pack [CreateSelector $at $lead $name $default $help $selections] -side top -fill x -expand true
     } elseif {$type != "line"} {
-        pack [CreateEntry $at $lead $name $default] -side top -fill x -expand true
+        pack [CreateEntry $at $lead $name $default $help] -side top -fill x -expand true
     }
 }
 
@@ -114,14 +114,15 @@ proc CreateConfigPageFromLayout {at layout} {
             set $globalParmName $parmValue
             set metaItem [dict get $meta $parmName]
             set parmType [dict get $metaItem type]
+            set help [dict get $metaItem help]
             set parmDefault [dict get $metaItem default]
             set selections [list]
             if {$parmType == "enum"} {
                 set selections [dict get $metaItem selections]
             }
-            CreateConfigPageItem $page.w$parmName $parmName $globalParmName $parmValue $parmType $parmDefault $selections
+            CreateConfigPageItem $page.w$parmName $parmName $globalParmName $parmValue $parmType $parmDefault $help $selections
         } elseif {$type == "func"} {
-            CreateConfigPageFunc $page.func$widgetIx $layout $args
+            CreateConfigPageFunc $page.func$widgetIx $help $layout $args
         } elseif {$type == "h1"} {
             CreateConfigPageH1 $page.h1$widgetIx $args
         } elseif {$type == "h2"} {
@@ -162,7 +163,7 @@ proc CreateMapsSelector {at maps selector} {
     return $at
 }
 
-proc LayoutFuncMaps {at layout parms} {
+proc LayoutFuncMaps {at help layout parms} {
     global allMaps
 
     frame $at
@@ -171,7 +172,7 @@ proc LayoutFuncMaps {at layout parms} {
     return $at
 }
 
-proc LayoutFuncSetDefaultsAll {at layout parms} {
+proc LayoutFuncSetDefaultsAll {at help layout parms} {
     pack [button $at -text "Set all defaults -- WARNING resets all settings to defaults" -anchor e -font {-size -8} -command [subst "SetDefaultsAll"]] -side left
 }
 
@@ -287,7 +288,7 @@ proc SetSelectedMapGroup {lb} {
 variable addMapGroupName
 variable mapGroupListBox
 
-proc LayoutFuncMapGroups {at layout parms} {
+proc LayoutFuncMapGroups {at help layout parms} {
 #see: http://www.tkdocs.com/tutorial/morewidgets.html
     set pageOptions [dict get $layout options]
     set configName [dict get $pageOptions configName]
@@ -327,7 +328,7 @@ proc LayoutFuncMapGroups {at layout parms} {
     return $at
 }
 
-proc LayoutFuncConsole {at layout parms} {   
+proc LayoutFuncConsole {at help layout parms} {   
     frame $at 
     frame $at.config -borderwidth 10
     frame $at.execf -borderwidth 10
