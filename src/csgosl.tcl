@@ -264,7 +264,9 @@ proc SaveConfigFileRun {} {
         SetConfigItem $gameModeAllConfig bot_quota $players
         SetConfigItem $gameModeAllConfig bot_quota_mode fill
     } else {
-        SetConfigItem $gameModeAllConfig bot_quota 0
+        set bots [GetConfigItem $runConfig bots]
+        SetConfigItem $gameModeAllConfig bot_quota_mode normal
+        SetConfigItem $gameModeAllConfig bot_quota $bots
     }
     
     SetConfigItem $gameModeAllConfig bot_difficulty [dict get $botSkillMapper [GetConfigItem $runConfig botskill]]
