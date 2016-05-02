@@ -5,7 +5,7 @@ CONTRIBOUTTCL=src/contribs.tcl
 all: clean contribs windows linux
 
 tag:
-	git tag -a v1.0.3 -m "cvar support, tooltips, bug fixes"
+	git tag -a v1.0.4 -m "Added bot_quota support and fixed broken list widgets"
 
 install:
 	$(MAKE) -C devtools/linux
