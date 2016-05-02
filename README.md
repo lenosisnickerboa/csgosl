@@ -1,6 +1,6 @@
 # csgosl
 
-Quickie: [Get started](https://github.com/lenosisnickerboa/csgosl/wiki). Download **1.0.3** : [Linux](https://github.com/lenosisnickerboa/csgosl/releases/download/v1.0.3/csgosl-linux.zip) [Windows](https://github.com/lenosisnickerboa/csgosl/releases/download/v1.0.3/csgosl-windows.zip)
+Quickie: [Get started](https://github.com/lenosisnickerboa/csgosl/wiki). Download **1.0.4** : [Linux](https://github.com/lenosisnickerboa/csgosl/releases/download/v1.0.4/csgosl-linux.zip) [Windows](https://github.com/lenosisnickerboa/csgosl/releases/download/v1.0.4/csgosl-windows.zip)
 
 csgosl is a graphical user interface for a [Counter Striker Global Offensive server](https://developer.valvesoftware.com/wiki/Counter-Strike:_Global_Offensive_Dedicated_Servers) (CSGO server from now on).  csgosl supports one-click install, update, start and stop server on windows and linux platforms ([supported platforms](https://github.com/lenosisnickerboa/csgosl/wiki/Platform-support)). If you just want your own CSGO server up and running in no time this is the place for you. csgosl provides a graphical user interface supporting most mainstream server options. For the control freak there is also an advanced mode providing support for nearly any imaginable setting.
 
@@ -24,7 +24,7 @@ csgosl features:
 
 To get started head over to the [wiki](https://github.com/lenosisnickerboa/csgosl/wiki).
 
-If you just want to upgrade to the latest version, **1.0.3**, here are quick links: [Linux](https://github.com/lenosisnickerboa/csgosl/releases/download/v1.0.3/csgosl-linux.zip) [Windows](https://github.com/lenosisnickerboa/csgosl/releases/download/v1.0.3/csgosl-windows.zip)
+If you just want to upgrade to the latest version, **1.0.4**, here are quick links: [Linux](https://github.com/lenosisnickerboa/csgosl/releases/download/v1.0.4/csgosl-linux.zip) [Windows](https://github.com/lenosisnickerboa/csgosl/releases/download/v1.0.4/csgosl-windows.zip)
 
 Simply unzip the downloaded archive in the same location as when you installed csgosl (overwriting all files) and it's updated!
 
