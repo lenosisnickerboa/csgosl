@@ -486,7 +486,7 @@ if {$serverPresent} {
     set autoUpdateOnStart [GetConfigValue $steamConfig autoupdateonstart]
     if { $autoUpdateOnStart == "1" } {
         SetTitle "$name $version - auto updating..."
-        if{$currentOs == "windows"} {
+        if { $currentOs == "windows" } {
             $cp select $consolePage
         }
         UpdateServer
