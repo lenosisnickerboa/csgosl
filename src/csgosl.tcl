@@ -17,6 +17,7 @@ source [file join $starkit::topdir version.tcl]
 source [file join $starkit::topdir os.tcl]
 source [file join $starkit::topdir unzip.tcl]
 source [file join $starkit::topdir untar.tcl]
+source [file join $starkit::topdir latest_release.tcl]
 source [file join $starkit::topdir config.tcl]
 source [file join $starkit::topdir config_file.tcl]
 source [file join $starkit::topdir config_page.tcl]
@@ -28,16 +29,26 @@ source [file join $starkit::topdir server_support.tcl]
 source [file join $starkit::topdir wget.tcl]
 source [file join $starkit::topdir trace.tcl]
 source [file join $starkit::topdir sframe.tcl]
+source [file join $starkit::topdir browser.tcl]
 
 proc RunAssync {command} {
     global executorCommand
     set executorCommand "$command"
+    if { [IsDryRun] } {
+        Trace "*** THIS IS A DRY RUN! ***"
+        return 0
+    }
     ExecutorRun
 }
 
 proc Every {ms body} {
     if 1 $body
     after $ms [list after idle [info level 0]]
+}
+
+proc IsDryRun {} {
+    global applicationConfig
+    GetConfigValue $applicationConfig dryrun
 }
 
 proc SaveProcDummy {} {
@@ -53,6 +64,7 @@ proc SaveAll {} {
     if { $serverPresent } {
         SaveConfigFileMapGroups
         SaveConfigFileRun 
+        SaveConfigFileSourcemod
         SaveConfigFileApplication
         SaveConfigFileGameModeAll
         SaveConfigFileGameModeArmsrace
@@ -77,6 +89,8 @@ proc SetStartStopServerButtonText {} {
 
 #main
 
+set ValueToSkip "--skip--"
+
 #Default value until config is read
 set traceEnabled 0
 
@@ -88,10 +102,13 @@ if { $currentOs == "windows" } {
 }
 
 set installFolder [pwd]
+set NeedsUpgradeFileName "$installFolder/bin/needsupgrade"
+set needsUpgrade [file exists "$NeedsUpgradeFileName"]
 set serverFolder "$installFolder/server"
 set serverPresent [DetectServerInstalled "$serverFolder"]
 set serverCfgPath "$serverFolder/csgo/cfg"
 set steamcmdFolder "$installFolder/steamcmd"
+set modsFolder "$serverFolder/csgo/addons"
 
 if { !$serverPresent } {
     tk_dialog .w "No installed server detected..." \
@@ -126,6 +143,10 @@ proc SaveConfigFileApplication {} {
 
 set traceEnabled [GetConfigValue $applicationConfig trace]
 
+if { $needsUpgrade } {
+    Trace "This is the first run after upgrade, upgrading..."
+}
+
 set tclConsoleEnabled [GetConfigValue $applicationConfig tclconsole]
 
 if { $tclConsoleEnabled } {
@@ -156,15 +177,25 @@ variable serverOrigConfig [CreateConfig \
         saveProc "SaveConfigFileOrigServer" \
     ] \
     [list \
-        "int"       [list sv_maxrate "0" "dc"]\
-        "int"       [list sv_minrate "100000" "dc"]\
-        "int"       [list sv_maxupdaterate "128" "dc"]\
-        "int"       [list sv_minupdaterate "128" "dc"]\
-        "int"       [list sv_maxcmdrate "128" "dc"]\
-        "int"       [list sv_mincmdrate "128" "dc"]\
-        "int"       [list net_splitpacket_maxrate "30000" "dc"]\
-        "string"    [list rcon_password "" "dc"]\
-        "line"      [list netmaxfilesize "sm_cvar net_maxfilesize 64" "dc"]\
+        "int"       [list sv_maxrate "" ""]\
+        "int"       [list sv_minrate "" ""]\
+        "int"       [list sv_maxupdaterate "" ""]\
+        "int"       [list sv_minupdaterate "" ""]\
+        "int"       [list sv_maxcmdrate "" ""]\
+        "int"       [list sv_mincmdrate "" ""]\
+        "int"       [list net_splitpacket_maxrate "" ""]\
+        "string"    [list rcon_password "" ""]\
+        "line"      [list netmaxfilesize "" ""]\
+        "bool"      [list sm_mapvote_endvote "" ""]\
+        "int"       [list sm_mapvote_voteduration "" ""]\
+        "int"       [list sm_mapvote_include "" ""]\
+        "int"       [list sm_mapvote_exclude "" ""]\
+        "bool"      [list sm_weaponpaints_onlyadmin "" ""]\
+        "bool"      [list sm_weaponpaints_c4 "" ""]\
+        "int"       [list sm_weaponpaints_saytimer "" ""]\
+        "int"       [list sm_weaponpaints_roundtimer "" ""]\
+        "bool"      [list sm_weaponpaints_rmenu "" ""]\
+        "bool"      [list sm_weaponpaints_zombiesv "" ""]\
     ] \
 ]
 
@@ -194,6 +225,39 @@ proc SaveConfigFileOrigServer {} {
     set netmaxfilesizeName [GetGlobalConfigVariableName ServerOrig netmaxfilesize]
     global $netmaxfilesizeName
     set $netmaxfilesizeName "sm_cvar net_maxfilesize $netmaxfilesize"
+    
+    global sourcemodConfig
+    global runConfig
+    global ValueToSkip
+    set maps [GetActiveMaps]
+    if { [IsSourcemodPluginEnabled [GetConfigItem $sourcemodConfig sm_mapchooser_enable] [GetConfigItem $sourcemodConfig sm_mapchooser_lanonly]] } {
+        SetConfigItem $serverOrigConfig sm_mapvote_endvote [GetConfigItem $sourcemodConfig sm_mapchooser_mapvote_endvote]
+        SetConfigItem $serverOrigConfig sm_mapvote_voteduration [GetConfigItem $runConfig roundtime]
+        SetConfigItem $serverOrigConfig sm_mapvote_include [llength $maps]
+        SetConfigItem $serverOrigConfig sm_mapvote_exclude 0
+    } else {
+        SetConfigItem $serverOrigConfig sm_mapvote_endvote $ValueToSkip
+        SetConfigItem $serverOrigConfig sm_mapvote_voteduration $ValueToSkip
+        SetConfigItem $serverOrigConfig sm_mapvote_include $ValueToSkip
+        SetConfigItem $serverOrigConfig sm_mapvote_exclude $ValueToSkip
+    }
+
+    if { [IsSourcemodPluginEnabled [GetConfigItem $sourcemodConfig sm_franug_weaponpaints_enable] [GetConfigItem $sourcemodConfig sm_franug_weaponpaints_lanonly]] } {
+        SetConfigItem $serverOrigConfig sm_weaponpaints_c4 [GetConfigItem $sourcemodConfig sm_franug_weaponpaints_c4]
+        SetConfigItem $serverOrigConfig sm_weaponpaints_saytimer [GetConfigItem $sourcemodConfig sm_franug_weaponpaints_saytimer]
+        SetConfigItem $serverOrigConfig sm_weaponpaints_roundtimer [GetConfigItem $sourcemodConfig sm_franug_weaponpaints_roundtimer]
+        SetConfigItem $serverOrigConfig sm_weaponpaints_rmenu [GetConfigItem $sourcemodConfig sm_franug_weaponpaints_rmenu]
+        SetConfigItem $serverOrigConfig sm_weaponpaints_onlyadmin [GetConfigItem $sourcemodConfig sm_franug_weaponpaints_onlyadmin]
+        SetConfigItem $serverOrigConfig sm_weaponpaints_zombiesv [GetConfigItem $sourcemodConfig sm_franug_weaponpaints_zombiesv]        
+    } else {
+        SetConfigItem $serverOrigConfig sm_weaponpaints_c4 $ValueToSkip
+        SetConfigItem $serverOrigConfig sm_weaponpaints_saytimer $ValueToSkip
+        SetConfigItem $serverOrigConfig sm_weaponpaints_roundtimer $ValueToSkip
+        SetConfigItem $serverOrigConfig sm_weaponpaints_rmenu $ValueToSkip
+        SetConfigItem $serverOrigConfig sm_weaponpaints_onlyadmin $ValueToSkip
+        SetConfigItem $serverOrigConfig sm_weaponpaints_zombiesv $ValueToSkip
+    }
+    
     SaveConfigFile serverOrigConfig
 }
 
@@ -205,6 +269,31 @@ LoadConfigFile steamConfig
 proc SaveConfigFileSteam {} {
     SaveConfigFile steamConfig
     SaveSourceModAdmins steamConfig
+}
+
+## Sourcemod config
+source [file join $starkit::topdir page_sourcemod.tcl]
+
+EnsureConfigFile sourcemodConfig
+LoadConfigFile sourcemodConfig 
+proc SaveConfigFileSourcemod {} {
+
+    #Disable all risky plugins if banprotection is enabled
+    global sourcemodConfig
+    if {[GetConfigItem $sourcemodConfig banprotection]} {
+        global sourcemodPlugins
+        foreach {plugin pluginParms} $sourcemodPlugins {
+            set pluginRisky [lindex $pluginParms 0]
+            if { $pluginRisky } {
+                set pluginEnabledName [lindex $pluginParms 1]
+                SetConfigItem $sourcemodConfig $pluginEnabledName 0                
+            }
+        }
+    }
+    
+    SaveConfigFile sourcemodConfig
+    EnforceSourcemodConfig    
+    SaveSimpleAdmins [GetConfigItem $sourcemodConfig admins]
 }
 
 ## Maps config
@@ -225,6 +314,9 @@ proc SaveConfigFileMapGroups {} {
     global serverFolder
     SaveConfigFile mapGroupsConfig
     SaveMapGroupsMapper "$configFolder/mapGroupsMapper.cfg"
+    SaveMapListTxt "$serverFolder/csgo/maplist.txt"
+    global runConfig
+    SaveMapCycleTxt "$serverFolder/csgo/mapcycle.txt" [GetConfigValue $runConfig mapgroup]
     SaveGameModesServer "$serverFolder/csgo/gamemodes_server.txt"
 }
 variable mapGroupsMapper [dict create]
@@ -426,6 +518,9 @@ set serverPage [CreateConfigPageFromLayout $cp.server $serverLayout]
 CreateConfigPageTabFromLayout $cp.steam $steamLayout $enableTab
 set steamPage [CreateConfigPageFromLayout $cp.steam $steamLayout]
 
+CreateConfigPageTabFromLayout $cp.sourcemod $sourcemodLayout $enableTab
+set steamPage [CreateConfigPageFromLayout $cp.sourcemod $sourcemodLayout]
+
 CreateConfigPageTabFromLayout $cp.maps $mapsLayout $enableTab
 set mapsPage [CreateConfigPageFromLayout $cp.maps $mapsLayout]
 
@@ -525,6 +620,43 @@ if {$serverPresent} {
     }
     Every 2000 StoreChangedMainWinGeometry
 }
+
+proc UpgradeCheck {} {
+    global applicationConfig
+    global version
+    if { [GetConfigItem $applicationConfig updatecheck] } {
+        set latestRelease [GetLatestRelease]
+        if { $latestRelease != "" } {
+            if { $latestRelease != $version } {
+                set reply [tk_dialog .w "csgosl update $latestRelease is available!" \
+                "A new csgosl version $latestRelease is available!\n\nDo you want to update your version $version to $latestRelease?\n\nThis dialog box will go away when you update.\nYou can also disable this check in the Application Page." \
+                questhead 0 "Of course!" "Not now"]
+                if { $reply == 0 } {
+                    Browser "https://github.com/lenosisnickerboa/csgosl/releases"
+                    Browser "https://github.com/lenosisnickerboa/csgosl/wiki/Upgrade%20a%20server"
+                }
+            } else {
+                Trace "Running latest release."                    
+            }
+        } else {
+            Trace "Failed to get latest release!"        
+        }
+    }
+    
+}
+
+if {$serverPresent} {
+    after 10000 UpgradeCheck
+}
+
+if { $serverPresent && $needsUpgrade } {
+    UpdateMods
+    if { [file exists "$NeedsUpgradeFileName"] } {
+        file delete -force "$NeedsUpgradeFileName"
+    }
+}
+
+
 
 #bind . <KeyPress> {puts "You pressed the key named: %K "}
 #bind . <ButtonPress> {puts "You pressed button: %b at %x %y"}

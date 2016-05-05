@@ -3,6 +3,8 @@
 # The next line is executed by /bin/sh, but not tcl \
 exec wish "$0" ${1+"$@"}
 
+source [file join $starkit::topdir sed.tcl]
+
 proc StartServer {} {
     global configPages
     global runPage
@@ -17,26 +19,38 @@ proc StartServer {} {
         FlashConfigItem $serverPage name
         return 
     }
-    set serverLanOption [GetConfigValue $serverConfig lanonly]
-    set serverLan "+sv_lan 0"
-    if { "$serverLanOption" == "1" } {
-        set serverLan "+sv_lan 1"
+    
+    global sourcemodConfig
+    set banProtection [GetConfigValue $sourcemodConfig banprotection]
+    set steamAccountOption ""
+    set apiAuthKeyOption ""
+    set serverLanOption "+sv_lan 1"
+    if { $banProtection == 0 } {
+        Trace "====================================================================="
+        Trace "Sourcemod banprotection is disabled, enforcing GSLT-less lanonly mode"
+        Trace "====================================================================="
+    } else {
+        set serverLan [GetConfigValue $serverConfig lanonly]
+        set serverLanOption "+sv_lan $serverLan"
+        if { $serverLan == 0 } {
+            set steamAccount [GetConfigValue $steamConfig gameserverlogintoken]
+            if {$steamAccount != ""} {
+                set steamAccountOption "+sv_setsteamaccount $steamAccount"
+            }
+            set apiAuthKey [GetConfigValue $steamConfig apiauthkey]
+            set apiAuthKeyOption ""
+            if {$apiAuthKey != ""} {
+                set apiAuthKeyOption "-authkey $apiAuthKey"
+            }            
+        }
     }
-    set serverPortOption [GetConfigValue $serverConfig port]
-    set serverPort "-port 27015"
-    if { "$serverPortOption" != "" } {
-        set serverPort "-port $serverPortOption"
-    }
+    
     set serverPort [GetConfigValue $serverConfig port]
-    global executorCommand
-    set steamAccount [GetConfigValue $steamConfig gameserverlogintoken]
-    if {$steamAccount != ""} {
-        set steamAccount "+sv_setsteamaccount $steamAccount"
+    set serverPortOption "-port 27015"
+    if { "$serverPort" != "" } {
+        set serverPortOption "-port $serverPort"
     }
-    set apiAuthKey [GetConfigValue $steamConfig apiauthkey]
-    if {$apiAuthKey != ""} {
-        set apiAuthKey "-authkey $apiAuthKey"
-    }
+        
     global runConfig
     set gameModeTypeString [GetConfigValue $runConfig gamemodetype]
     global gameModeMapper
@@ -71,15 +85,20 @@ proc StartServer {} {
     if { $password != "" } {
         set passwordOption "+sv_password $password"
     }
+
+    global currentOs
     
+    set bindIp [GetConfigValue $serverConfig bindip]
     set rconEnable [GetConfigValue $serverConfig rcon]
     set rconCommand ""
     if { $rconEnable == "1" } {
-        #setting -ip 0.0.0.0 is a workaround on linux
-        set rconCommand "-usercon -condebug -ip 0.0.0.0"
+        set rconCommand "-usercon -condebug"
+        if { $currentOs == "linux" && $bindIp == "" } {
+            #setting -ip 0.0.0.0 is a workaround to get rcon working on linux servers
+            set rconCommand "$rconCommand -ip 0.0.0.0"
+        }
     }
 
-    global currentOs
     set consoleCommand ""
     if { $currentOs == "windows" } {
         set consoleCommand "-console"        
@@ -96,6 +115,11 @@ proc StartServer {} {
         set srcdsName "srcds"
     }
 
+    set ipOption ""
+    if { $bindIp != "" } {
+        set ipOption "-ip $bindIp"        
+    }
+    
     global serverControlScript    
     if { $currentOs == "windows" } {
         RunAssync "$serverControlScript-start.bat \"$serverFolder/$srcdsName\" \
@@ -103,11 +127,12 @@ proc StartServer {} {
              +game_type $gameType +game_mode $gameMode \
              $mapGroupOption \
              $mapOption \
-             $steamAccount $apiAuthKey \
+             $steamAccountOption $apiAuthKeyOption \
              -maxplayers_override $players \
              -tickrate $tickRate \
              $passwordOption \
-             +hostname \"$serverName\" $serverPort $serverLan \
+             $ipOption \
+             +hostname \"$serverName\" $serverPortOption $serverLanOption \
              $options"
     } else {
         chan configure stdout -buffering none
@@ -118,23 +143,31 @@ proc StartServer {} {
              +game_type $gameType +game_mode $gameMode \
              $mapGroupOption \
              $mapOption \
-             $steamAccount $apiAuthKey \
+             $steamAccountOption $apiAuthKeyOption \
              -maxplayers_override $players \
              -tickrate $tickRate \
              $passwordOption \
-             +hostname \"$serverName\" $serverPort $serverLan \
+             $ipOption \
+             +hostname \"$serverName\" $serverPortOption $serverLanOption \
              $options"
+        
+        if { [IsDryRun] } {
+            Trace "*** THIS IS A DRY RUN! ***"
+            return 0
+        }
+        
         exec >@stdout 2>@stderr "$serverControlScript" $control \
             $serverFolder/$srcdsName \
              -game csgo $consoleCommand $rconCommand \
              +game_type $gameType +game_mode $gameMode \
              $mapGroupOption \
              $mapOption \
-             $steamAccount $apiAuthKey \
+             $steamAccountOption $apiAuthKeyOption \
              -maxplayers_override $players \
              -tickrate $tickRate \
              $passwordOption \
-             +hostname \"$serverName\" $serverPort $serverLan \
+             $ipOption \
+             +hostname \"$serverName\" $serverPortOption $serverLanOption \
              $options
     }
 }
@@ -153,6 +186,12 @@ proc StopServer {} {
 }
 
 proc UpdateServer {} {
+    set status [DetectServerRunning]
+    if { $status == "running" } {
+        Trace "Server is running! Stop server first and retry update!"
+        return 1
+    }    
+    
     global consolePage
     global currentOs
     if {$currentOs == "windows"} {
@@ -242,12 +281,8 @@ proc UpdateServer {} {
         exec >@stdout 2>@stderr "$steamcmdFolder/$steamCmdExe" +runscript "$filename"
     }
 
-    set modsArchive "$installFolder/mods/mods.zip"
-    Trace "Looking for mods $modsArchive..."
-    if { [file exists "$modsArchive"] == 1 } {
-        Trace "Installing mods..."
-        Unzip "$modsArchive" "$serverFolder/csgo/"
-    }
+    UpdateMods
+    
     Trace "----------------"
     Trace "UPDATE FINISHED!"
     Trace "----------------"
@@ -272,5 +307,189 @@ proc DetectServerRunning {} {
         exec "$serverControlScript-status.bat"
     } else {
         exec "$serverControlScript" status
+    }
+}
+
+proc IsSourcemodEnabled {} {
+    global serverConfig
+    set lanOnly [GetConfigValue $serverConfig lanonly]
+    global sourcemodConfig
+    set sourcemodEnabled [GetConfigValue $sourcemodConfig enable]
+    set sourcemodEnabledLanOnly [GetConfigValue $sourcemodConfig lanonly]
+    if { $sourcemodEnabled && $lanOnly == 0 && $sourcemodEnabledLanOnly == 1 } {
+#        Trace "Sourcemod is configured for lanonly mode, not running lanonly now, disabling sourcemod."
+        set sourcemodEnabled 0
+    }
+    return $sourcemodEnabled
+}
+
+proc SetSourcemodInstallStatus {sourcemodEnabled} {
+    global modsFolder
+    if { ! $sourcemodEnabled } {
+        Trace "Sourcemod functionality is disabled."
+        if { [file exists "$modsFolder/sourcemod"] } {
+            file rename -force "$modsFolder/sourcemod" "$modsFolder/sourcemod.DISABLED"
+        }
+        if { [file exists "$modsFolder/metamod"] } {
+            file rename -force "$modsFolder/metamod" "$modsFolder/metamod.DISABLED"
+        }
+    } else {
+        Trace "Sourcemod functionality is enabled."
+        if { [file exists "$modsFolder/sourcemod.DISABLED"] } {
+            file rename -force "$modsFolder/sourcemod.DISABLED" "$modsFolder/sourcemod"
+        }
+        if { [file exists "$modsFolder/metamod.DISABLED"] } {
+            file rename -force "$modsFolder/metamod.DISABLED" "$modsFolder/metamod"
+        }        
+    }
+}
+
+#Fix for pre 1.1 version installing Linux Metamod binaries on Windows
+proc UpdateModsFixForMetamodSourcemodInstallBug {} {
+    global currentOs
+    if { $currentOs != "windows" } {
+        return 0
+    }
+    global serverFolder
+    set addonsFolder "$serverFolder/csgo/addons"
+    if { [file exists "$addonsFolder/metamod/bin/server.so"] } {
+        Trace "Applying metamod install bug fix #1"
+        file delete -force "$addonsFolder/metamod/bin"
+    }
+    if { [file exists "$addonsFolder/sourcemod/bin/sourcemod.logic.so"] } {
+        Trace "Applying sourcemod install bug fix #1"
+        file delete -force "$addonsFolder/sourcemod/bin"
+    }
+    if { [file exists "$addonsFolder/sourcemod/extensions/bintools.ext.so"] } {
+        Trace "Applying sourcemod install bug fix #2"
+        file delete -force "$addonsFolder/sourcemod/extensions"
+    }
+}
+
+proc UpdateMods {} {
+    global installFolder
+    global serverFolder
+    #Make sure sourcemod is enabled to be able to update it
+    SetSourcemodInstallStatus true
+
+    UpdateModsFixForMetamodSourcemodInstallBug   
+    
+    set modsArchive "$installFolder/mods/mods.zip"
+    Trace "Looking for mods $modsArchive..."
+    if { [file exists "$modsArchive"] == 1 } {
+        Trace "Installing mods..."
+        Unzip "$modsArchive" "$serverFolder/csgo/"
+    }
+    
+    global sourcemodConfig
+    if { [GetConfigValue $sourcemodConfig banprotection] == 0 } {
+        set modsArchive "$installFolder/mods/mods-risky.zip"
+        Trace "Looking for risky mods $modsArchive..."
+        if { [file exists "$modsArchive"] == 1 } {
+            Trace "Installing risky mods..."
+            Unzip "$modsArchive" "$serverFolder/csgo/"
+        }
+    }
+    
+    SaveAll
+    #Restore sourcemod conf after update 
+    EnforceSourcemodConfig    
+}
+
+proc SaveSimpleAdmins {admins} {
+    global modsFolder
+    set configFolder "$modsFolder/sourcemod/configs"
+    if { ! [file exists $configFolder] } {
+        set configFolder "$modsFolder/sourcemod.DISABLED/configs"
+    }
+    if { [file exists $configFolder] } {
+        SaveSimpleAdminsFile "$configFolder/admins_simple.ini" $admins
+    }
+}
+
+proc IsSourcemodPluginEnabled {pluginEnabled pluginLanOnly} {
+    global serverConfig
+    set lanOnly [GetConfigValue $serverConfig lanonly]
+    if { $pluginEnabled && $lanOnly == 0 && $pluginLanOnly == 1 } {
+        return 0
+    } else {
+        return $pluginEnabled
+    }
+}
+
+proc SetSourcemodPluginsInstallStatus {} {
+    global sourcemodConfig
+    global sourcemodPlugins
+    foreach {plugin pluginParms} $sourcemodPlugins {
+        set pluginRisky [lindex $pluginParms 0]
+        set pluginEnabledName [lindex $pluginParms 1]
+        set pluginEnabled [GetConfigValue $sourcemodConfig $pluginEnabledName]
+        set pluginLanOnlyName [lindex $pluginParms 2]
+        set pluginLanOnly [GetConfigValue $sourcemodConfig $pluginLanOnlyName]
+        set pluginSmxName [lindex $pluginParms 3]
+        set pluginEnabled [IsSourcemodPluginEnabled $pluginEnabled $pluginLanOnlyName]
+        EnforceSourcemodPluginConfig $pluginSmxName $pluginEnabled
+    }
+}
+
+proc SetFollowCSGOServerGuidelines {} {
+    global modsFolder
+    global sourcemodConfig
+    set FollowCSGOServerGuidelines "yes"
+    set sourcemodBanProtectionEnabled [GetConfigValue $sourcemodConfig banprotection]
+    if { $sourcemodBanProtectionEnabled == 0 } {
+        set FollowCSGOServerGuidelines "no"        
+    }
+    set configFolder "$modsFolder/sourcemod/configs"
+    if { ! [file exists $configFolder] } {
+        set configFolder "$modsFolder/sourcemod.DISABLED/configs"
+    }
+    if { [file exists $configFolder] } {
+        sedf "s/.*FollowCSGOServerGuidelines.*/\"FollowCSGOServerGuidelines\" \"$FollowCSGOServerGuidelines\"/g" "$configFolder/core.cfg"
+    }
+}
+
+proc EnforceSourcemodConfig {} {
+    set status [DetectServerRunning]
+    if { $status == "running" } {
+        Trace "Server is running! Stop server first and retry!"
+        return 1
+    }
+    
+    set sourcemodEnabled [IsSourcemodEnabled]
+    SetSourcemodInstallStatus $sourcemodEnabled
+    
+    if { ! $sourcemodEnabled } {
+        return 0
+    }
+    
+    SetSourcemodPluginsInstallStatus
+    
+    SetFollowCSGOServerGuidelines
+}
+
+proc EnforceSourcemodPluginConfig {pluginFileName pluginEnabled} {
+    global modsFolder
+    set sourcemodPluginFolder "$modsFolder/sourcemod/plugins"
+    if { $pluginEnabled } {
+        Trace "Plugin $pluginFileName is enabled"
+        if { [file exists "$sourcemodPluginFolder/disabled/$pluginFileName"] } {
+            #Could be an updated plugin which is always installed into the disabled folder by default
+            if { [file exists "$sourcemodPluginFolder/$pluginFileName"] } {
+                file delete -force "$sourcemodPluginFolder/$pluginFileName"
+            }
+            file rename -force "$sourcemodPluginFolder/disabled/$pluginFileName" "$sourcemodPluginFolder/$pluginFileName"
+        }
+    } else {
+        Trace "Plugin $pluginFileName is disabled"
+        if { [file exists "$sourcemodPluginFolder/$pluginFileName"] } {
+            #If target file exists in disabled folder keep it, and just remove the plugin from the active folder
+            #Might be an updated plugin...
+            if { [file exists "$sourcemodPluginFolder/disabled/$pluginFileName"] } {
+                file delete -force "$sourcemodPluginFolder/$pluginFileName"
+            } else {
+                file rename -force "$sourcemodPluginFolder/$pluginFileName" "$sourcemodPluginFolder/disabled/$pluginFileName"                
+            }
+        }
     }
 }

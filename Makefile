@@ -1,11 +1,15 @@
-OUT=out
-CONTRIBOUT=contribs.txt
-CONTRIBOUTTCL=src/contribs.tcl
+ifndef CSGOSL_ROOT
+$(error CSGOSL_ROOT is not set, source env.sh in root directory)
+endif
+
+OUT=$(CSGOSL_ROOT)/out
+CONTRIBOUT=$(CSGOSL_ROOT)/contribs.txt
+CONTRIBOUTTCL=$(CSGOSL_ROOT)/src/contribs.tcl
 
 all: clean contribs windows linux
 
 tag:
-	git tag -a v1.0.5 -m "Fixed autoupdateonstart bug"
+	git tag -a v1.1 -m "Sourcemod plugins page + updated sourcemod"
 
 install:
 	$(MAKE) -C devtools/linux

@@ -53,6 +53,11 @@ proc CreateConfigPageText {at parms} {
     pack [label $at -text "$text" -anchor w] -side top -fill x -expand true
 }
 
+proc CreateConfigPageWarning {at parms} {
+    set text [lindex $parms 0]
+    pack [label $at -text "$text" -anchor w  -foreground red] -side top -fill x -expand true
+}
+
 proc CreateConfigPageLine {at parms} {
     pack [frame $at -relief groove -borderwidth 2 -width 2 -height 2] -fill x
 }
@@ -131,6 +136,8 @@ proc CreateConfigPageFromLayout {at layout} {
             CreateConfigPageUrl $page.url$widgetIx $args
         } elseif {$type == "text"} {
             CreateConfigPageText $page.h2$widgetIx $args
+        } elseif {$type == "warning"} {
+            CreateConfigPageWarning $page.h2$widgetIx $args
         } elseif {$type == "line"} {
             CreateConfigPageLine $page.line$widgetIx $args
         } elseif {$type == "space"} {

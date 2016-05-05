@@ -149,3 +149,15 @@ proc CacheMaps {maps mapsMeta} {
         }
     }
 }
+
+proc GetActiveMaps {} {
+    global mapGroupsMapper
+    global runConfig
+    set selectedMapGroup [GetConfigValue $runConfig mapgroup]
+    if { [dict exists $mapGroupsMapper $selectedMapGroup] } {
+        return [dict get $mapGroupsMapper $selectedMapGroup]
+    } else {
+        global allMaps
+        return $allMaps
+    }    
+}

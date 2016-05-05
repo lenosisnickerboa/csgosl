@@ -14,7 +14,9 @@ variable applicationConfig [CreateConfig \
     [list \
         "bool"      [list fullconfig "0" "Enable this option to be able to fine tune all csgo server parameters.\nA number of new configuration pages, one per game mode, will be displayed.\nYou need to restart csgosl after this change."]\
         "bool"      [list tclconsole "0" "Open tcl console when starting csgosl.\nWindows only"]\
-        "bool"      [list trace "0" "Control tracing. Traces are printed to the terminal (linux) and in the console tab (Windows)."]\
+        "bool"      [list trace "1" "Control tracing. Traces are printed to the terminal (linux) and in the console tab (Windows)."]\
+        "bool"      [list dryrun "0" "Performs everything except actually starting the server.\nSometimes convenient when troubleshooting or testing.\nCommand line is traced."]\
+        "bool"      [list updatecheck "1" "Checks for csgosl updates after program has started."]\
         "string"    [list mainwingeometry "800x600+100+100" "last saved windows size and location."]\
     ] \
 ]
@@ -36,6 +38,8 @@ variable applicationLayout [CreateLayout \
         h2      [list "Troubleshooting"] \
         line    [list] \
         space   [list] \
+        parm    [list dryrun] \
+        parm    [list updatecheck] \
         parm    [list tclconsole] \
         parm    [list trace] \
         space   [list] \

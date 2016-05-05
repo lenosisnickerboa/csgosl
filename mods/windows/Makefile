@@ -1,32 +1,42 @@
 #Windows
 TARGET=windows
+include ../common.mk
 METAMOD_HOME_URL="http://www.metamodsource.net/"
 METAMOD_URL="http://mirror.pointysoftware.net/alliedmodders/mmsource-1.10.6-windows.zip"
 METAMOD_VERSION="1.10.6"
 SOURCEMOD_HOME_URL="http://www.sourcemod.net/"
-SOURCEMOD_URL="https://www.sourcemod.net/smdrop/1.7/sourcemod-1.7.3-git5302-windows.zip"
-SOURCEMOD_VERSION="1.7.3-git5302"
+SOURCEMOD_URL="https://www.sourcemod.net/smdrop/1.7/sourcemod-1.7.3-git5303-windows.zip"
+SOURCEMOD_VERSION="1.7.3-git5303"
+export
 
 all: mods
 
 contribs:
 	@echo "$(TARGET) metamod $(METAMOD_VERSION) $(METAMOD_HOME_URL) $(METAMOD_URL)"
 	@echo "$(TARGET) sourcemod $(SOURCEMOD_VERSION) $(SOURCEMOD_HOME_URL) $(SOURCEMOD_URL)"
+	$(MAKE) -C ../mods/franug-knifes contrib
+	$(MAKE) -C ../mods/franug-weapon-paint contrib
 
-metamod:
+dl-metamod:
 	wget $(METAMOD_URL) -O metamod.zip
 
-sourcemod:
+dl-sourcemod:
 	wget $(SOURCEMOD_URL) -O sourcemod.zip
 
-mods: metamod sourcemod
-	\rm -rf mods >/dev/null 2>&1
-	mkdir mods
-	(cd mods ; unzip -o ../metamod.zip)	
-	(cd mods ; unzip -o ../sourcemod.zip)
-	cp ../metamod.vdf mods/addons/
-	(cd mods ; zip -r ../mods.zip *)
-	\rm -rf mods >/dev/null 2>&1
+mods: dl-metamod dl-sourcemod
+	\rm -rf $(MODS_ROOT) mods*.zip >/dev/null 2>&1
+	mkdir -p $(MODS_ROOT)
+	(cd $(MODS_ROOT) ; unzip -o ../metamod.zip)	
+	(cd $(MODS_ROOT) ; unzip -o ../sourcemod.zip)
+	(cd $(MODS_ROOT) ; zip -r ../mods.zip *)
+	\rm -rf $(MODS_ROOT) >/dev/null 2>&1
+	mkdir -p $(MODS_ROOT)
+	$(MAKE) -C ../mods/franug-knifes
+	$(MAKE) -C ../mods/franug-weapon-paint
+	(cd $(MODS_ROOT) ; zip -r ../mods-risky.zip *)
+	\rm -rf $(MODS_ROOT) >/dev/null 2>&1
 
 clean:
-	\rm -f metamod.zip sourcemod.zip mods.zip
+	$(MAKE) -C ../mods/franug-knifes clean
+	$(MAKE) -C ../mods/franug-weapon-paint clean
+	\rm -f metamod.zip sourcemod.zip mods*.zip

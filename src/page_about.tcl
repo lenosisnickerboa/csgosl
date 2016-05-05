@@ -43,13 +43,27 @@ proc GetContributors {} {
             windows_sdx_version windows_sdx_home_url windows_sdx_url \
             windows_sourcemod_version windows_sourcemod_home_url windows_sourcemod_url\
             windows_metamod_version windows_metamod_home_url windows_metamod_url\
-            windows_unzip_version windows_unzip_home_url windows_unzip_url
+            windows_unzip_version windows_unzip_home_url windows_unzip_url \
+            windows_wget_version windows_wget_home_url windows_wget_url \
+            windows_franug_weapon_paints_version windows_franug_weapon_paints_home_url windows_franug_weapon_paints_url \
+            windows_franug_knifes_version windows_franug_knifes_home_url windows_franug_knifes_url
+        
         set contribs \
         [list \
                 h2      [list "Sourcemod $windows_sourcemod_version"] \
                 line    [list] \
                 url     [list "Homepage" "$windows_sourcemod_home_url"] \
                 url     [list "Download $windows_sourcemod_version" "$windows_sourcemod_url"] \
+                space   [list] \
+                h2      [list "Sourcemod plugin: Franug-Weapon_Paints $windows_franug_weapon_paints_version"] \
+                line    [list] \
+                url     [list "Homepage" "$windows_franug_weapon_paints_home_url"] \
+                url     [list "Download $windows_franug_weapon_paints_version" "$windows_franug_weapon_paints_url"] \
+                space   [list] \
+                h2      [list "Sourcemod plugin: Franug-Knifes $windows_franug_knifes_version"] \
+                line    [list] \
+                url     [list "Homepage" "$windows_franug_knifes_home_url"] \
+                url     [list "Download $windows_franug_knifes_version" "$windows_franug_knifes_url"] \
                 space   [list] \
                 h2      [list "Metamod $windows_metamod_version"] \
                 line    [list] \
@@ -60,6 +74,11 @@ proc GetContributors {} {
                 line    [list] \
                 url     [list "Homepage" "$windows_unzip_home_url"] \
                 url     [list "Download $windows_unzip_version" "$windows_unzip_url"] \
+                space   [list] \
+                h2      [list "Wget $windows_wget_version"] \
+                line    [list] \
+                url     [list "Homepage" "$windows_wget_home_url"] \
+                url     [list "Download $windows_wget_version" "$windows_wget_url"] \
                 space   [list] \
                 h2      [list "Tclkit $windows_tclkit_version"] \
                 line    [list] \
@@ -74,13 +93,25 @@ proc GetContributors {} {
     } else {
         global \
             linux_sourcemod_version linux_sourcemod_home_url linux_sourcemod_url \
-            linux_metamod_version linux_metamod_home_url linux_metamod_url
+            linux_metamod_version linux_metamod_home_url linux_metamod_url \
+            linux_franug_weapon_paints_version linux_franug_weapon_paints_home_url linux_franug_weapon_paints_url \
+            linux_franug_knifes_version linux_franug_knifes_home_url linux_franug_knifes_url
         set contribs \
         [list \
                 h2      [list "Sourcemod $linux_sourcemod_version"] \
                 line    [list] \
                 url     [list "Homepage" "$linux_sourcemod_home_url"] \
                 url     [list "Download $linux_sourcemod_version" "$linux_sourcemod_url"] \
+                space   [list] \
+                h2      [list "Sourcemod plugin: Franug-Weapon_Paints $linux_franug_weapon_paints_version"] \
+                line    [list] \
+                url     [list "Homepage" "$linux_franug_weapon_paints_home_url"] \
+                url     [list "Download $linux_franug_weapon_paints_version" "$linux_franug_weapon_paints_url"] \
+                space   [list] \
+                h2      [list "Sourcemod plugin: Franug-Knifes $linux_franug_knifes_version"] \
+                line    [list] \
+                url     [list "Homepage" "$linux_franug_knifes_home_url"] \
+                url     [list "Download $linux_franug_knifes_version" "$linux_franug_knifes_url"] \
                 space   [list] \
                 h2      [list "Metamod $linux_metamod_version"] \
                 line    [list] \

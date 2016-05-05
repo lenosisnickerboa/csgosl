@@ -13,14 +13,18 @@ UNZIP_VERSION="6.00"
 IMG_HOME_URL="http://www.tcl.tk/starkits/"
 IMG_URL="http://www.tcl.tk/starkits/img.kit"
 IMG_VERSION="1.3"
+WGET_HOME_URL="https://www.gnu.org/software/wget"
+WGET_URL="https://eternallybored.org/misc/wget/releases/wget-1.17.1-win32.zip"
+WGET_VERSION="1.17.1-win32"
 
-all: tclkit sdx img unzip
+all: wget tclkit sdx img unzip
 
 contribs:
 	@echo "$(TARGET) tclkit $(TCLKIT_VERSION) $(TCLKIT_HOME_URL) $(TCLKIT_URL)"
 	@echo "$(TARGET) sdx $(SDX_VERSION) $(SDX_HOME_URL) $(SDX_URL)"
 	@echo "$(TARGET) unzip $(UNZIP_VERSION) $(UNZIP_HOME_URL) $(UNZIP_URL)"
 	@echo "$(TARGET) img $(IMG_VERSION) $(IMG_HOME_URL) $(IMG_URL)"
+	@echo "$(TARGET) wget $(WGET_VERSION) $(WGET_HOME_URL) $(WGET_URL)"
 
 tclkit:
 	wget $(TCLKIT_URL) -O tclkit.exe
@@ -37,6 +41,12 @@ unzip:
 	unzip -o unzip-self-extract.exe -d exclude_me
 	cp exclude_me/unzip.exe .
 	chmod +x unzip.exe
+
+wget:
+	wget $(WGET_URL) -O wget.zip
+	unzip -o wget.zip -d exclude_me
+	cp exclude_me/wget.exe .
+	chmod +x wget.exe
 
 clean:
 	\rm -f tclkit.exe sdx.kit img.kit unzip-self-extract.exe unzip.exe
