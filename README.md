@@ -1,12 +1,12 @@
 # csgosl
 
-Quickie: [Get started](https://github.com/lenosisnickerboa/csgosl/wiki). Download **1.0.5** : [Linux](https://github.com/lenosisnickerboa/csgosl/releases/download/v1.0.5/csgosl-linux.zip) [Windows](https://github.com/lenosisnickerboa/csgosl/releases/download/v1.0.5/csgosl-windows.zip)
+Quickie: [Get started](https://github.com/lenosisnickerboa/csgosl/wiki). Download **1.1** : [Linux](https://github.com/lenosisnickerboa/csgosl/releases/download/v1.1/csgosl-linux.zip) [Windows](https://github.com/lenosisnickerboa/csgosl/releases/download/v1.1/csgosl-windows.zip)
 
 csgosl is a graphical user interface for a [Counter Striker Global Offensive server](https://developer.valvesoftware.com/wiki/Counter-Strike:_Global_Offensive_Dedicated_Servers) (CSGO server from now on).  csgosl supports one-click install, update, start and stop server on windows and linux platforms ([supported platforms](https://github.com/lenosisnickerboa/csgosl/wiki/Platform-support)). If you just want your own CSGO server up and running in no time this is the place for you. csgosl provides a graphical user interface supporting most mainstream server options. For the control freak there is also an advanced mode providing support for nearly any imaginable setting.
 
 csgosl features:
 
-* Completely automatic install (steamcmd + srcds)
+* Completely automatic install (steamcmd + srcds + metamod/sourcemod/plugins)
 * Server update, automatic or manual
 * Start/monitor/stop server
 * Host lan only or public servers
@@ -17,16 +17,8 @@ csgosl features:
 * Advanced settings mode for the control freak (supports all cvars with in app help texts)
 * Override settings in one place for all game modes/types
 * [Online help](https://github.com/lenosisnickerboa/csgosl/wiki/csgosl-online-help) easily accessible from the application
-* Comes preinstalled with [sourcemod](https://www.sourcemod.net/) and [metamod](https://www.metamodsource.net/)
+* Comes preinstalled with [sourcemod](https://www.sourcemod.net/) and [metamod](https://www.metamodsource.net/) and some plugins.
 
-
-----------
-
-To get started head over to the [wiki](https://github.com/lenosisnickerboa/csgosl/wiki).
-
-If you just want to upgrade to the latest version, **1.0.5**, here are quick links: [Linux](https://github.com/lenosisnickerboa/csgosl/releases/download/v1.0.5/csgosl-linux.zip) [Windows](https://github.com/lenosisnickerboa/csgosl/releases/download/v1.0.5/csgosl-windows.zip)
-
-Simply unzip the downloaded archive in the same location as when you installed csgosl (overwriting all files) and it's updated!
 
 ----------
 
@@ -45,6 +37,8 @@ If you have a suggestion or just want to report a bug please don't hesitate to c
 The following free software is part of csgosl:
 
  - [Sourcemod](https://www.sourcemod.net/) (Linux/Windows: installed automatically when server is installed)
+ - [Franug-Weapon_Paints](https://github.com/Franc1sco/Franug-Weapon_Paints) (Sourcemod plugin)
+ - [Franug-Knifes](https://github.com/Franc1sco/Franug-Knifes) (Sourcemod plugin)
  - [Metamod](https://www.metamodsource.net/) (Linux/Windows: installed automatically when server is installed)
  - [Unzip](http://www.info-zip.org/UnZip.html) (Windows: for unzipping stuff)
  - [Img](http://www.tcl.tk/starkits/) (Windows: image handling)
