@@ -9,13 +9,13 @@ csgosl features:
 * Completely automatic install (steamcmd + srcds + metamod/sourcemod/plugins)
 * Server update, automatic or manual
 * Start/monitor/stop server
-* Host [lan only](Host LAN only server) or [public](Host public server) servers
-* Host [workshop maps](Host workshop maps) and [map groups](Host workshop map groups) 
-* Manage all your maps and [create your own map groups](Help-on-Map-groups) using the map group editor
-* Easily [view](Help-on-Maps) and select all installed maps using map previews
+* Host [lan only](https://github.com/lenosisnickerboa/csgosl/wiki/Host%20LAN%20only%20server) or [public](https://github.com/lenosisnickerboa/csgosl/wiki/Host%20public%20server) servers
+* Host [workshop maps](https://github.com/lenosisnickerboa/csgosl/wiki/Host%20workshop%20maps) and [map groups](https://github.com/lenosisnickerboa/csgosl/wiki/Host%20workshop%20map%20groups) 
+* Manage all your maps and [create your own map groups](https://github.com/lenosisnickerboa/csgosl/wiki/Create%20your%20own%20map%20groups) using the map group editor
+* Easily [view](https://github.com/lenosisnickerboa/csgosl/wiki/Help-on-Maps) and select all installed maps using map previews
 * Greatly simplified server settings with reasonable defaults 
-* [Advanced settings](Help-on-Advanced-Tabs) mode for the control freak (supports all cvars with in app help texts)
-* [Override settings in one place](Help-on-Advanced-Tabs) for all game modes/types
+* [Advanced settings](https://github.com/lenosisnickerboa/csgosl/wiki/Advanced%20mode) mode for the control freak (supports all cvars with in app help texts)
+* [Override settings in one place](https://github.com/lenosisnickerboa/csgosl/wiki/Advanced%20mode) for all game modes/types
 * [Online help](https://github.com/lenosisnickerboa/csgosl/wiki/csgosl-online-help) easily accessible from the application
 * Comes preinstalled with [sourcemod](https://www.sourcemod.net/) and [metamod](https://www.metamodsource.net/) and some plugins. Read more about how it works [here](Help-on-Sourcemod).
 
