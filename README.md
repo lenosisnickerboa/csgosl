@@ -9,8 +9,8 @@ csgosl features:
 * Completely automatic install (steamcmd + srcds + metamod/sourcemod/plugins)
 * Server update, automatic or manual
 * Start/monitor/stop server
-* Host [lan only](Host%20LAN%20only%20server) or [public](Host%20public%20server) servers
-* Host [workshop maps](Host%20workshop%20maps) and [map groups](Host%20workshop%20map%20groups) 
+* Host [lan only](Host LAN only server) or [public](Host public server) servers
+* Host [workshop maps](Host workshop maps) and [map groups](Host workshop map groups) 
 * Manage all your maps and [create your own map groups](Help-on-Map-groups) using the map group editor
 * Easily [view](Help-on-Maps) and select all installed maps using map previews
 * Greatly simplified server settings with reasonable defaults 
