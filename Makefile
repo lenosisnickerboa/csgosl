@@ -8,9 +8,6 @@ CONTRIBOUTTCL=$(CSGOSL_ROOT)/src/contribs.tcl
 
 all: clean contribs windows linux
 
-tag:
-	git tag -a v1.1 -m "Sourcemod plugins page + updated sourcemod"
-
 install:
 	$(MAKE) -C devtools/linux
 	$(MAKE) -C devtools/windows

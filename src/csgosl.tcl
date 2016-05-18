@@ -363,17 +363,12 @@ proc SaveConfigFileRun {} {
     
     SetConfigItem $gameModeAllConfig bot_difficulty [dict get $botSkillMapper [GetConfigItem $runConfig botskill]]
     
-    set immediateStart [GetConfigItem $runConfig immediatestart]
-    if {$immediateStart == "1"} {
-        SetConfigItem $gameModeAllConfig mp_freezetime 0
-        SetConfigItem $gameModeAllConfig mp_warmuptime 0
-    } else {
-        SetConfigItemDefault $gameModeAllConfig mp_freezetime
-        SetConfigItemDefault $gameModeAllConfig mp_warmuptime
-    }
-    
-    set friendlyFire [GetConfigItem $runConfig friendlyfire]
-    SetConfigItem $gameModeAllConfig mp_friendlyfire $friendlyFire
+    SetConfigItem $gameModeAllConfig mp_roundtime [GetConfigItem $runConfig roundtime]
+    SetConfigItem $gameModeAllConfig mp_warmuptime [GetConfigItem $runConfig warmuptime]
+    SetConfigItem $gameModeAllConfig mp_buytime [GetConfigItem $runConfig buytime]
+    SetConfigItem $gameModeAllConfig mp_freezetime [GetConfigItem $runConfig freezetime]
+
+    SetConfigItem $gameModeAllConfig mp_friendlyfire [GetConfigItem $runConfig friendlyfire]
 
 #    set vote [GetConfigItem $runConfig vote]
 #    SetConfigItem $gameModeAllConfig sv_allow_votes $vote
@@ -391,9 +386,6 @@ proc SaveConfigFileRun {} {
 #        SetConfigItem $gameModeAllConfig sv_vote_to_changelevel_before_match_point 1
 #    }
     
-    set roundTime [GetConfigItem $runConfig roundtime]
-    SetConfigItem $gameModeAllConfig mp_roundtime $roundTime
-
     set killCam [GetConfigItem $runConfig killcam]
     if {$killCam == "1"} {
         SetConfigItem $gameModeAllConfig mp_forcecamera 0

@@ -37,12 +37,12 @@ proc StartServer {} {
             if {$steamAccount != ""} {
                 set steamAccountOption "+sv_setsteamaccount $steamAccount"
             }
-            set apiAuthKey [GetConfigValue $steamConfig apiauthkey]
-            set apiAuthKeyOption ""
-            if {$apiAuthKey != ""} {
-                set apiAuthKeyOption "-authkey $apiAuthKey"
-            }            
         }
+        set apiAuthKey [GetConfigValue $steamConfig apiauthkey]
+        set apiAuthKeyOption ""
+        if {$apiAuthKey != ""} {
+            set apiAuthKeyOption "-authkey $apiAuthKey"
+        }            
     }
     
     set serverPort [GetConfigValue $serverConfig port]

@@ -19,11 +19,13 @@ variable runConfig [CreateConfig \
         "int"  [list bots "0" "Only used when fillwithbots is disabled, ignored otherwhise. Defines exact number of bots."]\
         "bool" [list fillwithbots "1" "Add bots until max number of players are reached."]\
         "enum" [list botskill "Normal" "How intelligent bots dou you want?" [dict keys $botSkillMapper]]\
-        "bool" [list immediatestart "1" "Immediately start playing, no warmup time."]\
         "bool" [list friendlyfire "0" "Enable this option to be able to hurt your team mates."]\
         "int"  [list roundtime "10" "Limit match time to this many minutes."]\
         "bool" [list killcam "1" "Enable this option to be able to see who killed you and where he was located."]\
         "string" [list options "" "Expert option, everything added here is appended to the command line when starting the server."]\
+        "int"  [list buytime "30" "Seconds you are allowed to buy stuff when the match begins."]\
+        "int"  [list warmuptime "0" "Seconds to warm up before the match begins."]\
+        "int"  [list freezetime "0" "How many seconds to keep players frozen when the round starts."]\
     ] \
 ]
 
@@ -59,9 +61,11 @@ variable runLayout [CreateLayout \
         h2      [list "Misc"] \
         line    [list] \
         space   [list] \
-        parm    [list immediatestart] \
         parm    [list killcam] \
         parm    [list roundtime] \
+        parm    [list warmuptime] \
+        parm    [list buytime] \
+        parm    [list freezetime] \
         parm    [list options] \
     ] \
 ]
