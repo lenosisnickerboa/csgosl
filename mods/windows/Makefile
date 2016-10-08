@@ -5,8 +5,8 @@ METAMOD_HOME_URL="http://www.metamodsource.net/"
 METAMOD_URL="http://mirror.pointysoftware.net/alliedmodders/mmsource-1.10.6-windows.zip"
 METAMOD_VERSION="1.10.6"
 SOURCEMOD_HOME_URL="http://www.sourcemod.net/"
-SOURCEMOD_URL="https://www.sourcemod.net/smdrop/1.7/sourcemod-1.7.3-git5303-windows.zip"
-SOURCEMOD_VERSION="1.7.3-git5303"
+SOURCEMOD_URL="https://www.sourcemod.net/smdrop/1.8/sourcemod-1.8.0-git5942-windows.zip"
+SOURCEMOD_VERSION="1.8.0-git5942"
 export
 
 all: mods
