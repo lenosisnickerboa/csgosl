@@ -46,7 +46,8 @@ proc GetContributors {} {
             windows_unzip_version windows_unzip_home_url windows_unzip_url \
             windows_wget_version windows_wget_home_url windows_wget_url \
             windows_franug_weapon_paints_version windows_franug_weapon_paints_home_url windows_franug_weapon_paints_url \
-            windows_franug_knifes_version windows_franug_knifes_home_url windows_franug_knifes_url
+            windows_franug_knifes_version windows_franug_knifes_home_url windows_franug_knifes_url \
+            windows_warmod_version windows_warmod_home_url windows_warmod_url
         
         set contribs \
         [list \
@@ -64,6 +65,11 @@ proc GetContributors {} {
                 line    [list] \
                 url     [list "Homepage" "$windows_franug_knifes_home_url"] \
                 url     [list "Download $windows_franug_knifes_version" "$windows_franug_knifes_url"] \
+                space   [list] \
+                h2      [list "Sourcemod plugin: WarMod $windows_warmod_version"] \
+                line    [list] \
+                url     [list "Homepage" "$windows_warmod_home_url"] \
+                url     [list "Download $windows_warmod_version" "$windows_warmod_url"] \
                 space   [list] \
                 h2      [list "Metamod $windows_metamod_version"] \
                 line    [list] \
@@ -95,7 +101,8 @@ proc GetContributors {} {
             linux_sourcemod_version linux_sourcemod_home_url linux_sourcemod_url \
             linux_metamod_version linux_metamod_home_url linux_metamod_url \
             linux_franug_weapon_paints_version linux_franug_weapon_paints_home_url linux_franug_weapon_paints_url \
-            linux_franug_knifes_version linux_franug_knifes_home_url linux_franug_knifes_url
+            linux_franug_knifes_version linux_franug_knifes_home_url linux_franug_knifes_url \
+            linux_warmod_version linux_warmod_home_url linux_warmod_url
         set contribs \
         [list \
                 h2      [list "Sourcemod $linux_sourcemod_version"] \
@@ -112,6 +119,11 @@ proc GetContributors {} {
                 line    [list] \
                 url     [list "Homepage" "$linux_franug_knifes_home_url"] \
                 url     [list "Download $linux_franug_knifes_version" "$linux_franug_knifes_url"] \
+                space   [list] \
+                h2      [list "Sourcemod plugin: WarMod $linux_warmod_version"] \
+                line    [list] \
+                url     [list "Homepage" "$linux_warmod_home_url"] \
+                url     [list "Download $linux_warmod_version" "$linux_warmod_url"] \
                 space   [list] \
                 h2      [list "Metamod $linux_metamod_version"] \
                 line    [list] \

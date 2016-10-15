@@ -10,8 +10,9 @@ variable sourcemodPlugins [list \
     rockthevote [list false sm_rockthevote_enable sm_rockthevote_lanonly rockthevote.smx] \
     nextmap [list false sm_nextmap_enable sm_nextmap_lanonly nextmap.smx] \
     randomcycle [list false sm_randomcycle_enable sm_randomcycle_lanonly randomcycle.smx] \
+    warmod [list false sm_warmod_enable sm_warmod_lanonly warmod.smx] \
     franug_weaponpaints [list true sm_franug_weaponpaints_enable sm_franug_weaponpaints_lanonly franug_weaponpaints_public.smx] \
-    franug_knifes [list true sm_franug_knifes_enable sm_franug_knifes_lanonly sm_franugknife.smx] \
+    franug_knifes [list true sm_franug_knifes_enable sm_franug_knifes_lanonly sm_franugknife.smx]
 ]
 
 ## Sourcemod config
@@ -38,6 +39,8 @@ variable sourcemodConfig [CreateConfig \
         "bool"      [list sm_nextmap_lanonly "1" "Only enable this sourcemod plugin in lanonly mode"]\
         "bool"      [list sm_randomcycle_enable "0" "Controls if this sourcemod plugin is enabled."]\
         "bool"      [list sm_randomcycle_lanonly "1" "Only enable this sourcemod plugin in lanonly mode"]\
+        "bool"      [list sm_warmod_enable "0" "Controls if this sourcemod plugin is enabled."]\
+        "bool"      [list sm_warmod_lanonly "1" "Only enable this sourcemod plugin in lanonly mode"]\
         "bool"      [list sm_franug_weaponpaints_enable "0" "Controls if this sourcemod plugin is enabled.\nType !ws in chat to use."]\
         "bool"      [list sm_franug_weaponpaints_lanonly "1" "Only enable this sourcemod plugin in lanonly mode"]\
         "bool"      [list sm_franug_weaponpaints_onlyadmin "1" "This feature is only for admins. 1 = enabled, 0 = disabled.\n(Use the value 1 and try to keep this plugin secret for the normal users because they can report it)"]\
@@ -87,6 +90,10 @@ variable sourcemodLayout [CreateLayout \
         h2      [list "Plugin: randomcycle"] \
         parm    [list sm_randomcycle_enable] \
         parm    [list sm_randomcycle_lanonly] \
+        space   [list] \
+        h2      [list "Plugin: warmod"] \
+        parm    [list sm_warmod_enable] \
+        parm    [list sm_warmod_lanonly] \
         space   [list] \
         warning [list "All plugins below this line require the banprotection to be disabled. Read the help page carefully before"] \
         warning [list "disabling banprotection. Running misbehaving sourcemod plugins may cause your server to be banned by Valve."] \

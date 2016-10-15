@@ -16,6 +16,7 @@ contribs:
 	@echo "$(TARGET) sourcemod $(SOURCEMOD_VERSION) $(SOURCEMOD_HOME_URL) $(SOURCEMOD_URL)"
 	$(MAKE) -C ../mods/franug-knifes contrib
 	$(MAKE) -C ../mods/franug-weapon-paint contrib
+	$(MAKE) -C ../mods/warmod contrib
 
 dl-metamod:
 	wget $(METAMOD_URL) -O metamod.zip
@@ -28,6 +29,7 @@ mods: dl-metamod dl-sourcemod
 	mkdir -p $(MODS_ROOT)
 	(cd $(MODS_ROOT) ; unzip -o ../metamod.zip)	
 	(cd $(MODS_ROOT) ; unzip -o ../sourcemod.zip)
+	$(MAKE) -C ../mods/warmod
 	(cd $(MODS_ROOT) ; zip -r ../mods.zip *)
 	\rm -rf $(MODS_ROOT) >/dev/null 2>&1
 	mkdir -p $(MODS_ROOT)
@@ -39,4 +41,5 @@ mods: dl-metamod dl-sourcemod
 clean:
 	$(MAKE) -C ../mods/franug-knifes clean
 	$(MAKE) -C ../mods/franug-weapon-paint clean
+	$(MAKE) -C ../mods/warmod clean
 	\rm -f metamod.zip sourcemod.zip mods*.zip
