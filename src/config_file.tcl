@@ -347,7 +347,7 @@ proc SaveSourceModAdmins {configName} {
     }
     set fileName "$modsFolder/sourcemod/configs/admins.cfg"
     set fileid [open "$fileName" "w"]
-    StoreHeader $fileId
+    StoreHeader $fileid
     puts $fileid "//DON'T EDIT, WILL BE OVERWRITTEN NEXT TIME YOU SAVE!!!"
     puts $fileid "//Disable generation by disabling makemeadmin in Steam tab"
     puts $fileid "Admins"
