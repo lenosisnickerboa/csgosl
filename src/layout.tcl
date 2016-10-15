@@ -27,6 +27,7 @@ proc CreatePageOptions {config} {
 proc CreatePageComponents {config} {
     set prefix [dict get $config prefix]
     set values [dict get $config values]
+    set meta [dict get $config meta]
 
     set header [list \
         h1      [list "Advanced settings for game mode $prefix"] \
@@ -37,7 +38,9 @@ proc CreatePageComponents {config} {
     
     set parms [list]
     foreach key [dict keys $values] {
-        lappend parms parm [list $key]
+        if { [dict exists $meta $key] } {
+            lappend parms parm [list $key]            
+        }
     }
     
     return [concat $header $parms]

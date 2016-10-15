@@ -1,3 +1,5 @@
+See contribs.tcl for all sources.
+
 Img/linux:
 apt-get install libtk-img
 
@@ -12,12 +14,13 @@ ftp://ftp.info-zip.org/pub/infozip/win32/unz600xn.exe
 
 Sourcemod/Metamod:
 TODO:
+See contribs.tcl
 
 sdx.kit
-See respective makefile
+See contribs.tcl
 
 tclkit
-See respective makefile
+See contribs.tcl
 
 Img.kit
 http://www.tcl.tk/starkits/

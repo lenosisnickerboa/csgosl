@@ -4,8 +4,37 @@
 exec wish "$0" ${1+"$@"}
 
 source [file join $starkit::topdir restart.tcl]
+source [file join $starkit::topdir version.tcl]
 
 package require Tk
+
+variable currentConfigVersion "1"
+#Set defaults here, set when header is read
+variable csgoslVersion 0
+variable configVersion 0
+
+proc StoreHeader {fp} {
+    global version currentConfigVersion 
+    puts $fp "// csgosl $version config $currentConfigVersion at [clock format [clock seconds]] (DO NOT TOUCH THIS HEADER LINE!!!)"
+}
+
+proc ReadHeader {fp} {
+    global csgoslVersion configVersion 
+    gets $fp line
+    set tokens [ParseLine $line]
+    set comment [string trim [lindex $tokens 0] "\""]
+    set csgosl [string trim [lindex $tokens 1] "\""]
+    set version [string trim [lindex $tokens 2] "\""]
+    set config [string trim [lindex $tokens 3] "\""]
+    set configV [string trim [lindex $tokens 4] "\""]
+    if { $comment == "//" && $csgosl == "csgosl" && $config == "config" } {
+        set csgoslVersion $version
+        set configVersion $configV
+    } else {
+        set csgoslVersion 0
+        set configVersion 0
+    }
+}
 
 proc ParseConfigLine {line} {
     set items [regexp -all -inline {\/\/.*|\".*"|\S+} $line]
@@ -15,10 +44,16 @@ proc ParseConfigLine {line} {
     return $items
 }
 
+proc ParseLine {line} {
+    return [split $line]
+}
+
 proc CreateConfigFile {name meta} {
     set fileId [open $name "w"]
+    StoreHeader $fileId
     dict for {key metaItem} $meta {
         set value [dict get $metaItem default]
+ #       puts "CreateConfigFile($name) $key=$value"
         puts $fileId "$key \"$value\""
     }
     close $fileId
@@ -40,7 +75,7 @@ proc EnsureEmptyFile {filename} {
     }
 }
 
-proc LoadConfigFileSub {configName} {
+proc LoadConfigFileSub {configName {allowUnknowns false} } {
     global $configName
     set config [set $configName]
     set name [dict get $config fileName]
@@ -50,12 +85,14 @@ proc LoadConfigFileSub {configName} {
     set fp [open "$name" r]
     set fileData [read $fp]
     close $fp
-    set data [split $fileData "\n"]
+    #skip first header line
+    set data [lreplace [split $fileData "\n"] 0 0] 
     foreach line $data {
         set tokens [ParseConfigLine $line]
         set key [string trim [lindex $tokens 0] "\""]
         set value [string trim [lindex $tokens 1] "\""]
         if { [string length $key] > 0 } {
+#            puts "LoadConfigFileSub($name): $key=$value"
             if { [dict exists $meta $key] } {
                 set metaItem [dict get $meta $key]
                 set type [dict get $metaItem type]
@@ -63,9 +100,18 @@ proc LoadConfigFileSub {configName} {
                     set value [split "$value"]
                 } 
                 set values [dict set values "$key" $value]
-            } 
+            } else {
+                if {$allowUnknowns} {
+                    #This key does not exist in meta, i.e. this is a key that could be a new option which
+                    #csgosl is not aware of (yet). Allow it and set some sane defaults for it.
+                    set meta [dict set meta "$key" [dict create type "string" default "$value" help "Unknown option, user added?"]]                    
+                    set values [dict set values "$key" $value]
+                }
+            }
         }
     }
+    
+    set $configName [dict set config meta $meta]
     set $configName [dict set config values $values]
 }
 
@@ -73,34 +119,64 @@ proc LoadConfigFile {configName} {
     return [LoadConfigFileSub $configName]
 }
 
+proc DetectAndFixSplitConfigFileBug {configName} {
+    global $configName
+    set config [set $configName]
+    set name [dict get $config fileName]
+    
+    if { ! [file exists "$name"] } {
+        return
+    }
+    
+    set fp [open "$name" r]
+    ReadHeader $fp
+    close $fp
+
+    global configVersion
+    if { $configVersion == 0 } {        
+        #This is the bug! Remove the file to allow it to be properly reproduced.
+        puts "Bug fix applied! Removing buggy config file $name..."
+        file delete -force $name               
+    }    
+}
+
 proc LoadSplitConfigFile {configName} {
     global $configName
     set config [set $configName]
     set nameDefaults [dict get $config fileNameDefaults]
-    set values [dict get $config values]
-    set meta [dict get $config meta]
+    set origValues [dict get $config values]
+    #TODO: could skip setting values from cvars file, not used here anyway.
+    set values [dict create]
+    set origMeta [dict get $config meta]
+    set meta [dict create]
     
     set fp [open "$nameDefaults" r]
     set fileData [read $fp]
     close $fp
-    set data [split $fileData "\n"]
+    #skip first header line
+    set data [lreplace [split $fileData "\n"] 0 0]
     foreach line $data {
         set tokens [ParseConfigLine $line]
         set key [string trim [lindex $tokens 0] "\""]
         set value [string trim [lindex $tokens 1] "\""]
         if { [string length $key] > 0 } {
+#            puts "LoadSplitConfigFile($nameDefaults): $key=$value"
             set values [dict set values $key "$value"]
             set help "?"
-            if {[dict exists $meta $key]} {
-                set thisMeta [dict get $meta $key]
-                set help [dict get $thisMeta help]                
+            if {[dict exists $origMeta $key]} {
+                set thisMeta [dict get $origMeta $key]
+                set help [dict get $thisMeta help]
             }
             set meta [dict set meta "$key" [dict create type "string" default "$value" help $help]]
-        }
+        }            
     }
+    
     set $configName [dict set config meta $meta]
     set $configName [dict set config values $values]
-    LoadConfigFileSub $configName
+    DetectAndFixSplitConfigFileBug $configName
+    EnsureConfigFile $configName
+    set allowUnknows true
+    LoadConfigFileSub $configName $allowUnknows
 }
 
 proc LoadMapGroupsMapper {filename} {
@@ -108,7 +184,8 @@ proc LoadMapGroupsMapper {filename} {
     set fp [open "$filename" r]
     set fileData [read $fp]
     close $fp
-    set data [split $fileData "\n"]
+    #skip first header line
+    set data [lreplace [split $fileData "\n"] 0 0] 
     foreach line $data {
         set tokens [ParseConfigLine $line]
         set mapGroup [string trim [lindex $tokens 0] "\""]
@@ -123,6 +200,7 @@ proc LoadMapGroupsMapper {filename} {
 proc SaveMapGroupsMapper {filename} {
     global mapGroupsMapper
     set fileId [open "$filename" "w"]
+    StoreHeader $fileId
     dict for {mapGroup maps} $mapGroupsMapper {
         puts $fileId "mg-$mapGroup \"$maps\""
     }
@@ -141,7 +219,7 @@ proc IsValidIp {ip} {
 
 proc SaveSimpleAdminsFile {filename admins} {
     set fp [open "$filename" "w"]
-    puts $fp "//Autogenerated by csgosl at [clock format [clock seconds]]"
+    StoreHeader $fp
     puts $fp "//DON'T EDIT, WILL BE OVERWRITTEN NEXT TIME YOU SAVE!!!"
     foreach admin $admins {
         if { [IsValidIp $admin] } {
@@ -155,7 +233,7 @@ proc SaveSimpleAdminsFile {filename admins} {
 
 proc SaveMaps {filename maps} {
     set fp [open "$filename" "w"]
-    puts $fp "//Autogenerated by csgosl at [clock format [clock seconds]]"
+    StoreHeader $fp
     puts $fp "//DON'T EDIT, WILL BE OVERWRITTEN NEXT TIME YOU SAVE!!!"
     foreach map $maps {
         puts $fp $map
@@ -188,6 +266,7 @@ proc SaveConfigFile {configName} {
 
     global ValueToSkip
     set fileId [open $fileName "w"]
+    StoreHeader $fileId
     dict for {key value} $values {
         set valueName [GetGlobalConfigVariableName $prefix $key]
         global $valueName
@@ -211,14 +290,16 @@ proc SaveSplitConfigFile {configName} {
     global $configName
     set config [set $configName]
     set fileName [dict get $config fileName]
-    set nameDefaults [dict get $config fileNameDefaults]
-
+    set nameDefaults [dict get $config fileNameDefaults]    
+    
     set prefix [dict get $config prefix]
     set values [dict get $config values]
     set meta [dict get $config meta]
-
+    
     set fileId [open $fileName "w"]
+    StoreHeader $fileId
     dict for {key value} $values {
+#        puts "SaveSplitConfigFile($fileName) $key=$value"
         set valueName [GetGlobalConfigVariableName $prefix $key]
         global $valueName
         set value [set $valueName]
@@ -266,7 +347,7 @@ proc SaveSourceModAdmins {configName} {
     }
     set fileName "$modsFolder/sourcemod/configs/admins.cfg"
     set fileid [open "$fileName" "w"]
-    puts $fileid "//Autogenerated by csgosl at [clock format [clock seconds]]"
+    StoreHeader $fileId
     puts $fileid "//DON'T EDIT, WILL BE OVERWRITTEN NEXT TIME YOU SAVE!!!"
     puts $fileid "//Disable generation by disabling makemeadmin in Steam tab"
     puts $fileid "Admins"
@@ -285,7 +366,7 @@ proc SaveSourceModAdmins {configName} {
 proc SaveGameModesServer {filename} {
     global mapGroupsMapper
     set fileid [open "$filename" "w"]
-    puts $fileid "//Autogenerated by csgosl at [clock format [clock seconds]]"
+    StoreHeader $fileid
     puts $fileid "//DON'T EDIT, WILL BE OVERWRITTEN NEXT TIME YOU SAVE!!!"
     puts $fileid "//For simplicity allows all map groups in all game modes/game types"
     puts $fileid "\"GameModes_Server.txt\""

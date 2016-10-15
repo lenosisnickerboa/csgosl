@@ -414,21 +414,13 @@ source [file join $starkit::topdir page_about.tcl]
 source [file join $starkit::topdir page_advanced.tcl]
 
 if {$serverPresent} {
-    EnsureConfigFile gameModeArmsraceConfig
     LoadSplitConfigFile gameModeArmsraceConfig
-    EnsureConfigFile gameModeClassicCasualConfig
     LoadSplitConfigFile gameModeClassicCasualConfig 
-    EnsureConfigFile gameModeClassicCompetitiveConfig
     LoadSplitConfigFile gameModeClassicCompetitiveConfig 
-    EnsureConfigFile gameModeDemolitionConfig
     LoadSplitConfigFile gameModeDemolitionConfig
-    EnsureConfigFile gameModeDeathmatchConfig
     LoadSplitConfigFile gameModeDeathmatchConfig
-    EnsureConfigFile gameModeTrainingConfig
     LoadSplitConfigFile gameModeTrainingConfig
-    EnsureConfigFile gameModeCustomConfig
     LoadSplitConfigFile gameModeCustomConfig
-    EnsureConfigFile gameModeCooperativeConfig
     LoadSplitConfigFile gameModeCooperativeConfig
 }
 
