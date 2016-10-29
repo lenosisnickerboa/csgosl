@@ -5,8 +5,8 @@ METAMOD_HOME_URL="http://www.metamodsource.net/"
 METAMOD_URL="http://www.gsptalk.com/mirror/sourcemod/mmsource-1.10.6-linux.tar.gz"
 METAMOD_VERSION="1.10.6"
 SOURCEMOD_HOME_URL="http://www.sourcemod.net/"
-SOURCEMOD_URL="https://www.sourcemod.net/smdrop/1.8/sourcemod-1.8.0-git5946-linux.tar.gz"
-SOURCEMOD_VERSION="1.8.0-git5946"
+SOURCEMOD_URL="https://www.sourcemod.net/smdrop/1.8/sourcemod-1.8.0-git5948-linux.tar.gz"
+SOURCEMOD_VERSION="1.8.0-git5948"
 export
 
 all: mods
@@ -17,6 +17,7 @@ contribs:
 	$(MAKE) -C ../mods/franug-knifes contrib
 	$(MAKE) -C ../mods/franug-weapon-paint contrib
 	$(MAKE) -C ../mods/warmod contrib
+	$(MAKE) -C ../mods/multi1v1 contrib
 
 dl-metamod:
 	wget $(METAMOD_URL) -O metamod.tar.gz
@@ -30,6 +31,7 @@ mods: dl-metamod dl-sourcemod
 	(cd $(MODS_ROOT) ; tar xzvpf ../metamod.tar.gz)	
 	(cd $(MODS_ROOT) ; tar xzvpf ../sourcemod.tar.gz)
 	$(MAKE) -C ../mods/warmod
+	$(MAKE) -C ../mods/multi1v1
 	(cd $(MODS_ROOT) ; zip -r ../mods.zip *)
 	\rm -rf $(MODS_ROOT) >/dev/null 2>&1
 	mkdir -p $(MODS_ROOT)
@@ -42,5 +44,6 @@ clean:
 	$(MAKE) -C ../mods/franug-knifes clean
 	$(MAKE) -C ../mods/franug-weapon-paint clean
 	$(MAKE) -C ../mods/warmod clean
+	$(MAKE) -C ../mods/multi1v1 clean
 	\rm -f metamod.tar.gz sourcemod.tar.gz mods*.zip
 

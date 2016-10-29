@@ -8,17 +8,25 @@ CONTRIBOUTTCL=$(CSGOSL_ROOT)/src/contribs.tcl
 
 all: clean contribs windows linux
 
-install:
+install-devtools:
 	$(MAKE) -C devtools/linux
 	$(MAKE) -C devtools/windows
+
+install-mods:
 	$(MAKE) -C mods/linux
 	$(MAKE) -C mods/windows
 
-install-clean:
+install: install-devtools install-mods
+
+clean-devtools:
 	$(MAKE) -C devtools/linux clean
 	$(MAKE) -C devtools/windows clean
+
+clean-mods:
 	$(MAKE) -C mods/linux clean
 	$(MAKE) -C mods/windows clean
+
+install-clean: clean-devtools clean-mods
 
 contribs:
 	$(MAKE) --silent contribs-doit > $(CONTRIBOUT)
