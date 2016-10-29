@@ -366,6 +366,41 @@ proc UpdateModsFixForMetamodSourcemodInstallBug {} {
     }
 }
 
+proc GetFirstLineOfFile { name } {
+    set fp [open "$name" r]
+    gets $fp line
+    close $fp
+    return $line
+}
+
+variable PreserveMarker "CSGOSLDONOTTOUCH"
+
+proc PreserveConfig { name } {
+    global PreserveMarker
+    set line [GetFirstLineOfFile $name]
+    string match "*$PreserveMarker*" "$line"
+}
+
+proc StoreUsersConfigs { dir } {
+    global PreserveMarker
+    set configs [glob -nocomplain -tails -type f -path "$dir/" *.cfg]
+    foreach config $configs {
+        if { [PreserveConfig "$dir/$config"] } {
+            file copy -force "$dir/$config" "$dir/$config.$PreserveMarker"
+        }
+    }
+}
+
+proc RestoreUsersConfigs { dir } {    
+    global PreserveMarker
+    set configs [glob -nocomplain -tails -type f -path "$dir/" *.cfg]
+    foreach config $configs {
+        if { [file exists "$dir/$config.$PreserveMarker" ] } {
+            file rename -force "$dir/$config.$PreserveMarker" "$dir/$config"
+        }
+    }
+}
+
 proc UpdateMods {} {
     global installFolder
     global serverFolder
@@ -374,6 +409,11 @@ proc UpdateMods {} {
 
     UpdateModsFixForMetamodSourcemodInstallBug   
     
+    StoreUsersConfigs "$serverFolder/csgo/addons/sourcemod/configs"
+    StoreUsersConfigs "$serverFolder/csgo/addons/sourcemod/configs/multi1v1"
+    StoreUsersConfigs "$serverFolder/csgo/cfg/sourcemod"
+    StoreUsersConfigs "$serverFolder/csgo/cfg/sourcemod/multi1v1"
+
     set modsArchive "$installFolder/mods/mods.zip"
     Trace "Looking for mods $modsArchive..."
     if { [file exists "$modsArchive"] == 1 } {
@@ -390,6 +430,11 @@ proc UpdateMods {} {
             Unzip "$modsArchive" "$serverFolder/csgo/"
         }
     }
+
+    RestoreUsersConfigs "$serverFolder/csgo/addons/sourcemod/configs"
+    RestoreUsersConfigs "$serverFolder/csgo/addons/sourcemod/configs/multi1v1"
+    RestoreUsersConfigs "$serverFolder/csgo/cfg/sourcemod"
+    RestoreUsersConfigs "$serverFolder/csgo/cfg/sourcemod/multi1v1"
     
     SaveAll
     #Restore sourcemod conf after update 
