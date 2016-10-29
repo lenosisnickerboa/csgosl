@@ -40,6 +40,8 @@ The following free software is part of csgosl:
  - [Sourcemod](https://www.sourcemod.net/) (Linux/Windows: installed automatically when server is installed)
  - [Franug-Weapon_Paints](https://github.com/Franc1sco/Franug-Weapon_Paints) (Sourcemod plugin)
  - [Franug-Knifes](https://github.com/Franc1sco/Franug-Knifes) (Sourcemod plugin)
+ - [Warmod](https://forums.alliedmods.net/showthread.php?t=225474) (Sourcemod plugin)
+ - [Multi1v1](https://github.com/splewis/csgo-multi-1v1) (Sourcemod plugin)
  - [Metamod](https://www.metamodsource.net/) (Linux/Windows: installed automatically when server is installed)
  - [Unzip](http://www.info-zip.org/UnZip.html) (Windows: for unzipping stuff)
  - [Img](http://www.tcl.tk/starkits/) (Windows: image handling)
