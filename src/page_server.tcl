@@ -14,6 +14,7 @@ variable serverConfig [CreateConfig \
     [list \
         "string"    [list name "Your server at $hostName operated by $name" "This is the server name which is presented in the list of servers in the csgo game."]\
         "string"    [list password "" "Your server password which anyone connecting to your server must enter to log in and play.\nWhen running a LAN only server this can be left empty for no password.\nIf you run a public server it is *HIGHLY* recommended to set a password."]\
+        "string"    [list tags "" "Any server tags you want to add separated by commas, e.g. 128fps,nisse,some,stuff."]\
         "bool"      [list autorestart "0" "If enabled the server is auto restarted if it crashes (or is closed down, so you need to kill cmd.exe using ps/task manager prior to killing the server window)"]\
         "string"    [list bindip "" "IP address which your server should bind to.\nLeave blank if you don't have a problem with connecting to the server.\nMay e.g. be used when running on a VLAN to force the server to bind to the VLAN."]\
         "int"       [list port "27015" "Your server port."]\
@@ -39,6 +40,7 @@ variable serverLayout [CreateLayout \
         space   [list] \
         parm    [list name] \
         parm    [list password] \
+        parm    [list tags] \
         space   [list] \
         h2      [list "Connection"] \
         line    [list] \

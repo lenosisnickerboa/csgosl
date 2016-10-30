@@ -183,6 +183,7 @@ variable serverOrigConfig [CreateConfig \
         "int"       [list sv_minupdaterate "" ""]\
         "int"       [list sv_maxcmdrate "" ""]\
         "int"       [list sv_mincmdrate "" ""]\
+        "string"    [list sv_tags "" ""]\
         "int"       [list net_splitpacket_maxrate "" ""]\
         "string"    [list rcon_password "" ""]\
         "line"      [list netmaxfilesize "" ""]\
@@ -225,6 +226,9 @@ proc SaveConfigFileOrigServer {} {
     set netmaxfilesizeName [GetGlobalConfigVariableName ServerOrig netmaxfilesize]
     global $netmaxfilesizeName
     set $netmaxfilesizeName "sm_cvar net_maxfilesize $netmaxfilesize"
+
+    set serverTags [GetConfigItem $serverConfig tags]
+    SetConfigItem $serverOrigConfig sv_tags "$serverTags"
     
     global sourcemodConfig
     global runConfig
