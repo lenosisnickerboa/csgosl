@@ -1,6 +1,6 @@
 # csgosl
 
-Quickie: [Get started](https://github.com/lenosisnickerboa/csgosl/wiki). Download **1.2.4** : [Linux](https://github.com/lenosisnickerboa/csgosl/releases/download/v1.2.4/csgosl-linux.zip) [Windows](https://github.com/lenosisnickerboa/csgosl/releases/download/v1.2.4/csgosl-windows.zip) 
+Quickie: [Get started](https://github.com/lenosisnickerboa/csgosl/wiki). Download **1.3** : [Linux](https://github.com/lenosisnickerboa/csgosl/releases/download/v1.3/csgosl-linux.zip) [Windows](https://github.com/lenosisnickerboa/csgosl/releases/download/v1.3/csgosl-windows.zip) 
 <br>Download stats [here](http://www.somsubhra.com/github-release-stats/?username=lenosisnickerboa&repository=csgosl)
 
 csgosl is a graphical user interface for a [Counter Striker Global Offensive server](https://developer.valvesoftware.com/wiki/Counter-Strike:_Global_Offensive_Dedicated_Servers) (CSGO server from now on).  csgosl supports one-click install, update, start and stop server on windows and linux platforms ([supported platforms](https://github.com/lenosisnickerboa/csgosl/wiki/Platform-support)). If you just want your own CSGO server up and running in no time this is the place for you. csgosl provides a graphical user interface supporting most mainstream server options. For the control freak there is also an advanced mode providing support for nearly any imaginable setting.
@@ -10,6 +10,7 @@ csgosl features:
 * Completely automatic install (steamcmd + srcds + metamod/sourcemod/plugins)
 * Server update, automatic or manual
 * Start/monitor/stop server
+* Run multiple servers on same host (NEW)
 * Host [lan only](https://github.com/lenosisnickerboa/csgosl/wiki/Host%20LAN%20only%20server) or [public](https://github.com/lenosisnickerboa/csgosl/wiki/Host%20public%20server) servers
 * Host [workshop maps](https://github.com/lenosisnickerboa/csgosl/wiki/Host%20workshop%20maps) and [map groups](https://github.com/lenosisnickerboa/csgosl/wiki/Host%20workshop%20map%20groups) 
 * Manage all your maps and [create your own map groups](https://github.com/lenosisnickerboa/csgosl/wiki/Create%20your%20own%20map%20groups) using the map group editor
