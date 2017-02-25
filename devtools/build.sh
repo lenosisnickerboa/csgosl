@@ -87,6 +87,7 @@ case $TARGET in
 	    "$ROOT"/src/windows/server-autorestart.bat \
 	    "$ROOT"/src/windows/server-status.bat \
 	    "$ROOT"/src/windows/server-stop.bat \
+	    "$ROOT"/src/windows/server-get-pid.bat \
 	    "$ROOT"/src/windows/csgoslw.bat \
 	    "$ROOT"/devtools/windows/unzip.exe \
 	    "$ROOT"/devtools/windows/wget.exe \

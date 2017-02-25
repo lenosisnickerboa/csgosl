@@ -110,17 +110,13 @@ proc StartServer {} {
     if { [GetConfigValue $serverConfig autorestart] == "1" } {
         set control "autorestart"
     }
-    set srcdsName "srcds_run"
-    if { $currentOs == "windows" } {
-        set srcdsName "srcds"
-    }
-
     set ipOption ""
     if { $bindIp != "" } {
         set ipOption "-ip $bindIp"        
     }
     
-    global serverControlScript    
+    global serverControlScript
+    global srcdsName
     if { $currentOs == "windows" } {
         RunAssync "$serverControlScript-start.bat \"$serverFolder/$srcdsName\" \
              -game csgo $consoleCommand $rconCommand \
@@ -172,13 +168,23 @@ proc StartServer {} {
     }
 }
 
-proc StopServer {} {
+#Workaround for hopeless windows bat files...
+proc StopWindowsServer {} {
     global serverControlScript
+    set line [exec "$serverControlScript-get-pid.bat"]
+    if { [llength $line] == 0 } {
+        return
+    }
+    set pid [lindex $line end]
+    exec "$serverControlScript-stop.bat" $pid
+}
+
+proc StopServer {} {
     global currentOs
     if { $currentOs == "windows" } {
-#        RunAssync "$serverControlScript-stop.bat"
-        exec "$serverControlScript-stop.bat"
+        StopWindowsServer
     } else {
+        global serverControlScript
         chan configure stdout -buffering none
         chan configure stderr -buffering none
         exec >@stdout 2>@stderr "$serverControlScript" stop
@@ -289,11 +295,7 @@ proc UpdateServer {} {
 }
 
 proc DetectServerInstalled {sd} {
-    set srcdsName "srcds_run"
-    global currentOs
-    if { $currentOs == "windows" } {
-        set srcdsName "srcds.exe"
-    }
+    global srcdsName
     if { [file exists "$sd"] && [file isdirectory "$sd"] && [file executable "$sd/$srcdsName"] && [file isdirectory "$sd/csgo"]} {
         return true
     }
@@ -303,6 +305,7 @@ proc DetectServerInstalled {sd} {
 proc DetectServerRunning {} {
     global serverControlScript
     global currentOs
+    global serverExeFullName
     if { $currentOs == "windows" } {
         exec "$serverControlScript-status.bat"
     } else {

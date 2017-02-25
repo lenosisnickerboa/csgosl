@@ -1,6 +1,6 @@
 MULTI1V1_HOME_URL="https://github.com/splewis/csgo-multi-1v1"
-MULTI1V1_URL="https://github.com/splewis/csgo-multi-1v1/releases/download/1.1.4/multi1v1_1.1.4.zip"
-MULTI1V1_VERSION="1.1.4"
+MULTI1V1_URL="https://github.com/splewis/csgo-multi-1v1/releases/download/1.1.5/multi1v1_1.1.5.zip"
+MULTI1V1_VERSION="1.1.5"
 
 all: build
 

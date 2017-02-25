@@ -1,5 +1,16 @@
 #!/bin/bash
 
+full_path=`dirname "$(readlink -f "$0")"`
+full_path_srcds=`dirname $full_path`/server
+
+function status_ext() {
+    local pids=`pgrep $1`
+    [ -z "$pids" ] && return 1
+    local pidline=`pwdx $pids | grep "$full_path_srcds"`
+    [ -z "$pidline" ] && return 1
+    echo $pidline | cut -d ':' -f1
+}
+
 action="$1" ; shift
 
 case "$action" in 
@@ -13,10 +24,12 @@ case "$action" in
 	done
 	;;
     stop)
-	killall srcds_linux
+	pid1=`status_ext srcds_run`
+	pid2=`status_ext srcds_linux`
+	[ ! -z "$pid1$pid2" ] && kill -9 $pid1 $pid2
 	;;
     status)
-	ps aux | grep srcds_linux | grep -v grep >/dev/null 2>&1
+	pid=`status_ext srcds_linux`
 	if [ $? -eq 0 ] ; then
 	    echo running
 #	    exit 0

@@ -78,12 +78,22 @@ proc SaveAll {} {
     }
 }
 
-proc SetStartStopServerButtonText {} {
+variable lastServerName ""
+proc PeriodicWindowUpdate {} {
     set status [DetectServerRunning]
     if { $status == "running" } {
         .title.startstop configure -text "Stop server" -command StopServer
     } else {
         .title.startstop configure -text "Start server" -command StartServer        
+    }
+    global lastServerName
+    global serverConfig
+    global name
+    global version
+    set currentServerName [GetConfigValue $serverConfig name]
+    if { $lastServerName != $currentServerName } {
+        set lastServerName "$currentServerName"
+        SetTitle "$name $version -- $lastServerName"
     }
 }
 
@@ -105,10 +115,15 @@ set installFolder [pwd]
 set NeedsUpgradeFileName "$installFolder/bin/needsupgrade"
 set needsUpgrade [file exists "$NeedsUpgradeFileName"]
 set serverFolder "$installFolder/server"
-set serverPresent [DetectServerInstalled "$serverFolder"]
 set serverCfgPath "$serverFolder/csgo/cfg"
 set steamcmdFolder "$installFolder/steamcmd"
 set modsFolder "$serverFolder/csgo/addons"
+set srcdsName "srcds_run"
+if { $currentOs == "windows" } {
+    set srcdsName "srcds.exe"
+}
+set serverExeFullName "$serverFolder/$srcdsName"
+set serverPresent [DetectServerInstalled "$serverFolder"]
 
 if { !$serverPresent } {
     tk_dialog .w "No installed server detected..." \
@@ -583,7 +598,7 @@ if {$serverPresent} {
 }
 
 if {$serverPresent} {
-    Every 2000 SetStartStopServerButtonText
+    Every 2000 PeriodicWindowUpdate
 }
 
 proc StoreChangedMainWinGeometry {} {

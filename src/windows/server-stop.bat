@@ -1,2 +1,2 @@
-taskkill /im srcds.exe
+taskkill /pid %1
 
