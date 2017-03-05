@@ -7,10 +7,10 @@ proc GetMaps {path allMapsName allMapsMetaName} {
     set maps [list]
     set mapsMeta [dict create]
     if {[file isdirectory "$path/workshop"]} {
-        set workshopdirs [glob -tails -type d -path "$path/workshop/" *]
+        set workshopdirs [glob -nocomplain -tails -type d -path "$path/workshop/" *]
         #workshop maps takes precedence over internal maps
         foreach d $workshopdirs {
-            set m [glob -tails -type f -path "$path/workshop/$d/" *.bsp]
+            set m [glob -nocomplain -tails -type f -path "$path/workshop/$d/" *.bsp]
             set m [file rootname $m]
             if {$m ni $maps} {
                 lappend maps $m
@@ -19,7 +19,7 @@ proc GetMaps {path allMapsName allMapsMetaName} {
         }
     }
     if {[file isdirectory "$path"]} {
-        set files [glob -tails -type f -path "$path" *.bsp]
+        set files [glob -nocomplain -tails -type f -path "$path" *.bsp]
         foreach m $files {
             set m [file rootname $m]
             if {$m ni $maps} {
