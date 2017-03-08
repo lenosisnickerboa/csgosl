@@ -48,7 +48,8 @@ proc GetContributors {} {
             windows_franug_weapon_paints_version windows_franug_weapon_paints_home_url windows_franug_weapon_paints_url \
             windows_franug_knifes_version windows_franug_knifes_home_url windows_franug_knifes_url \
             windows_warmod_version windows_warmod_home_url windows_warmod_url \
-            windows_multi1v1_version windows_multi1v1_home_url windows_multi1v1_url
+            windows_multi1v1_version windows_multi1v1_home_url windows_multi1v1_url \
+            windows_gunmenu_version windows_gunmenu_home_url windows_gunmenu_url
         
         set contribs \
         [list \
@@ -76,6 +77,11 @@ proc GetContributors {} {
                 line    [list] \
                 url     [list "Homepage" "$windows_multi1v1_home_url"] \
                 url     [list "Download $windows_multi1v1_version" "$windows_multi1v1_url"] \
+                space   [list] \
+                h2      [list "Sourcemod plugin: GunMenu $windows_gunmenu_version"] \
+                line    [list] \
+                url     [list "Homepage" "$windows_gunmenu_home_url"] \
+                url     [list "Download $windows_gunmenu_version" "$windows_gunmenu_url"] \
                 space   [list] \
                 h2      [list "Metamod $windows_metamod_version"] \
                 line    [list] \
@@ -109,7 +115,8 @@ proc GetContributors {} {
             linux_franug_weapon_paints_version linux_franug_weapon_paints_home_url linux_franug_weapon_paints_url \
             linux_franug_knifes_version linux_franug_knifes_home_url linux_franug_knifes_url \
             linux_warmod_version linux_warmod_home_url linux_warmod_url \
-            linux_multi1v1_version linux_multi1v1_home_url linux_multi1v1_url 
+            linux_multi1v1_version linux_multi1v1_home_url linux_multi1v1_url \
+            linux_gunmenu_version linux_gunmenu_home_url linux_gunmenu_url 
         set contribs \
         [list \
                 h2      [list "Sourcemod $linux_sourcemod_version"] \
@@ -136,6 +143,11 @@ proc GetContributors {} {
                 line    [list] \
                 url     [list "Homepage" "$linux_multi1v1_home_url"] \
                 url     [list "Download $linux_multi1v1_version" "$linux_multi1v1_url"] \
+                space   [list] \
+                h2      [list "Sourcemod plugin: GunMenu $linux_gunmenu_version"] \
+                line    [list] \
+                url     [list "Homepage" "$linux_gunmenu_home_url"] \
+                url     [list "Download $linux_gunmenu_version" "$linux_gunmenu_url"] \
                 space   [list] \
                 h2      [list "Metamod $linux_metamod_version"] \
                 line    [list] \

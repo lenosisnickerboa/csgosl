@@ -15,6 +15,7 @@ variable sourcemodPlugins [list \
     multi1v1_flashbangs [list false sm_multi1v1_flashbangs_enable sm_multi1v1_flashbangs_lanonly multi1v1_flashbangs.smx] \
     multi1v1_kniferounds [list false sm_multi1v1_kniferounds_enable sm_multi1v1_kniferounds_lanonly multi1v1_kniferounds.smx] \
     multi1v1_online_stats_viewer [list false sm_multi1v1_online_stats_viewer_enable sm_multi1v1_online_stats_viewer_lanonly multi1v1_online_stats_viewer.smx] \
+    gunmenu [list false sm_gunmenu_enable sm_gunmenu_lanonly csgo_gunmenu.smx] \
     franug_weaponpaints [list true sm_franug_weaponpaints_enable sm_franug_weaponpaints_lanonly franug_weaponpaints_public.smx] \
     franug_knifes [list true sm_franug_knifes_enable sm_franug_knifes_lanonly sm_franugknife.smx]
 ]
@@ -53,6 +54,8 @@ variable sourcemodConfig [CreateConfig \
         "bool"      [list sm_multi1v1_kniferounds_lanonly "1" "Only enable this sourcemod plugin in lanonly mode"]\
         "bool"      [list sm_multi1v1_online_stats_viewer_enable "0" "Controls if this sourcemod plugin is enabled."]\
         "bool"      [list sm_multi1v1_online_stats_viewer_lanonly "1" "Only enable this sourcemod plugin in lanonly mode"]\
+        "bool"      [list sm_gunmenu_enable "0" "Controls if this sourcemod plugin is enabled."]\
+        "bool"      [list sm_gunmenu_lanonly "1" "Only enable this sourcemod plugin in lanonly mode"]\
         "bool"      [list sm_franug_weaponpaints_enable "0" "Controls if this sourcemod plugin is enabled.\nType !ws in chat to use."]\
         "bool"      [list sm_franug_weaponpaints_lanonly "1" "Only enable this sourcemod plugin in lanonly mode"]\
         "bool"      [list sm_franug_weaponpaints_onlyadmin "1" "This feature is only for admins. 1 = enabled, 0 = disabled.\n(Use the value 1 and try to keep this plugin secret for the normal users because they can report it)"]\
@@ -122,6 +125,10 @@ variable sourcemodLayout [CreateLayout \
         h2      [list "Plugin: multi1v1_online_stats_viewer"] \
         parm    [list sm_multi1v1_online_stats_viewer_enable] \
         parm    [list sm_multi1v1_online_stats_viewer_lanonly] \
+        space   [list] \
+        h2      [list "Plugin: gunmenu"] \
+        parm    [list sm_gunmenu_enable] \
+        parm    [list sm_gunmenu_lanonly] \
         space   [list] \
         warning [list "All plugins below this line require the banprotection to be disabled. Read the help page carefully before"] \
         warning [list "disabling banprotection. Running misbehaving sourcemod plugins may cause your server to be banned by Valve."] \
