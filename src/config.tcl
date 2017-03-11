@@ -35,16 +35,36 @@ proc SetConfigItemDefault {config key} {
 proc CreateConfig {configOptions metaDefs} {
     set values [dict create]
     set meta [dict create]
+    set parmDisableDefault "1"
+    global DisableParmPrefix
     foreach {type metaItems} $metaDefs {
         if {($type == "string") || ($type == "url") || ($type == "int") || ($type == "bool") ||($type == "directory") ||($type == "list")||($type == "line")} {
-            foreach {key default help} $metaItems {
+            foreach {key default help opt1 opt1value } $metaItems {
                 set values [dict set values $key $default]
-                set meta [dict set meta "$key" [dict create type $type default $default help $help]]
+                set mappedToKey ""
+                set mappedTo ""
+                if { $opt1 == "mappedto" } {
+                    set mappedToKey "mappedto"
+                    set mappedTo $opt1value
+                    set parmDisableName "$DisableParmPrefix$key"
+                    set values [dict set values $parmDisableName "$parmDisableDefault"]
+                    set meta [dict set meta $parmDisableName [dict create type "list" default "$parmDisableDefault" help "$key controls the following advanced options:\n $opt1value\nUncheck this toggle to control the advanced options yourself."]]
+                }
+                set meta [dict set meta "$key" [dict create type $type default $default help $help $mappedToKey $mappedTo]]
             }
         } elseif {$type == "enum"} {
-            foreach {key default help selections} $metaItems {
+            foreach {key default help selections opt1 opt1value } $metaItems {
                 set values [dict set values $key $default]
-                set meta [dict set meta "$key" [dict create type $type default $default help $help selections $selections]]
+                set mappedToKey ""
+                set mappedTo ""
+                if { $opt1 == "mappedto" } {
+                    set mappedToKey "mappedto"
+                    set mappedTo $opt1value
+                    set parmDisableName "$DisableParmPrefix$key"
+                    set values [dict set values $parmDisableName "$parmDisableDefault"]
+                    set meta [dict set meta $parmDisableName [dict create type "list" default "$parmDisableDefault" help "This is an option which controls the following advanced options:\n$opt1value\nDisable this option to control the advanced options yourself."]]
+                }
+                set meta [dict set meta "$key" [dict create type $type default $default help $help selections $selections $mappedToKey $mappedTo]]
             }
         }
     }

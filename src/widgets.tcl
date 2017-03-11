@@ -38,7 +38,21 @@ proc CreateSetDefaultImage {} {
     setDefaultImage copy setDefaultImageOrig -subsample 2            
 }
 
-proc CreateEntry {at lead variableName default help} {
+#args=$globalParmNameDisable $disableParmValue $disableParmValueDefault $disableParmValueHelp
+proc CreateDisableButton {at controlledWidget disableParmsArgs} {
+    if { [llength $disableParmsArgs] >= 4 } {
+        set name [lindex $disableParmsArgs 0]
+        set value [lindex $disableParmsArgs 1]
+        set default [lindex $disableParmsArgs 2]
+        set help [lindex $disableParmsArgs 3]
+        global $name
+        checkbutton $at.disable -anchor e -variable $name -background lightgrey -command "UpdateCheckboxStatusAndControlledWidget $at.disable $controlledWidget $name \"$default\""
+        SetTooltip $at.disable "$help" 
+        pack $at.disable -side right 
+    } 
+}
+
+proc CreateEntry {at lead variableName default help disableParmsArgs} {
     frame $at 
     label $at.l -width 40 -anchor w -text "$lead" -padx 0
     global $variableName
@@ -49,11 +63,13 @@ proc CreateEntry {at lead variableName default help} {
         entry $at.e -width 40 -relief sunken -textvariable $variableName -background white -validate key -validatecommand "UpdateEntryChangedStatus %W \"%P\" \"$default\""
     }
     button $at.d -image setDefaultImage -command "set $variableName \"$default\""
+    SetTooltip $at.d "Set parameter to default value $default"
     pack $at.l -side left -anchor w
     SetTooltip $at.l "$help" 
     pack $at.e -side left -anchor w -fill x -expand true
     SetTooltip $at.e "$help" 
     pack $at.d -side right 
+    CreateDisableButton $at $at.e $disableParmsArgs
     return $at
 }
 
@@ -62,7 +78,7 @@ proc UpdateDirEntry {lead variableName initialDir} {
     set $variableName [GetDir \"$initialDir\" \"$lead\"]
 }
 
-proc CreateDirEntry {at lead variableName default help} {
+proc CreateDirEntry {at lead variableName default help disableParmsArgs} {
     frame $at 
     label $at.l -width 40 -anchor w -text "$lead" -padx 0
     global $variableName
@@ -76,11 +92,13 @@ proc CreateDirEntry {at lead variableName default help} {
     set initialDir $initialDirName
     button $at.gd -text "G" -command "UpdateDirEntry \"$lead\" $variableName \"$initialDir\""
     button $at.d -image setDefaultImage -command "set $variableName \"$default\""
+    SetTooltip $at.d "Set parameter to default value $default"
     pack $at.l -side left
     SetTooltip $at.l "$help" 
     pack $at.e -side left -fill x -expand true
     SetTooltip $at.e "$help" 
     pack $at.gd -side left
+    CreateDisableButton $at $at.e $disableParmsArgs
     pack $at.d -side left
     return $at
 }
@@ -95,13 +113,24 @@ proc UpdateCheckboxStatus {w variableName default} {
     }
 }
 
+proc UpdateCheckboxStatusAndControlledWidget {w cw variableName default} {
+    UpdateCheckboxStatus $w $variableName $default
+    global $variableName
+    set value [set $variableName]
+    if { $value == "1" } {
+        $cw configure -state active
+    } else {
+        $cw configure -state disabled        
+    }
+}
+
 proc SetCheckboxStatus {w variableName default} {
     global $variableName
     set $variableName $default
     UpdateCheckboxStatus $w $variableName $default
 }
 
-proc CreateCheckbox {at lead variableName default help} {
+proc CreateCheckbox {at lead variableName default help disableParmsArgs} {
     frame $at 
     label $at.l -width 40 -anchor w -text "$lead" -padx 0
     global $variableName
@@ -112,11 +141,13 @@ proc CreateCheckbox {at lead variableName default help} {
         checkbutton $at.b -anchor w -variable $variableName -width 40 -background white -command "UpdateCheckboxStatus $at.b $variableName \"$default\""
     }
     button $at.d -image setDefaultImage -command "SetCheckboxStatus $at.b $variableName \"$default\""
+    SetTooltip $at.d "Set parameter to default value $default"
     pack $at.l -side left -anchor w
     SetTooltip $at.l "$help" 
     pack $at.b -side left -anchor w -fill x -expand true
     SetTooltip $at.b "$help" 
-    pack $at.d -side right 
+    pack $at.d -side right
+    CreateDisableButton $at $at.b $disableParmsArgs
     return $at
 }
 
@@ -130,7 +161,7 @@ proc UpdateSelectorChangedStatus {w value default} {
     return true
 }
 
-proc CreateSelector {at lead variableName default help selections} {
+proc CreateSelector {at lead variableName default help selections disableParmsArgs} {
     frame $at 
     label $at.l -width 40 -anchor w -text "$lead" -padx 0
     global $variableName
@@ -144,11 +175,13 @@ proc CreateSelector {at lead variableName default help selections} {
     bind $combo <<ComboboxSelected>> "[subst -nocommands { UpdateSelectorChangedStatus %W \"[%W get]\" \"$default\" }]"
     $at.sel configure -values $selections
     button $at.d -image setDefaultImage  -command "set $variableName \"$default\""
+    SetTooltip $at.d "Set parameter to default value $default"
     pack $at.l -side left
     SetTooltip $at.l "$help" 
     pack $at.sel -side left -fill x -expand true
     SetTooltip $at.sel "$help" 
-    pack $at.d -side left
+    pack $at.d -side right
+    CreateDisableButton $at $at.sel $disableParmsArgs
     return $at
 }
 

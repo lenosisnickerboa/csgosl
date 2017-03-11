@@ -100,6 +100,7 @@ proc PeriodicWindowUpdate {} {
 #main
 
 set ValueToSkip "--skip--"
+set DisableParmPrefix "_enable_"
 
 #Default value until config is read
 set traceEnabled 0
@@ -144,6 +145,7 @@ set defaultPadY 5
 set defaultPadX 5
 set hostName [info hostname]
 set status "Idle"
+set fullConfigEnabled "0"
 
 ## Application config
 source [file join $starkit::topdir page_application.tcl]
@@ -157,6 +159,7 @@ proc SaveConfigFileApplication {} {
 }
 
 set traceEnabled [GetConfigValue $applicationConfig trace]
+set fullConfigEnabled [GetConfigValue $applicationConfig fullconfig]
 
 if { $needsUpgrade } {
     Trace "This is the first run after upgrade, upgrading..."
@@ -368,27 +371,55 @@ proc SaveConfigFileRun {} {
     global runConfig
     global gameModeAllConfig
     SaveConfigFile runConfig
-    
-    set players [GetConfigItem $runConfig players]
+
+    global DisableParmPrefix    
+    set playersEnableSetting [GetConfigItem $runConfig ${DisableParmPrefix}players]
+    set botsEnableSetting [GetConfigItem $runConfig ${DisableParmPrefix}bots]
     set fillWithBots [GetConfigItem $runConfig fillwithbots]
-    if {$fillWithBots == "1"} {
-        SetConfigItem $gameModeAllConfig bot_quota $players
-        SetConfigItem $gameModeAllConfig bot_quota_mode fill
-    } else {
-        set bots [GetConfigItem $runConfig bots]
-        SetConfigItem $gameModeAllConfig bot_quota_mode normal
-        SetConfigItem $gameModeAllConfig bot_quota $bots
+    set fillWithBotsEnableSetting [GetConfigItem $runConfig ${DisableParmPrefix}fillwithbots]
+    if { $fillWithBotsEnableSetting == "1" } {
+        if {$fillWithBots == "1"} {
+            SetConfigItem $gameModeAllConfig bot_quota_mode fill
+            if { $playersEnableSetting == "1" } {
+                SetConfigItem $gameModeAllConfig bot_quota [GetConfigItem $runConfig players] 
+            }
+        } else {
+            SetConfigItem $gameModeAllConfig bot_quota_mode normal
+            if { $botsEnableSetting == "1" } {
+                SetConfigItem $gameModeAllConfig bot_quota [GetConfigItem $runConfig bots]
+            }
+        }
     }
     
-    SetConfigItem $gameModeAllConfig bot_difficulty [dict get $botSkillMapper [GetConfigItem $runConfig botskill]]
+    set botSkillEnableSetting [GetConfigItem $runConfig ${DisableParmPrefix}botskill]
+    if { $botSkillEnableSetting == "1" } {
+        SetConfigItem $gameModeAllConfig bot_difficulty [dict get $botSkillMapper [GetConfigItem $runConfig botskill]]
+    }
     
-    SetConfigItem $gameModeAllConfig mp_roundtime [GetConfigItem $runConfig roundtime]
-    SetConfigItem $gameModeAllConfig mp_warmuptime [GetConfigItem $runConfig warmuptime]
-    SetConfigItem $gameModeAllConfig mp_buytime [GetConfigItem $runConfig buytime]
-    SetConfigItem $gameModeAllConfig mp_freezetime [GetConfigItem $runConfig freezetime]
-
-    SetConfigItem $gameModeAllConfig mp_friendlyfire [GetConfigItem $runConfig friendlyfire]
-
+    set roundTimeEnableSetting [GetConfigItem $runConfig ${DisableParmPrefix}roundtime]
+    if { $roundTimeEnableSetting == "1" } {
+        SetConfigItem $gameModeAllConfig mp_roundtime [GetConfigItem $runConfig roundtime]
+    }
+    
+    set warmUpTimeEnableSetting [GetConfigItem $runConfig ${DisableParmPrefix}warmuptime]
+    if { $warmUpTimeEnableSetting == "1" } {
+        SetConfigItem $gameModeAllConfig mp_warmuptime [GetConfigItem $runConfig warmuptime]
+    }
+    
+    set buyTimeEnableSetting [GetConfigItem $runConfig ${DisableParmPrefix}buytime]
+    if { $buyTimeEnableSetting == "1" } {
+        SetConfigItem $gameModeAllConfig mp_buytime [GetConfigItem $runConfig buytime]
+    }
+    
+    set freezeTimeEnableSetting [GetConfigItem $runConfig ${DisableParmPrefix}freezetime]
+    if { $freezeTimeEnableSetting == "1" } {
+        SetConfigItem $gameModeAllConfig mp_freezetime [GetConfigItem $runConfig freezetime]
+    }
+    
+    set friendlyFireEnableSetting [GetConfigItem $runConfig ${DisableParmPrefix}friendlyfire]
+    if { $friendlyFireEnableSetting == "1" } {
+        SetConfigItem $gameModeAllConfig mp_friendlyfire [GetConfigItem $runConfig friendlyfire]
+    }
 #    set vote [GetConfigItem $runConfig vote]
 #    SetConfigItem $gameModeAllConfig sv_allow_votes $vote
 #    SetConfigItem $gameModeAllConfig sv_vote_issue_kick_allowed $vote
@@ -406,10 +437,13 @@ proc SaveConfigFileRun {} {
 #    }
     
     set killCam [GetConfigItem $runConfig killcam]
-    if {$killCam == "1"} {
-        SetConfigItem $gameModeAllConfig mp_forcecamera 0
-    } else {
-        SetConfigItem $gameModeAllConfig mp_forcecamera 1       
+    set killCamEnableSetting [GetConfigItem $runConfig ${DisableParmPrefix}killcam]
+    if { $killCamEnableSetting == "1" } {
+        if {$killCam == "1"} {
+            SetConfigItem $gameModeAllConfig mp_forcecamera 0
+        } else {
+            SetConfigItem $gameModeAllConfig mp_forcecamera 1       
+        }
     }
 }
 

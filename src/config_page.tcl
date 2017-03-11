@@ -72,19 +72,19 @@ proc CreateConfigPageUrl {at parms} {
     pack [Hyperlink $at -command [list Browser "$url"] -text "$text"] -side top -fill x -expand true
 }
 
-proc CreateConfigPageItem {at lead name value type default help selections} {   
+proc CreateConfigPageItem {at lead name value type default help selections disableParmsArgs} {
     if {$type == "directory"} {
-        pack [CreateDirEntry $at $lead $name $default $help] -side top -fill x -expand true            
+        pack [CreateDirEntry $at $lead $name $default $help $disableParmsArgs] -side top -fill x -expand true            
     } elseif {$type == "url"} {
-        pack [CreateEntry $at $lead $name $default $help] -side top -fill x -expand true
+        pack [CreateEntry $at $lead $name $default $help $disableParmsArgs] -side top -fill x -expand true
     } elseif {$type == "int"} {
-        pack [CreateEntry $at $lead $name $default $help] -side top -fill x -expand true
+        pack [CreateEntry $at $lead $name $default $help $disableParmsArgs] -side top -fill x -expand true
     } elseif {$type == "bool"} {
-        pack [CreateCheckbox $at $lead $name $default $help] -side top -fill x -expand true
+        pack [CreateCheckbox $at $lead $name $default $help $disableParmsArgs] -side top -fill x -expand true
     } elseif {$type == "enum"} {
-        pack [CreateSelector $at $lead $name $default $help $selections] -side top -fill x -expand true
+        pack [CreateSelector $at $lead $name $default $help $selections $disableParmsArgs] -side top -fill x -expand true
     } elseif {$type != "line"} {
-        pack [CreateEntry $at $lead $name $default $help] -side top -fill x -expand true
+        pack [CreateEntry $at $lead $name $default $help $disableParmsArgs] -side top -fill x -expand true
     }
 }
 
@@ -108,6 +108,9 @@ proc CreateConfigPageFromLayout {at layout} {
     pack [button $page.buttons.helphint -text "Help on $help (F1)" -anchor e -font {-size -8} -command [subst "Help $help"]] -side left
     pack $page.buttons -side top -anchor e
 
+    global DisableParmPrefix
+    global fullConfigEnabled
+   
     set widgetIx 0
     foreach {type args} $components {
         if {$type == "parm"} {
@@ -125,7 +128,29 @@ proc CreateConfigPageFromLayout {at layout} {
             if {$parmType == "enum"} {
                 set selections [dict get $metaItem selections]
             }
-            CreateConfigPageItem $page.w$parmName $parmName $globalParmName $parmValue $parmType $parmDefault $help $selections
+            set disableParmName "$DisableParmPrefix$parmName"
+            set disableParmValue ""
+            set disableParmValueDefault ""
+            set disableParmValueHelp ""
+            set globalParmNameDisable ""
+            set disableParmArgs [list]
+            if { [dict exists $metaItem mappedto] } {
+                set globalParmNameDisable [GetGlobalConfigVariableName $prefix $disableParmName]
+                global $globalParmNameDisable
+                set disableParmValue [dict get $parmValues $disableParmName]
+                if { $fullConfigEnabled == "0" } {
+                    set disableParmValue 1
+                }
+                set $globalParmNameDisable $disableParmValue
+                set disableParmMetaItem [dict get $meta $disableParmName]
+                set disableParmValueDefault [dict get $disableParmMetaItem default]
+                set disableParmValueHelp [dict get $disableParmMetaItem help]
+                set disableParmArgs [list "$globalParmNameDisable" "$disableParmValue" "$disableParmValueDefault" "$disableParmValueHelp" ]
+                if { $fullConfigEnabled == "0" } {
+                    set disableParmArgs [list]
+                }
+            }
+            CreateConfigPageItem $page.w$parmName $parmName $globalParmName $parmValue $parmType $parmDefault $help $selections $disableParmArgs
         } elseif {$type == "func"} {
             CreateConfigPageFunc $page.func$widgetIx $help $layout $args
         } elseif {$type == "h1"} {
