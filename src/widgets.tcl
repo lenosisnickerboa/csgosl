@@ -40,14 +40,14 @@ proc CreateSetDefaultImage {} {
 }
 
 #args=$globalParmNameDisable $disableParmValue $disableParmValueDefault $disableParmValueHelp
-proc CreateDisableButton {at controlledWidget disableParmsArgs} {
+proc CreateDisableButton {at controlledWidget1 controlledWidget2 disableParmsArgs} {
     if { [llength $disableParmsArgs] >= 4 } {
         set name [lindex $disableParmsArgs 0]
         set value [lindex $disableParmsArgs 1]
         set default [lindex $disableParmsArgs 2]
         set help [lindex $disableParmsArgs 3]
         global $name
-        checkbutton $at.disable -anchor e -variable $name -background lightgrey -command "UpdateCheckboxStatusAndControlledWidget $at.disable $controlledWidget $name \"$default\""
+        checkbutton $at.disable -anchor e -variable $name -background lightgrey -command "UpdateCheckboxStatusAndControlledWidget $at.disable $controlledWidget1 $controlledWidget2 $name \"$default\""
         SetTooltip $at.disable "$help" 
         pack $at.disable -side right 
     } 
@@ -70,7 +70,7 @@ proc CreateEntry {at lead variableName default help disableParmsArgs} {
     pack $at.e -side left -anchor w -fill x -expand true
     SetTooltip $at.e "$help" 
     pack $at.d -side right 
-    CreateDisableButton $at $at.e $disableParmsArgs
+    CreateDisableButton $at $at.e $at.d $disableParmsArgs
     return $at
 }
 
@@ -99,7 +99,7 @@ proc CreateDirEntry {at lead variableName default help disableParmsArgs} {
     pack $at.e -side left -fill x -expand true
     SetTooltip $at.e "$help" 
     pack $at.gd -side left
-    CreateDisableButton $at $at.e $disableParmsArgs
+    CreateDisableButton $at $at.e $at.d $disableParmsArgs
     pack $at.d -side left
     return $at
 }
@@ -114,14 +114,16 @@ proc UpdateCheckboxStatus {w variableName default} {
     }
 }
 
-proc UpdateCheckboxStatusAndControlledWidget {w cw variableName default} {
+proc UpdateCheckboxStatusAndControlledWidget {w cw1 cw2 variableName default} {
     UpdateCheckboxStatus $w $variableName $default
     global $variableName
     set value [set $variableName]
     if { $value == "1" } {
-        $cw configure -state active
+        $cw1 configure -state normal
+        $cw2 configure -state normal
     } else {
-        $cw configure -state disabled        
+        $cw1 configure -state disabled        
+        $cw2 configure -state disabled        
     }
 }
 
@@ -148,7 +150,7 @@ proc CreateCheckbox {at lead variableName default help disableParmsArgs} {
     pack $at.b -side left -anchor w -fill x -expand true
     SetTooltip $at.b "$help" 
     pack $at.d -side right
-    CreateDisableButton $at $at.b $disableParmsArgs
+    CreateDisableButton $at $at.b $at.d $disableParmsArgs
     return $at
 }
 
@@ -182,7 +184,7 @@ proc CreateSelector {at lead variableName default help selections disableParmsAr
     pack $at.sel -side left -fill x -expand true
     SetTooltip $at.sel "$help" 
     pack $at.d -side right
-    CreateDisableButton $at $at.sel $disableParmsArgs
+    CreateDisableButton $at $at.sel $at.d $disableParmsArgs
     return $at
 }
 
