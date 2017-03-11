@@ -5,6 +5,7 @@ exec wish "$0" ${1+"$@"}
 
 source [file join $starkit::topdir browser.tcl]
 source [file join $starkit::topdir tooltip.tcl]
+source [file join $starkit::topdir restart.tcl]
 
 package require Tk
 
@@ -226,6 +227,11 @@ proc CreateTitle {at startButtonEnabled} {
 	image create photo SaveImg -width $width -height $height -file [file join $starkit::topdir "save-240-120.jpg"]
     button $at.s -compound top -image SaveImg -text "Save all settings" -command SaveAll
     pack $at.s -side left
+    
+    image create photo restartImg -width $width -height $height -file [file join $starkit::topdir "restart-240-120.png"]
+    button $at.restart -compound top -image restartImg -text "Restart csgosl" -command Restart
+    pack $at.restart -side left
+    
 #    button $at.t -text "Run" -command StartServer
 #	label $at.t -image titleImg
 #	label $at.t -text "Some title"
