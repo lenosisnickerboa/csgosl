@@ -44,6 +44,15 @@ proc ParseConfigLine {line} {
     return $items
 }
 
+proc ParseCustomCvarsLine {line} {
+    set items [regexp -all -inline {(?:[^ "]|\"[^"]*\")+} $line]
+#editor goes haywire without this ending quote "
+    if { [llength $items] < 4 } {
+        set items [list]
+    }
+    return $items
+}
+
 proc ParseLine {line} {
     return [split $line]
 }
@@ -75,8 +84,46 @@ proc EnsureEmptyFile {filename} {
     }
 }
 
+proc LoadConfigFileCustomCvars {configName} {
+    global $configName
+    set config [set $configName]
+    set fileName "[file rootname [dict get $config fileName]].custom.cfg"
+#    Trace "Trying to load cvars from $fileName"
+    if { ! [file exists "$fileName"] } {
+        return 1
+    }
+    set meta [dict get $config meta]
+    set values [dict get $config values]
+
+    set fp [open "$fileName" r]
+    set fileData [read $fp]
+    close $fp
+    #skip first header line
+    set data [lreplace [split $fileData "\n"] 0 0] 
+    foreach line $data {
+        set tokens [ParseCustomCvarsLine $line]
+        set key [string trim [lindex $tokens 0] "\""]
+        set type [string trim [lindex $tokens 1] "\""]
+        set default [string trim [lindex $tokens 2] "\""]
+        set help [string trim [lindex $tokens 3] "\""]
+        if { [string length $key] > 0 } {
+            if { $type == "string" } {
+#                puts "LoadConfigFileCvars from $fileName: key=$key, type=$type, default=$default, help=$help"
+                set meta [dict set meta "$key" [dict create type "$type" default "$default" help "$help" custom "1" ]]
+                set values [dict set values "$key" $default]
+            } else {
+                Trace "Ignored $key of type \"$type\", currently only type \"string\" is supported."
+            }
+        }
+    }
+    set $configName [dict set config meta $meta]
+    set $configName [dict set config values $values]
+}
+
 proc LoadConfigFileSub {configName {allowUnknowns false} } {
     global $configName
+    LoadConfigFileCustomCvars $configName    
+    
     set config [set $configName]
     set name [dict get $config fileName]
     set values [dict get $config values]
@@ -109,8 +156,7 @@ proc LoadConfigFileSub {configName {allowUnknowns false} } {
                 }
             }
         }
-    }
-    
+    }    
     set $configName [dict set config meta $meta]
     set $configName [dict set config values $values]
 }
@@ -256,6 +302,77 @@ proc SaveMapCycleTxt {filename selectedMapGroup} {
     }
 }
 
+proc SaveCustomCvars {configName} {
+    global $configName
+    set config [set $configName]
+    set meta [dict get $config meta]
+
+    set customExists 0    
+    dict for {key metaItem} $meta {
+        if { [dict exists $metaItem custom] } {
+            set customExists 1
+            break
+        }
+    }
+    
+    set fileName "[file rootname [dict get $config fileName]].custom.cfg"
+
+    if { $customExists == 0 } {
+        if { [file exists $fileName] } {
+            file delete -force $fileName
+        }
+        return 1
+    }
+
+    set fileId [open $fileName "w"]
+    StoreHeader $fileId
+    
+    set values [dict get $config values]
+    set prefix [dict get $config prefix]
+    
+    dict for {key metaItem} $meta {
+        if { [dict exists $metaItem custom] } {
+            set default [dict get $metaItem default]
+            set help [dict get $metaItem help]
+            set type [dict get $metaItem type]
+#            Trace "Storing custom key $key in $fileName"
+            puts $fileId "$key $type \"$default\" \"$help\""
+        }
+    }
+    close $fileId
+}
+
+proc AddNewCustomCvarSub {configName name default help} {
+#    Trace "AddNewCustomCvarSub configName=$configName, name=$name, default=$default, help=$help"
+    global $configName
+    set config [set $configName]
+    set values [dict get $config values]
+    set meta [dict get $config meta]
+    set meta [dict set meta "$name" [dict create type "string" default "$default" help "$help" custom "1"]]
+    set $configName [dict set config meta $meta]
+    SaveCustomCvars $configName    
+}
+
+proc AddNewCustomCvar {configName name default help} {
+    AddNewCustomCvarSub $configName $name "$default" "$help"
+    if { $configName == "gameModeAllConfig" } {
+        AddNewCustomCvarGameModeAll $name "$default" "$help"
+    }
+}
+
+proc RemoveCustomCvar {configName name} {
+#    Trace "RemoveCustomCvarSub configName=$configName, name=$name"
+    global $configName
+    set config [set $configName]
+    set values [dict get $config values]
+    set meta [dict get $config meta]    
+    set values [dict remove $values $name]
+    set meta [dict remove $meta $name]
+    set $configName [dict set config meta $meta]
+    set $configName [dict set config values $values]
+    SaveCustomCvars $configName
+}
+
 proc SaveConfigFile {configName} {
     global $configName
     set config [set $configName]
@@ -270,16 +387,20 @@ proc SaveConfigFile {configName} {
     dict for {key value} $values {
         set valueName [GetGlobalConfigVariableName $prefix $key]
         global $valueName
-        set value [set $valueName]
-        if { $value != $ValueToSkip } {
-            set values [dict set values $key "$value"]
-            set metaItem [dict get $meta $key]
-            set type [dict get $metaItem type]
-            if {$type == "line"} {
-                puts $fileId $value            
-            } else {
-                puts $fileId "$key \"$value\""            
+        if { [info exists $valueName] } {
+            set value [set $valueName]
+            if { $value != $ValueToSkip } {
+                set values [dict set values $key "$value"]
+                set metaItem [dict get $meta $key]
+                set type [dict get $metaItem type]
+                if {$type == "line"} {
+                    puts $fileId $value            
+                } else {
+                    puts $fileId "$key \"$value\""            
+                }                
             }
+        } else {
+            Trace "Failed to read option $key when saving file $fileName"
         }
     }
     set $configName [dict set config values $values]
@@ -294,22 +415,26 @@ proc SaveSplitConfigFile {configName} {
     
     set prefix [dict get $config prefix]
     set values [dict get $config values]
-    set meta [dict get $config meta]
-    
+    set meta [dict get $config meta]    
     set fileId [open $fileName "w"]
     StoreHeader $fileId
     dict for {key value} $values {
 #        puts "SaveSplitConfigFile($fileName) $key=$value"
         set valueName [GetGlobalConfigVariableName $prefix $key]
         global $valueName
-        set value [set $valueName]
-        set values [dict set values $key "$value"]
-        set metaItem [dict get $meta $key]
-        set default [dict get $metaItem default]
-        if { $value != $default } {
-            puts $fileId "$key \"$value\""
+        if { [info exists $valueName] } {
+            set value [set $valueName]
+            set values [dict set values $key "$value"]
+            set metaItem [dict get $meta $key]
+            set default [dict get $metaItem default]
+            if { $value != $default } {
+                puts $fileId "$key \"$value\""
+            }
+        } else {
+            Trace "Failed to read option $key when saving file $fileName"
         }
     }
+    SaveCustomCvars $configName
     set config [dict set config values $values]
     close $fileId
     if { [file size $fileName] == 0 } {

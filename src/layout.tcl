@@ -36,14 +36,55 @@ proc CreatePageComponents {config} {
         space   [list] \
     ]
     
-    set parms [list]
+    set parmsCustom [list]
+    set parmsPredefined [list]
+    set headerCustom [list]    
+    set headerPredefined [list]
+    
+    set customExists 0
     foreach key [dict keys $values] {
         if { [dict exists $meta $key] } {
-            lappend parms parm [list $key]            
+            set metaItem [dict get $meta $key]
+            if { [dict exists $metaItem custom] } {
+                set customExists 1
+                break
+            }
         }
     }
     
-    return [concat $header $parms]
+    if { $customExists } {
+        set headerCustom [list \
+            h2      [list "Custom cvars"] \
+            space   [list] \
+            line    [list] \
+            space   [list] \
+        ]
+        set headerPredefined [list \
+            space   [list] \
+            h2      [list "Predefined cvars"] \
+            space   [list] \
+            line    [list] \
+            space   [list] \
+        ]        
+        foreach key [dict keys $values] {
+            if { [dict exists $meta $key] } {
+                set metaItem [dict get $meta $key]
+                if { [dict exists $metaItem custom] } {
+                    lappend parmsCustom parm [list $key]                            
+                }
+            }
+        }        
+    }
+    foreach key [dict keys $values] {
+        if { [dict exists $meta $key] } {
+            set metaItem [dict get $meta $key]
+            if { ! [dict exists $metaItem custom] } {
+                lappend parmsPredefined parm [list $key]
+            }
+        }
+    }
+    
+    return [concat $header $headerCustom $parmsCustom $headerPredefined $parmsPredefined]
 }
 
 proc CreateDefaultLayoutFromConfig {config} {

@@ -25,7 +25,8 @@ proc CreateItemsFromConfigs {configs} {
 set gameModeConfigs [list \
                      $gameModeArmsraceConfig $gameModeClassicCasualConfig \
                      $gameModeClassicCompetitiveConfig $gameModeDemolitionConfig \
-                     $gameModeDeathmatchConfig $gameModeTrainingConfig $gameModeCustomConfig]
+                     $gameModeDeathmatchConfig $gameModeTrainingConfig $gameModeCustomConfig \
+                     $gameModeCooperativeConfig]
 
 variable gameModeAllConfig [CreateConfig \
     [list \
@@ -33,6 +34,7 @@ variable gameModeAllConfig [CreateConfig \
         prefix   "All_Modes" \
         fileName "$configFolder/gamemode_all.cfg" \
         saveProc "SaveConfigFileGameModeAll" \
+        addCVar  "yes" \
     ] \
     [CreateItemsFromConfigs $gameModeConfigs\
     ] \

@@ -179,6 +179,7 @@ CreateWindow $mainWinGeometry $name $version
 SetTitle "$name $version - loading configuration..."
 
 CreateSetDefaultImage
+CreateDeleteCustomImage
 source [file join $starkit::topdir page_server.tcl]
 
 EnsureConfigFile serverConfig
@@ -477,15 +478,6 @@ if {$serverPresent} {
     LoadSplitConfigFile gameModeCooperativeConfig
 }
 
-variable gameModeArmsraceLayout             [CreateDefaultLayoutFromConfig $gameModeArmsraceConfig]
-variable gameModeClassicCasualLayout        [CreateDefaultLayoutFromConfig $gameModeClassicCasualConfig]
-variable gameModeClassicCompetitiveLayout   [CreateDefaultLayoutFromConfig $gameModeClassicCompetitiveConfig]
-variable gameModeDemolitionLayout           [CreateDefaultLayoutFromConfig $gameModeDemolitionConfig]
-variable gameModeDeathmatchLayout           [CreateDefaultLayoutFromConfig $gameModeDeathmatchConfig]
-variable gameModeTrainingLayout             [CreateDefaultLayoutFromConfig $gameModeTrainingConfig]
-variable gameModeCustomLayout               [CreateDefaultLayoutFromConfig $gameModeCustomConfig]
-variable gameModeCooperativeLayout          [CreateDefaultLayoutFromConfig $gameModeCooperativeConfig]
-
 proc SaveConfigFileGameModeArmsrace {} {
     SaveSplitConfigFile gameModeArmsraceConfig
 }
@@ -518,20 +510,43 @@ if {$serverPresent} {
     LoadConfigFile gameModeAllConfig
 }
 
-variable gameModeAllLayout [CreateDefaultLayoutFromConfig $gameModeAllConfig]
+variable gameModeArmsraceLayout             [CreateDefaultLayoutFromConfig $gameModeArmsraceConfig]
+variable gameModeClassicCasualLayout        [CreateDefaultLayoutFromConfig $gameModeClassicCasualConfig]
+variable gameModeClassicCompetitiveLayout   [CreateDefaultLayoutFromConfig $gameModeClassicCompetitiveConfig]
+variable gameModeDemolitionLayout           [CreateDefaultLayoutFromConfig $gameModeDemolitionConfig]
+variable gameModeDeathmatchLayout           [CreateDefaultLayoutFromConfig $gameModeDeathmatchConfig]
+variable gameModeTrainingLayout             [CreateDefaultLayoutFromConfig $gameModeTrainingConfig]
+variable gameModeCustomLayout               [CreateDefaultLayoutFromConfig $gameModeCustomConfig]
+variable gameModeCooperativeLayout          [CreateDefaultLayoutFromConfig $gameModeCooperativeConfig]
+variable gameModeAllLayout                  [CreateDefaultLayoutFromConfig $gameModeAllConfig]
+
+proc AddNewCustomCvarGameModeAll {name default help} {
+    global gameModeConfigs
+    foreach {config} $gameModeConfigs {
+        AddNewCustomCvar [dict get $config name] $name "$default" "$help"
+    }
+}
+
+proc RemoveCustomCvarAll { name } {
+    global gameModeConfigs
+    foreach {config} $gameModeConfigs {
+        RemoveCustomCvar [dict get $config name] $name
+    }    
+    RemoveCustomCvar gameModeAllConfig $name
+}
 
 proc SaveConfigFileGameModeAll {} {
-    SaveConfigFile gameModeAllConfig
-    global gameModeConfigs
     global gameModeAllConfig
-    foreach {key value} [dict get $gameModeAllConfig values] {
+    global gameModeConfigs
+    SaveConfigFile gameModeAllConfig
+    foreach {key value} [dict get $gameModeAllConfig values] {        
         if {$value != ""} {
             foreach {config} $gameModeConfigs {
                 set prefix [dict get $config prefix]
                 set valueName [GetGlobalConfigVariableName $prefix $key]
                 global $valueName
                 SetConfigItem $config $key "$value"
-                set $valueName $value                
+                set $valueName $value
             }
         }
     }

@@ -72,20 +72,131 @@ proc CreateConfigPageUrl {at parms} {
     pack [Hyperlink $at -command [list Browser "$url"] -text "$text"] -side top -fill x -expand true
 }
 
-proc CreateConfigPageItem {at lead name value type default help selections disableParmsArgs} {
+proc CreateConfigPageItem {at lead name value type default help selections custom disableParmsArgs} {
     if {$type == "directory"} {
         pack [CreateDirEntry $at $lead $name $default $help $disableParmsArgs] -side top -fill x -expand true            
     } elseif {$type == "url"} {
-        pack [CreateEntry $at $lead $name $default $help $disableParmsArgs] -side top -fill x -expand true
+        pack [CreateEntry $at $lead $name $default $help $custom $disableParmsArgs] -side top -fill x -expand true
     } elseif {$type == "int"} {
-        pack [CreateEntry $at $lead $name $default $help $disableParmsArgs] -side top -fill x -expand true
+        pack [CreateEntry $at $lead $name $default $help $custom $disableParmsArgs] -side top -fill x -expand true
     } elseif {$type == "bool"} {
         pack [CreateCheckbox $at $lead $name $default $help $disableParmsArgs] -side top -fill x -expand true
     } elseif {$type == "enum"} {
         pack [CreateSelector $at $lead $name $default $help $selections $disableParmsArgs] -side top -fill x -expand true
     } elseif {$type != "line"} {
-        pack [CreateEntry $at $lead $name $default $help $disableParmsArgs] -side top -fill x -expand true
+        pack [CreateEntry $at $lead $name $default $help $custom $disableParmsArgs] -side top -fill x -expand true
     }
+}
+
+proc NewCvar {configName} {
+    global NewCvarName NewCvarDefault NewCvarHelp
+    set NewCvarName ""
+    set NewCvarDefault ""
+    set NewCvarHelp ""
+    set w [toplevel .$configName]
+    wm resizable $w 0 0
+    wm title $w "Add new cvar"
+#    label  $w.l -text $string
+    label $w.lname -text "Name:"
+    entry $w.name -textvar NewCvarName -bg white
+    label $w.ldefault -text "Default value:"
+    entry $w.default -textvar NewCvarDefault -bg white
+    label $w.lhelp -text "Help text:"
+    entry $w.help -textvar NewCvarHelp -bg white
+    bind $w.name <Return> {set done 1}
+    bind $w.name <Escape> {set NewCvarName {}; set done 1}
+    bind $w.default <Return> {set done 1}
+    bind $w.default <Escape> {set NewCvarName {}; set done 1}
+    bind $w.help <Return> {set done 1}
+    bind $w.help <Escape> {set NewCvarName {}; set done 1}
+    button $w.ok     -text OK     -command {set done 1}
+    button $w.cancel -text Cancel -command "set NewCvarName {}; set done 1"
+    grid $w.lname    $w.name    - -sticky news
+    grid $w.ldefault $w.default - -sticky news
+    grid $w.lhelp $w.help       - -sticky news
+    label $w.ldummy
+    grid $w.ldummy $w.ok $w.cancel -sticky news    
+    set x [expr {([winfo width  .] - [winfo reqwidth  $w]) / 2 + [winfo rootx .]}]
+    set y [expr {([winfo height .] - [winfo reqheight $w]) / 2 + [winfo rooty .]}]
+    wm geometry $w +$x+$y
+    raise $w
+    focus $w.name
+    grab $w
+    vwait done
+    grab release $w
+    destroy $w
+    if { $NewCvarName != "" } {
+        AddNewCustomCvar $configName $NewCvarName "$NewCvarDefault" "$NewCvarHelp"
+    }
+}
+
+proc CreateConfigPageItemFromLayout {layout page type args widgetIx} {
+    set pageOptions [dict get $layout options]
+    set help [dict get $pageOptions help]
+    set configName [dict get $pageOptions configName]
+    global $configName
+    set config [set $configName]
+    global DisableParmPrefix
+    global fullConfigEnabled
+    set parmValues [dict get $config values]
+    set meta [dict get $config meta]
+
+    if {$type == "parm"} {
+        set parmName [join [lindex $args 0]]
+        set metaItem [dict get $meta $parmName]
+        set custom [dict exists $metaItem custom]
+        set prefix [dict get $config prefix]
+        set parmValue [dict get $parmValues $parmName]
+        set globalParmName [GetGlobalConfigVariableName $prefix $parmName]
+        global $globalParmName
+        set $globalParmName $parmValue
+        set parmType [dict get $metaItem type]
+        set help [dict get $metaItem help]
+        set parmDefault [dict get $metaItem default]
+        set selections [list]
+        if {$parmType == "enum"} {
+            set selections [dict get $metaItem selections]
+        }
+        set disableParmName "$DisableParmPrefix$parmName"
+        set disableParmValue ""
+        set disableParmValueDefault ""
+        set disableParmValueHelp ""
+        set globalParmNameDisable ""
+        set disableParmArgs [list]
+        if { [dict exists $metaItem mappedto] } {
+            set globalParmNameDisable [GetGlobalConfigVariableName $prefix $disableParmName]
+            global $globalParmNameDisable
+            set disableParmValue [dict get $parmValues $disableParmName]
+            if { $fullConfigEnabled == "0" } {
+                set disableParmValue 1
+            }
+            set $globalParmNameDisable $disableParmValue
+            set disableParmMetaItem [dict get $meta $disableParmName]
+            set disableParmValueDefault [dict get $disableParmMetaItem default]
+            set disableParmValueHelp [dict get $disableParmMetaItem help]
+            set disableParmArgs [list "$globalParmNameDisable" "$disableParmValue" "$disableParmValueDefault" "$disableParmValueHelp" ]
+            if { $fullConfigEnabled == "0" } {
+                set disableParmArgs [list]
+            }
+        }
+        CreateConfigPageItem $page.w$parmName $parmName $globalParmName $parmValue $parmType $parmDefault $help $selections $custom $disableParmArgs
+    } elseif {$type == "func"} {
+        CreateConfigPageFunc $page.func$widgetIx $help $layout $args
+    } elseif {$type == "h1"} {
+        CreateConfigPageH1 $page.h1$widgetIx $args
+    } elseif {$type == "h2"} {
+        CreateConfigPageH2 $page.h2$widgetIx $args
+    } elseif {$type == "url"} {
+        CreateConfigPageUrl $page.url$widgetIx $args
+    } elseif {$type == "text"} {
+        CreateConfigPageText $page.h2$widgetIx $args
+    } elseif {$type == "warning"} {
+        CreateConfigPageWarning $page.h2$widgetIx $args
+    } elseif {$type == "line"} {
+        CreateConfigPageLine $page.line$widgetIx $args
+    } elseif {$type == "space"} {
+        CreateConfigPageSpace $page.space$widgetIx $args
+    }    
 }
 
 proc CreateConfigPageFromLayout {at layout} {
@@ -94,8 +205,6 @@ proc CreateConfigPageFromLayout {at layout} {
     set configName [dict get $pageOptions configName]
     global $configName
     set config [set $configName]
-    set parmValues [dict get $config values]
-    set meta [dict get $config meta]
     
     sframe new $at.scrollableitems -anchor n -scrolly yes -scrollx no
     set page [sframe content $at.scrollableitems]
@@ -104,70 +213,19 @@ proc CreateConfigPageFromLayout {at layout} {
     bind $page <F1> [subst "Help $help" ]
 
     frame $page.buttons
+    if { [dict exists $config addCVar] } {
+        pack [button $page.buttons.newoption -text "New cvar..." -anchor e -font {-size -8} -command [subst "NewCvar $configName"]] -side left
+        SetTooltip $page.buttons.newoption "Create a custom cvar entry on this page.\nA csgosl restart is required for changes to take effect." 
+    }
     pack [button $page.buttons.setdefault -text "Set defaults" -anchor e -font {-size -8} -command [subst "SetDefaults $configName"]] -side left
+    SetTooltip $page.buttons.setdefault "Sets all options on this tab to default values.\ncsgosl will be automatically restarted." 
     pack [button $page.buttons.helphint -text "Help on $help (F1)" -anchor e -font {-size -8} -command [subst "Help $help"]] -side left
+    SetTooltip $page.buttons.helphint "Opens up the wiki help page for this tab" 
     pack $page.buttons -side top -anchor e
 
-    global DisableParmPrefix
-    global fullConfigEnabled
-   
     set widgetIx 0
     foreach {type args} $components {
-        if {$type == "parm"} {
-            set parmName [join [lindex $args 0]]
-            set prefix [dict get $config prefix]
-            set parmValue [dict get $parmValues $parmName]
-            set globalParmName [GetGlobalConfigVariableName $prefix $parmName]
-            global $globalParmName
-            set $globalParmName $parmValue
-            set metaItem [dict get $meta $parmName]
-            set parmType [dict get $metaItem type]
-            set help [dict get $metaItem help]
-            set parmDefault [dict get $metaItem default]
-            set selections [list]
-            if {$parmType == "enum"} {
-                set selections [dict get $metaItem selections]
-            }
-            set disableParmName "$DisableParmPrefix$parmName"
-            set disableParmValue ""
-            set disableParmValueDefault ""
-            set disableParmValueHelp ""
-            set globalParmNameDisable ""
-            set disableParmArgs [list]
-            if { [dict exists $metaItem mappedto] } {
-                set globalParmNameDisable [GetGlobalConfigVariableName $prefix $disableParmName]
-                global $globalParmNameDisable
-                set disableParmValue [dict get $parmValues $disableParmName]
-                if { $fullConfigEnabled == "0" } {
-                    set disableParmValue 1
-                }
-                set $globalParmNameDisable $disableParmValue
-                set disableParmMetaItem [dict get $meta $disableParmName]
-                set disableParmValueDefault [dict get $disableParmMetaItem default]
-                set disableParmValueHelp [dict get $disableParmMetaItem help]
-                set disableParmArgs [list "$globalParmNameDisable" "$disableParmValue" "$disableParmValueDefault" "$disableParmValueHelp" ]
-                if { $fullConfigEnabled == "0" } {
-                    set disableParmArgs [list]
-                }
-            }
-            CreateConfigPageItem $page.w$parmName $parmName $globalParmName $parmValue $parmType $parmDefault $help $selections $disableParmArgs
-        } elseif {$type == "func"} {
-            CreateConfigPageFunc $page.func$widgetIx $help $layout $args
-        } elseif {$type == "h1"} {
-            CreateConfigPageH1 $page.h1$widgetIx $args
-        } elseif {$type == "h2"} {
-            CreateConfigPageH2 $page.h2$widgetIx $args
-        } elseif {$type == "url"} {
-            CreateConfigPageUrl $page.url$widgetIx $args
-        } elseif {$type == "text"} {
-            CreateConfigPageText $page.h2$widgetIx $args
-        } elseif {$type == "warning"} {
-            CreateConfigPageWarning $page.h2$widgetIx $args
-        } elseif {$type == "line"} {
-            CreateConfigPageLine $page.line$widgetIx $args
-        } elseif {$type == "space"} {
-            CreateConfigPageSpace $page.space$widgetIx $args
-        }
+        CreateConfigPageItemFromLayout $layout $page $type $args $widgetIx
         incr widgetIx
     }
     pack $at.scrollableitems -side top -anchor nw -fill both -expand true

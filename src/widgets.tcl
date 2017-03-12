@@ -38,6 +38,12 @@ proc CreateSetDefaultImage {} {
     image create photo setDefaultImage
     setDefaultImage copy setDefaultImageOrig -subsample 2            
 }
+variable deleteCustomImage
+proc CreateDeleteCustomImage {} {
+    image create photo deleteCustomImageOrig -width 32 -height 32 -file [file join $starkit::topdir "delete.png"]
+    image create photo deleteCustomImage
+    deleteCustomImage copy deleteCustomImageOrig -subsample 2            
+}
 
 #args=$globalParmNameDisable $disableParmValue $disableParmValueDefault $disableParmValueHelp
 proc CreateDisableButton {at controlledWidget1 controlledWidget2 disableParmsArgs} {
@@ -47,13 +53,13 @@ proc CreateDisableButton {at controlledWidget1 controlledWidget2 disableParmsArg
         set default [lindex $disableParmsArgs 2]
         set help [lindex $disableParmsArgs 3]
         global $name
-        checkbutton $at.disable -anchor e -variable $name -background lightgrey -command "UpdateCheckboxStatusAndControlledWidget $at.disable $controlledWidget1 $controlledWidget2 $name \"$default\""
+        checkbutton $at.disable -anchor e -variable $name -command "UpdateCheckboxStatusAndControlledWidget $at.disable $controlledWidget1 $controlledWidget2 $name \"$default\""
         SetTooltip $at.disable "$help" 
         pack $at.disable -side right 
     } 
 }
 
-proc CreateEntry {at lead variableName default help disableParmsArgs} {
+proc CreateEntry {at lead variableName default help custom disableParmsArgs} {
     frame $at 
     label $at.l -width 40 -anchor w -text "$lead" -padx 0
     global $variableName
@@ -69,7 +75,13 @@ proc CreateEntry {at lead variableName default help disableParmsArgs} {
     SetTooltip $at.l "$help" 
     pack $at.e -side left -anchor w -fill x -expand true
     SetTooltip $at.e "$help" 
-    pack $at.d -side right 
+    pack $at.d -side right
+    if {$custom} {
+        #Removing all occurrences of this cvar in all configs, fix for now, config is not available in CreateEntry
+        button $at.del -image deleteCustomImage -command "RemoveCustomCvarAll $lead"
+        SetTooltip $at.del "Delete custom cvar $lead.\nYou must restart csgosl for changes to take effect."
+        pack $at.del -side left -anchor w
+    }
     CreateDisableButton $at $at.e $at.d $disableParmsArgs
     return $at
 }
@@ -115,7 +127,6 @@ proc UpdateCheckboxStatus {w variableName default} {
 }
 
 proc UpdateCheckboxStatusAndControlledWidget {w cw1 cw2 variableName default} {
-    UpdateCheckboxStatus $w $variableName $default
     global $variableName
     set value [set $variableName]
     if { $value == "1" } {
