@@ -85,7 +85,7 @@ proc ImportMapPicture {map from to} {
     Trace "Importing map from $from/$map.jpg to $to/$map.jpg"
     if {[catch {DoImportMapPicture $map $from $to} errMsg]} {
         Trace "Failed importing map $map from $from to $to, using default image ($errMsg)"
-        file copy [file join $starkit::topdir "no_map_picture.jpg"] "$to/$map.jpg"
+        file copy -force [file join $starkit::topdir "no_map_picture.jpg"] "$to/$map.jpg"
     }
 }
 
