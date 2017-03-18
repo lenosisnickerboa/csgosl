@@ -58,10 +58,9 @@ proc GetMapsState {maps} {
     return $mapGroup
 }
 
-proc ImportMapPicture {map from to} {
+proc DoImportMapPicture {map from to} {
     set width 320
     set height 256
-    Trace "Importing map from $from/$map.jpg to $to/$map.jpg"
     image create photo mapButtonImgOrig -file "$from/$map.jpg"
     set w [image width mapButtonImgOrig]
     if { $w >= $width } {
@@ -81,6 +80,15 @@ proc ImportMapPicture {map from to} {
         mapButtonImg write -format jpeg "$to/$map.jpg"
     }
 }
+
+proc ImportMapPicture {map from to} {
+    Trace "Importing map from $from/$map.jpg to $to/$map.jpg"
+    if {[catch {DoImportMapPicture $map $from $to} errMsg]} {
+        Trace "Failed importing map $map from $from to $to, using default image ($errMsg)"
+        file copy [file join $starkit::topdir "no_map_picture.jpg"] "$to/$map.jpg"
+    }
+}
+
 #<link rel="image_src" href="http://images.akamai.steamusercontent.com/ugc/884098384874424133/13068CB677948EC551F775C8603445E2CDD14BCC/?interpolation=lanczos-none&output-format=jpeg&output-quality=95&fit=inside|512:*">
 proc GetMapImageUrl {htmlfile} {
     set fp [open "$htmlfile" r]
@@ -106,7 +114,6 @@ proc GetMapImageUrl {htmlfile} {
 
 proc LoadMapImageFromWorkshop {url workshopDir id map} {
     set mapDir "$workshopDir/$id"
-    Trace "Importing map from $url for id $id"
     set htmlFile "$mapDir/temp.html"
     Wget $url $htmlFile
     if { ! [file exists $htmlFile] } {
