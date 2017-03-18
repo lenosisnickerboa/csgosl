@@ -92,7 +92,7 @@ case $TARGET in
 	    "$ROOT"/devtools/windows/unzip.exe \
 	    "$ROOT"/devtools/windows/wget.exe \
 	    $ROOT/devtools/windows/tclkit.exe
-	install $DEST "$ROOT"/src/windows/csgosl.vbs
+	install $DEST "$ROOT"/src/windows/csgosl.vbs "$ROOT"/src/windows/csgosl.bat
 	touch $DEST/bin/needsupgrade
 	(cd "$DEST"/.. ; zip -r csgosl.zip csgosl) || error "Failed to zip"
 	(cd "$DEST"/.. ;  mv csgosl.zip csgosl-windows.zip)
