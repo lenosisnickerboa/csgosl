@@ -676,16 +676,22 @@ if {$serverPresent} {
 proc UpgradeCheck {} {
     global applicationConfig
     global version
+    global installDir
+    if { [file exists updatefolder] } {
+        file delete -force updatefolder
+    }
     if { [GetConfigItem $applicationConfig updatecheck] } {
         set latestRelease [GetLatestRelease]
         if { $latestRelease != "" } {
             if { $latestRelease != $version } {
                 set reply [tk_dialog .w "csgosl update $latestRelease is available!" \
-                "A new csgosl version $latestRelease is available!\n\nDo you want to update your version $version to $latestRelease?\n\nThis dialog box will go away when you update.\nYou can also disable this check in the Application Page." \
-                questhead 0 "Of course!" "Not now"]
+                "A new csgosl version $latestRelease is available!\n\nDo you want to update your version $version to $latestRelease?\n\nYou can disable this check in the Application Page.\nPlease be patient during upgrade, it takes a while to download the update.\ncsgosl will restart once the download is finished." \
+                info 0 "Install $latestRelease" "Take me to the download page" "Not now"]
                 if { $reply == 0 } {
+                    InstallRelease $latestRelease
+                } elseif { $reply == 1 } {
                     Browser "https://github.com/lenosisnickerboa/csgosl/releases"
-                    Browser "https://github.com/lenosisnickerboa/csgosl/wiki/Upgrade%20a%20server"
+                    Browser "https://github.com/lenosisnickerboa/csgosl/wiki/Upgrade%20a%20server"                    
                 }
             } else {
                 Trace "Running latest release."                    
@@ -698,7 +704,7 @@ proc UpgradeCheck {} {
 }
 
 if {$serverPresent} {
-    after 10000 UpgradeCheck
+    after 5000 UpgradeCheck
 }
 
 if { $serverPresent && $needsUpgrade } {

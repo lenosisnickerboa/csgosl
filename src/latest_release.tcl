@@ -22,3 +22,19 @@ proc GetLatestRelease {} {
     }
     return ""
 }
+
+proc InstallRelease {release} {
+    global installFolder
+    set updateFolder "$installFolder/updatefolder"
+    file delete -force "$updateFolder"
+    file mkdir "$updateFolder"
+    global currentOs
+    set url "https://github.com/lenosisnickerboa/csgosl/releases/download/v$release/csgosl-linux.zip"
+    if {$currentOs == "windows"} {
+        set url "https://github.com/lenosisnickerboa/csgosl/releases/download/v$release/csgosl-windows.zip"
+    }
+    Trace "Dowloading release $release using url $url..."
+    set downloadFileTo [file nativename "$updateFolder/csgosl.zip"]
+    Wget "$url" "$downloadFileTo"
+    exit 84
+}
