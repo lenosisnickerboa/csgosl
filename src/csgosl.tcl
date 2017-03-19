@@ -46,6 +46,20 @@ proc Every {ms body} {
     after $ms [list after idle [info level 0]]
 }
 
+#inspiration: http://wiki.tcl.tk/808
+proc At {time args} {
+    if {[llength $args] == 1} {set args [lindex $args 0]}
+#    set dt [expr {([clock scan $time]-[clock seconds])*1000}]
+    set timeS [clock scan $time]
+    set nowS [clock seconds]
+    set dt 0
+    if {$timeS > $nowS} {
+        set dt [expr {($timeS-$nowS)*1000}]        
+    } else {
+        set dt [expr {([clock scan "00:00"]+$timeS-$nowS)*1000}]
+    }
+    after $dt { $args ; after idle { At $time $args } ; }
+}
 proc IsDryRun {} {
     global applicationConfig
     GetConfigValue $applicationConfig dryrun
@@ -632,21 +646,6 @@ if {$serverPresent} {
 variable configPages $cp
 pack .config -side top -fill both -expand true
 
-#inspiration: http://wiki.tcl.tk/808
-proc at {time args} {
-    if {[llength $args] == 1} {set args [lindex $args 0]}
-#    set dt [expr {([clock scan $time]-[clock seconds])*1000}]
-    set timeS [clock scan $time]
-    set nowS [clock seconds]
-    set dt 0
-    if {$timeS > $nowS} {
-        set dt [expr {($timeS-$nowS)*1000}]        
-    } else {
-        set dt [expr {([clock scan "00:00"]+$timeS-$nowS)*1000}]
-    }
-    after $dt $args
-}
-
 proc RestartAt {time} {
     Trace "Server is being restarted at $time as requested..."
     set status [DetectServerRunning]
@@ -661,11 +660,9 @@ proc RestartAt {time} {
         UpdateServer
     }
     Trace "Starting server again..."
-    StartServer
-    
-    #Reschedule
-    Trace "Server will be restarted and potentially updated at $time"
-    at $time { RestartAt $time }    
+    StartServer    
+
+    At $time { RestartAt $time }
 }
 
 if {$serverPresent} {
@@ -695,12 +692,16 @@ if {$serverPresent} {
             StartServer            
         }
     }
-    set restartAt [GetConfigValue $serverConfig restartat]
-    if { $restartAt != "" } {
-        foreach time $restartAt {
-            Trace "Server will be restarted and potentially updated at $time"
-            at $time { RestartAt $time }
-        }
+    if { $currentOs == "windows" } {
+        Trace "Server option restartat currently disabled on Windows, doesn't work properly, sorry..."
+    } else {
+        set restartAt [GetConfigValue $serverConfig restartat]
+        if { $restartAt != "" } {
+            foreach time $restartAt {
+                Trace "Server will be restarted and potentially updated at $time"
+                At $time { RestartAt $time }
+            }
+        }        
     }
 }
 
