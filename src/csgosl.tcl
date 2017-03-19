@@ -633,10 +633,28 @@ if {$serverPresent} {
     set autoUpdateOnStart [GetConfigValue $steamConfig autoupdateonstart]
     if { $autoUpdateOnStart == "1" } {
         SetTitle "$name $version - auto updating..."
+        set status [DetectServerRunning]
+        if { $status == "running" } {
+            Trace "Server is running, stopping it to be able to update."
+            StopServer
+        }
         if { $currentOs == "windows" } {
             $cp select $consolePage
         }
         UpdateServer
+    }
+    set autoStartOnStart [GetConfigValue $serverConfig autostartonstart]
+    if { $autoStartOnStart == "1" } {
+        SetTitle "$name $version - auto starting server..."
+        if { $currentOs == "windows" } {
+            $cp select $consolePage
+        }
+        set status [DetectServerRunning]
+        if { $status == "running" } {
+            Trace "Server is already running, leaving it running."
+        } else {
+            StartServer            
+        }
     }
 }
 
