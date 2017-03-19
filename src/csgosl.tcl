@@ -629,10 +629,46 @@ if {$serverPresent} {
 variable configPages $cp
 pack .config -side top -fill both -expand true
 
+#inspiration: http://wiki.tcl.tk/808
+proc at {time args} {
+    if {[llength $args] == 1} {set args [lindex $args 0]}
+#    set dt [expr {([clock scan $time]-[clock seconds])*1000}]
+    set timeS [clock scan $time]
+    set nowS [clock seconds]
+    set dt 0
+    if {$timeS > $nowS} {
+        set dt [expr {($timeS-$nowS)*1000}]        
+    } else {
+        set dt [expr {([clock scan "00:00"]+$timeS-$nowS)*1000}]
+    }
+    after $dt $args
+}
+
+proc RestartAt {time} {
+    Trace "Server is being restarted at $time as requested..."
+    set status [DetectServerRunning]
+    if { $status == "running" } {
+        Trace "Server is running, stopping it."
+        StopServer
+    }
+    global steamConfig
+    set autoUpdateOnStart [GetConfigValue $steamConfig autoupdateonstart]
+    if { $autoUpdateOnStart == "1" } {
+        Trace "Auto updating..."
+        UpdateServer
+    }
+    Trace "Starting server again..."
+    StartServer
+    
+    #Reschedule
+    Trace "Server will be restarted and potentially updated at $time"
+    at $time { RestartAt $time }    
+}
+
 if {$serverPresent} {
     set autoUpdateOnStart [GetConfigValue $steamConfig autoupdateonstart]
     if { $autoUpdateOnStart == "1" } {
-        SetTitle "$name $version - auto updating..."
+        Trace "Auto updating..."
         set status [DetectServerRunning]
         if { $status == "running" } {
             Trace "Server is running, stopping it to be able to update."
@@ -645,7 +681,7 @@ if {$serverPresent} {
     }
     set autoStartOnStart [GetConfigValue $serverConfig autostartonstart]
     if { $autoStartOnStart == "1" } {
-        SetTitle "$name $version - auto starting server..."
+        Trace "Auto starting server..."
         if { $currentOs == "windows" } {
             $cp select $consolePage
         }
@@ -654,6 +690,13 @@ if {$serverPresent} {
             Trace "Server is already running, leaving it running."
         } else {
             StartServer            
+        }
+    }
+    set restartAt [GetConfigValue $serverConfig restartat]
+    if { $restartAt != "" } {
+        foreach time $restartAt {
+            Trace "Server will be restarted and potentially updated at $time"
+            at $time { RestartAt $time }
         }
     }
 }
