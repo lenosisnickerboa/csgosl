@@ -54,7 +54,7 @@ proc IsDryRun {} {
 proc SaveProcDummy {} {
 }
 
-proc SaveAll {} {
+proc SaveAll { {skipStandalone ""} } {
     global serverPresent
     SaveConfigFileServer
     if { $serverPresent } {
@@ -75,6 +75,9 @@ proc SaveAll {} {
         SaveConfigFileGameModeTraining
         SaveConfigFileGameModeCustom
         SaveConfigFileGameModeCooperative
+        if { $skipStandalone != "skipStandalone" } {
+            CreateStandalone
+        }
     }
 }
 

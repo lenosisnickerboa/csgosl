@@ -25,6 +25,9 @@ variable serverConfig [CreateConfig \
         "bool"      [list rcon "0" "Enable servers Remote Console. This allows you (and anyone else with the rcon password) to connect to your server and control it using commands."]\
         "string"    [list rconpassword "$hostName" "Your RCON password, set to your hostname by default. If you enable rcon set a better password!"]\
         "int"       [list netmaxfilesize "64" "Controls how large maps clients are allowed to download from your server. Leave as is if you don't know what this is."]\
+        "bool"      [list standalonescript "0" "Generate standalone start/stop scripts in the csgosl installation folder which can be used to control the csgo server without\nstarting the csgosl GUI. The script will be automatically regenerated when parameter changes are\nsaved so it always stays up-to-date with your configuration."]\
+        "bool"      [list standaloneupdate "0" "Include a server update in the standalone script."]\
+        "bool"      [list standalonestart "0" "Include a server start in the standalone script."]\
     ] \
 ]
 
@@ -51,6 +54,13 @@ variable serverLayout [CreateLayout \
         parm    [list lanonly] \
         parm    [list rcon] \
         parm    [list rconpassword] \
+        space   [list] \
+        h2      [list "Standalone script generation"] \
+        line    [list] \
+        space   [list] \
+        parm    [list standalonescript] \
+        parm    [list standaloneupdate] \
+        parm    [list standalonestart] \
         space   [list] \
         h2      [list "Misc"] \
         line    [list] \

@@ -5,11 +5,11 @@ exec wish "$0" ${1+"$@"}
 
 source [file join $starkit::topdir sed.tcl]
 
-proc StartServer {} {
+proc StartServer { {returnCommandOnly 0} } {
     global configPages
     global runPage
     $configPages select $runPage
-    SaveAll
+    SaveAll skipStandalone
     global serverConfig
     global steamConfig
     global installFolder
@@ -118,6 +118,20 @@ proc StartServer {} {
     global serverControlScript
     global srcdsName
     if { $currentOs == "windows" } {
+        if {$returnCommandOnly == 1} {
+            return "$serverControlScript-start.bat \"$serverFolder/$srcdsName\" \
+                -game csgo $consoleCommand $rconCommand \
+                +game_type $gameType +game_mode $gameMode \
+                $mapGroupOption \
+                $mapOption \
+                $steamAccountOption $apiAuthKeyOption \
+                -maxplayers_override $players \
+                -tickrate $tickRate \
+                $passwordOption \
+                $ipOption \
+                +hostname \"$serverName\" $serverPortOption $serverLanOption \
+                $options"
+        }
         RunAssync "$serverControlScript-start.bat \"$serverFolder/$srcdsName\" \
              -game csgo $consoleCommand $rconCommand \
              +game_type $gameType +game_mode $gameMode \
@@ -131,6 +145,21 @@ proc StartServer {} {
              +hostname \"$serverName\" $serverPortOption $serverLanOption \
              $options"
     } else {
+        if {$returnCommandOnly == 1} {
+            return "\"$serverControlScript\" $control \
+            \"$serverFolder/$srcdsName\" \
+             -game csgo $consoleCommand $rconCommand \
+             +game_type $gameType +game_mode $gameMode \
+             $mapGroupOption \
+             $mapOption \
+             $steamAccountOption $apiAuthKeyOption \
+             -maxplayers_override $players \
+             -tickrate $tickRate \
+             $passwordOption \
+             $ipOption \
+             +hostname \"$serverName\" $serverPortOption $serverLanOption \
+             $options"
+        }
         chan configure stdout -buffering none
         chan configure stderr -buffering none
         Trace "Executing $serverControlScript $control \
@@ -153,7 +182,7 @@ proc StartServer {} {
         }
         
         exec >@stdout 2>@stderr "$serverControlScript" $control \
-            $serverFolder/$srcdsName \
+            "$serverFolder/$srcdsName" \
              -game csgo $consoleCommand $rconCommand \
              +game_type $gameType +game_mode $gameMode \
              $mapGroupOption \
@@ -179,8 +208,16 @@ proc StopWindowsServer {} {
     exec "$serverControlScript-stop.bat" $pid
 }
 
-proc StopServer {} {
+proc StopServer { {returnCommandOnly 0} } {
     global currentOs
+    if {$returnCommandOnly == 1} {
+        if { $currentOs == "windows" } {
+            return "@echo Not supported on windows, use Task Manager to terminate your server\n@pause"
+        } else {
+            global serverControlScript
+            return "$serverControlScript stop"
+        }
+    }
     if { $currentOs == "windows" } {
         StopWindowsServer
     } else {
@@ -191,7 +228,25 @@ proc StopServer {} {
     }
 }
 
-proc UpdateServer {} {
+proc UpdateServer { {returnCommandOnly 0} } {
+    global steamcmdFolder
+    set steamCmdExe "steamcmd.sh"
+    global currentOs
+    global binFolder
+    global installFolder
+    set filename "$installFolder/$binFolder/steamcmd.txt"
+    
+    if {$currentOs == "windows"} {
+        set steamCmdExe "steamcmd.exe"        
+    }
+    if {$returnCommandOnly == 1} {
+        if {$currentOs == "windows"} {
+            return "\"$steamcmdFolder/$steamCmdExe\" +runscript \"$filename\""
+        } else {
+            return "\"$steamcmdFolder/$steamCmdExe\" +runscript \"$filename\""
+        }
+    }
+    
     set status [DetectServerRunning]
     if { $status == "running" } {
         Trace "Server is running! Stop server first and retry update!"
@@ -204,7 +259,7 @@ proc UpdateServer {} {
         SetConfigPage $consolePage        
     }
     global serverFolder
-    SaveAll
+    SaveAll skipStandalone
     if { ! [file isdirectory $serverFolder] } {
         Trace "Creating a new server directory $serverFolder \[Server->directory is left empty\]"
         file mkdir "$serverFolder"
@@ -215,15 +270,9 @@ proc UpdateServer {} {
     }
     global steamPage
     global steamConfig
-    global steamcmdFolder
     if { ! [file isdirectory $steamcmdFolder] } {
         Trace "Creating a new steamcmd directory $steamcmdFolder \[Steamcmd directory is empty\]"
         file mkdir "$steamcmdFolder"
-    }
-    set steamCmdExe "steamcmd.sh"
-    global currentOs
-    if {$currentOs == "windows"} {
-        set steamCmdExe "steamcmd.exe"        
     }
     if { ([file exists "$steamcmdFolder/$steamCmdExe"] != 1 ) } {
         Trace "Installing $steamCmdExe in $steamcmdFolder..."
@@ -258,9 +307,6 @@ proc UpdateServer {} {
     }
     
     set validateInstall [GetConfigValue $steamConfig validateinstall]
-    global binFolder
-    global installFolder
-    set filename "$installFolder/$binFolder/steamcmd.txt"
     set fileId [open "$filename" "w"]
     puts $fileId "login anonymous"
     puts $fileId "force_install_dir \"$serverFolder\""
@@ -439,7 +485,7 @@ proc UpdateMods {} {
     RestoreUsersConfigs "$serverFolder/csgo/cfg/sourcemod"
     RestoreUsersConfigs "$serverFolder/csgo/cfg/sourcemod/multi1v1"
     
-    SaveAll
+    SaveAll skipStandalone
     #Restore sourcemod conf after update 
     EnforceSourcemodConfig    
 }
