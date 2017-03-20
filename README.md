@@ -3,7 +3,7 @@
 Quickie: [Get started](https://github.com/lenosisnickerboa/csgosl/wiki). Download **1.6** : [Linux](https://github.com/lenosisnickerboa/csgosl/releases/download/v1.6/csgosl-linux.zip) [Windows](https://github.com/lenosisnickerboa/csgosl/releases/download/v1.6/csgosl-windows.zip) 
 <br>Download stats [here](http://www.somsubhra.com/github-release-stats/?username=lenosisnickerboa&repository=csgosl)
 
-csgosl is a graphical user interface for a [Counter Striker Global Offensive server](https://developer.valvesoftware.com/wiki/Counter-Strike:_Global_Offensive_Dedicated_Servers) (CSGO server from now on).  csgosl supports one-click install, update, start and stop server on windows and linux platforms ([supported platforms](https://github.com/lenosisnickerboa/csgosl/wiki/Platform-support)). If you just want your own CSGO server up and running in no time this is the place for you. csgosl provides a graphical user interface supporting most mainstream server options. For the control freak there is also an advanced mode providing support for nearly any imaginable setting.
+csgosl is a graphical user interface (GUI) for a [Counter Striker Global Offensive server](https://developer.valvesoftware.com/wiki/Counter-Strike:_Global_Offensive_Dedicated_Servers) (CSGO server from now on).  csgosl supports one-click install, update, start and stop server on windows and linux platforms ([supported platforms](https://github.com/lenosisnickerboa/csgosl/wiki/Platform-support)). If you just want your own CSGO server up and running in no time this is the place for you. csgosl provides a graphical user interface supporting most mainstream server options. For the control freak there is also an advanced mode providing support for nearly any imaginable setting and on top of that GUI support for adding custom cvars to the advanced mode tabs.
 
 csgosl features:
 
@@ -19,6 +19,7 @@ csgosl features:
 * [Advanced settings](https://github.com/lenosisnickerboa/csgosl/wiki/Advanced%20mode) mode for the control freak (supports all cvars with in app help texts)
 * [Override settings in one place](https://github.com/lenosisnickerboa/csgosl/wiki/Advanced%20mode) for all game modes/types
 * [Online help](https://github.com/lenosisnickerboa/csgosl/wiki/csgosl-online-help) easily accessible from the application
+* Custom cvar support
 * Comes preinstalled with [sourcemod](https://www.sourcemod.net/) and [metamod](https://www.metamodsource.net/) and some plugins. Read more about how it works [here](Help-on-Sourcemod).
 
 
