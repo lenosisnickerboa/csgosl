@@ -17,6 +17,7 @@ variable applicationConfig [CreateConfig \
         "bool"      [list trace "1" "Control tracing. Traces are printed to the terminal (linux) and in the console tab (Windows)."]\
         "bool"      [list dryrun "0" "Performs everything except actually starting the server.\nSometimes convenient when troubleshooting or testing.\nCommand line is traced."]\
         "bool"      [list updatecheck "1" "Checks for csgosl updates after program has started."]\
+        "bool"      [list showdonation "1" "Disable to stop showing donation button. Please consider donating first though :)"]\
         "string"    [list mainwingeometry "800x600+100+100" "last saved windows size and location."]\
     ] \
 ]
@@ -42,6 +43,7 @@ variable applicationLayout [CreateLayout \
         parm    [list updatecheck] \
         parm    [list tclconsole] \
         parm    [list trace] \
+        parm    [list showdonation] \
         space   [list] \
         func    [list LayoutFuncSetDefaultsAll] \
         space   [list] \

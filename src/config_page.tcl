@@ -199,6 +199,15 @@ proc CreateConfigPageItemFromLayout {layout page type args widgetIx} {
     }    
 }
 
+proc Donate {} {
+    global currentOs
+    if {$currentOs == "windows"} {
+        Browser { https://www.paypal.com/cgi-bin/webscr?cmd=_s-xclick&hosted_button_id=NESCKT8B4C638 }        
+    } else {
+        Browser "https://www.paypal.com/cgi-bin/webscr?cmd=_s-xclick&hosted_button_id=NESCKT8B4C638"
+    }
+}
+
 proc CreateConfigPageFromLayout {at layout} {
     set pageOptions [dict get $layout options]
     set components [dict get $layout components]
@@ -221,8 +230,17 @@ proc CreateConfigPageFromLayout {at layout} {
     SetTooltip $page.buttons.setdefault "Sets all options on this tab to default values.\ncsgosl will be automatically restarted." 
     pack [button $page.buttons.helphint -text "Help on $help (F1)" -anchor e -font {-size -8} -command [subst "Help $help"]] -side left
     SetTooltip $page.buttons.helphint "Opens up the wiki help page for this tab" 
-    pack $page.buttons -side top -anchor e
 
+    global applicationConfig
+    set showDonation [GetConfigValue $applicationConfig showdonation]
+    if {$showDonation} {
+        image create photo donateImg -file [file join $starkit::topdir "donate.png"]
+        pack [button $page.buttons.donate -image donateImg -anchor e -command Donate] -side left
+        SetTooltip $page.buttons.donate "If you feel this software served you well and saved you a lot of time you could spend enjoying yourself instead of reading\nendless forum threads on how to setup your own server just right, why not show your appreciation and donate whatever\namount you feel appropriate. Your appreciation is much appreciated :)\nWill open Paypal in your default web browser.\This donation button can be disabled in application settings."        
+    }
+
+    pack $page.buttons -side top -anchor e
+    
     set widgetIx 0
     foreach {type args} $components {
         CreateConfigPageItemFromLayout $layout $page $type $args $widgetIx
