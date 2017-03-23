@@ -119,7 +119,7 @@ proc StartServer { {returnCommandOnly 0} } {
     global srcdsName
     if { $currentOs == "windows" } {
         if {$returnCommandOnly == 1} {
-            return "$serverControlScript-start.bat \"$serverFolder/$srcdsName\" \
+            return "\"[file nativename $serverFolder/$srcdsName]\" \
                 -game csgo $consoleCommand $rconCommand \
                 +game_type $gameType +game_mode $gameMode \
                 $mapGroupOption \
@@ -146,7 +146,7 @@ proc StartServer { {returnCommandOnly 0} } {
              $options"
     } else {
         if {$returnCommandOnly == 1} {
-            return "\"$serverControlScript\" $control \
+            return "\"$serverFolder/$srcdsName\" $control \
             \"$serverFolder/$srcdsName\" \
              -game csgo $consoleCommand $rconCommand \
              +game_type $gameType +game_mode $gameMode \
@@ -241,7 +241,7 @@ proc UpdateServer { {returnCommandOnly 0} } {
     }
     if {$returnCommandOnly == 1} {
         if {$currentOs == "windows"} {
-            return "\"$steamcmdFolder/$steamCmdExe\" +runscript \"$filename\""
+            return "\"[file nativename $steamcmdFolder/$steamCmdExe]\" +runscript \"[file nativename $filename]\""
         } else {
             return "\"$steamcmdFolder/$steamCmdExe\" +runscript \"$filename\""
         }
@@ -357,6 +357,147 @@ proc DetectServerRunning {} {
     } else {
         exec "$serverControlScript" status
     }
+}
+
+proc MakeScriptFileName {filename} {
+    global currentOs
+    set f "$filename.sh"
+    if {$currentOs == "windows"} {
+        set f "$filename.bat"
+    }
+    return [file nativename $f]
+}
+
+proc RunScriptAssync {filename} {
+    exec [MakeScriptFileName $filename] &
+}
+
+proc DoCreateStandalone {filename} {
+    global serverConfig
+    set standaloneScript [GetConfigValue $serverConfig standalonescript]
+    set standaloneUpdate [GetConfigValue $serverConfig standaloneupdate]
+    set standaloneStart [GetConfigValue $serverConfig standalonestart]
+    if { $standaloneScript != "1" } {
+        return 0
+    }
+    set fileName [MakeScriptFileName "$filename-start"]
+    Trace "Creating standalone script $fileName..."
+    global currentOs
+    set fileId [open $fileName "w"]
+    StoreHeaderInScript $fileId
+    if {$standaloneUpdate == 1} {
+        puts $fileId "[UpdateServer 1]"
+    }
+    if {$standaloneStart == 1} {
+        if {$currentOs == "windows"} {
+            puts $fileId "start \"Launcher window\" [StartServer 1]"            
+        } else {
+            puts $fileId "[StartServer 1]"            
+        }
+    }
+    close $fileId
+    if { $currentOs == "windows" } {
+    } else {
+        file attributes $fileName -permissions "+x" 
+    }
+
+#No support for closing down server on windows yet, just skip it
+    if { $currentOs == "windows" } {
+        return 0
+    }
+    
+    set fileName [MakeScriptFileName "$filename-stop"]
+    Trace "Creating standalone script $fileName..."
+    set fileId [open $fileName "w"]
+    StoreHeaderInScript $fileId
+    if {$standaloneStart == 1} {
+        puts $fileId "[StopServer 1]"
+    }
+    close $fileId
+    
+    if { $currentOs == "windows" } {
+    } else {
+        file attributes $fileName -permissions "+x" 
+    }
+}
+
+proc DoCreateAssyncUpdateAndStart {fileName includeUpdate includeStart} {
+    if { ($includeUpdate == 0) && ($includeStart == 0) } {
+        return 0
+    }
+    global currentOs
+    set fileId [open $fileName "w"]
+    StoreHeaderInScript $fileId
+    if {$includeUpdate == 1} {
+        puts $fileId "[UpdateServer 1]"
+    }
+    if {$includeStart == 1} {
+        if {$currentOs == "windows"} {
+            puts $fileId "start \"Launcher window\" [StartServer 1]"            
+        } else {
+            puts $fileId "[StartServer 1]"            
+        }
+    }
+    close $fileId
+    if { $currentOs == "windows" } {
+    } else {
+        file attributes $fileName -permissions "+x" 
+    }
+}
+
+proc CreateStandalone {} {
+    global installFolder
+    set filename "$installFolder/standalone-server"
+    if {[catch {DoCreateStandalone $filename} errMsg]} {
+        Trace "Failed creating standalone scripts $filename ($errMsg)"
+    }    
+}
+
+proc CreateAssyncUpdateAndStart {filename includeUpdate includeStart} {
+    set fileName [MakeScriptFileName $filename]
+    Trace "Creating assync update and start script $fileName"
+    if {[catch {DoCreateAssyncUpdateAndStart $fileName $includeUpdate $includeStart} errMsg]} {
+        Trace "Failed creating assync script $fileName ($errMsg)"
+    }        
+}
+
+proc UpdateAndStartServerAssync {} {
+    global steamConfig serverConfig
+    global currentOs
+    global installFolder
+
+    set autoUpdateOnStart [GetConfigValue $steamConfig autoupdateonstart]
+    set autoStartOnStart [GetConfigValue $serverConfig autostartonstart]
+
+    if { ($autoUpdateOnStart == 0) && ($autoStartOnStart == 0) } {
+        return 0
+    }
+    
+    CreateAssyncUpdateAndStart "$installFolder/bin/onstart" $autoUpdateOnStart $autoStartOnStart    
+        
+    if { $autoUpdateOnStart == 1 } {
+        set status [DetectServerRunning]
+        if { $status == "running" } {
+            Trace "Server is running, stopping it to be able to update."
+            StopServer
+            while {[DetectServerRunning] == "running"} {
+                Trace "Waiting for server to close down"
+                after 1000
+            }
+        }
+        Trace "Auto updating..."
+    }
+    if { $autoStartOnStart == "1" } {
+        set status [DetectServerRunning]
+        if { $status == "running" } {
+            Trace "Server is already running, leaving it running."
+            return 0
+        } else {
+            Trace "Auto starting server..."
+        }
+    }
+    
+    RunScriptAssync "$installFolder/bin/onstart"
 }
 
 proc IsSourcemodEnabled {} {

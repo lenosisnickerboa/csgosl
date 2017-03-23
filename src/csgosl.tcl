@@ -58,7 +58,7 @@ proc At {time args} {
     } else {
         set dt [expr {([clock scan "00:00"]+$timeS-$nowS)*1000}]
     }
-    after $dt { $args ; after idle { At $time $args } ; }
+    after $dt $args
 }
 proc IsDryRun {} {
     global applicationConfig
@@ -653,56 +653,42 @@ proc RestartAt {time} {
         Trace "Server is running, stopping it."
         StopServer
     }
-    global steamConfig
-    set autoUpdateOnStart [GetConfigValue $steamConfig autoupdateonstart]
-    if { $autoUpdateOnStart == "1" } {
-        Trace "Auto updating..."
-        UpdateServer
+    global serverConfig
+    set autoUpdateOnRestart [GetConfigValue $serverConfig autoupdateonrestart]
+    if { $autoUpdateOnRestart == 1 } {
+        Trace "Auto updating and starting server again, hold on, may take a while..."
+    } else {
+        Trace "Starting server again, hold on, may take a while..."        
     }
-    Trace "Starting server again..."
-    StartServer    
 
-    At $time { RestartAt $time }
+    global installFolder
+    RunScriptAssync "$installFolder/bin/onrestart"
 }
 
-if {$serverPresent} {
-    set autoUpdateOnStart [GetConfigValue $steamConfig autoupdateonstart]
-    if { $autoUpdateOnStart == "1" } {
-        Trace "Auto updating..."
-        set status [DetectServerRunning]
-        if { $status == "running" } {
-            Trace "Server is running, stopping it to be able to update."
-            StopServer
-        }
-        if { $currentOs == "windows" } {
-            $cp select $consolePage
-        }
-        UpdateServer
-    }
-    set autoStartOnStart [GetConfigValue $serverConfig autostartonstart]
-    if { $autoStartOnStart == "1" } {
-        Trace "Auto starting server..."
-        if { $currentOs == "windows" } {
-            $cp select $consolePage
-        }
-        set status [DetectServerRunning]
-        if { $status == "running" } {
-            Trace "Server is already running, leaving it running."
-        } else {
-            StartServer            
+set lastTimeChecked [clock seconds]
+proc CheckRestartAt { } {
+    global serverConfig
+    global lastTimeChecked
+    set restartAt [GetConfigValue $serverConfig restartat]
+    set now [clock seconds]
+    foreach time $restartAt {
+        set candidate [clock scan $time]
+        if { ($now >= $candidate) && ($candidate > $lastTimeChecked) } {
+            RestartAt $time
+            break
         }
     }
-    if { $currentOs == "windows" } {
-        Trace "Server option restartat currently disabled on Windows, doesn't work properly, sorry..."
-    } else {
-        set restartAt [GetConfigValue $serverConfig restartat]
-        if { $restartAt != "" } {
-            foreach time $restartAt {
-                Trace "Server will be restarted and potentially updated at $time"
-                At $time { RestartAt $time }
-            }
-        }        
-    }
+    set lastTimeChecked $now
+}
+
+proc StartStuffOnStart {} {
+    UpdateAndStartServerAssync
+    global serverConfig installFolder
+    set restartAt [GetConfigValue $serverConfig restartat]
+    if { $restartAt != "" } {
+        CreateAssyncUpdateAndStart "$installFolder/bin/onrestart" [GetConfigValue $serverConfig autoupdateonrestart] 1
+        Every 60000 CheckRestartAt
+    }        
 }
 
 if {$serverPresent} {
@@ -765,11 +751,10 @@ proc UpgradeCheck {} {
             Trace "Failed to get latest release!"        
         }
     }
-    
 }
 
 if {$serverPresent} {
-    after 5000 UpgradeCheck
+    after 5000 { UpgradeCheck ; StartStuffOnStart }
 }
 
 if { $serverPresent && $needsUpgrade } {
@@ -778,8 +763,6 @@ if { $serverPresent && $needsUpgrade } {
         file delete -force "$NeedsUpgradeFileName"
     }
 }
-
-
 
 #bind . <KeyPress> {puts "You pressed the key named: %K "}
 #bind . <ButtonPress> {puts "You pressed button: %b at %x %y"}

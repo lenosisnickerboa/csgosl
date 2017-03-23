@@ -464,69 +464,6 @@ proc SetDefaultsAll {} {
     Restart
 }
 
-proc DoCreateStandalone {} {
-    global serverConfig
-    set standaloneScript [GetConfigValue $serverConfig standalonescript]
-    set standaloneUpdate [GetConfigValue $serverConfig standaloneupdate]
-    set standaloneStart [GetConfigValue $serverConfig standalonestart]
-    if { $standaloneScript != "1" } {
-        return 0
-    }
-    set fileName "standalone-server-start"
-    global installFolder
-    global currentOs
-    if { $currentOs == "windows" } {
-        set fileName [file nativename "$fileName.bat"]
-    } else {
-        set fileName [file nativename "$fileName.sh"]
-    }
-    set fileId [open $fileName "w"]
-    StoreHeaderInScript $fileId
-    if {$standaloneUpdate == 1} {
-        puts $fileId "[UpdateServer 1]"
-    }
-    if {$standaloneStart == 1} {
-        puts $fileId "[StartServer 1]"
-    }
-    close $fileId
-    if { $currentOs == "windows" } {
-    } else {
-        file attributes $fileName -permissions "+x" 
-    }
-
-#No support for closing down server on windows yet, just skip it
-    if { $currentOs == "windows" } {
-        return 0
-    }
-    
-    set fileName "standalone-server-stop"
-    if { $currentOs == "windows" } {
-        set fileName [file nativename "$fileName.bat"]
-    } else {
-        set fileName [file nativename "$fileName.sh"]
-    }
-    set fileId [open $fileName "w"]
-    StoreHeaderInScript $fileId
-    if {$standaloneStart == 1} {
-        puts $fileId "[StopServer 1]"
-    }
-    close $fileId
-    
-    if { $currentOs == "windows" } {
-    } else {
-        file attributes $fileName -permissions "+x" 
-    }
-}
-
-proc CreateStandalone {} {
-    global installFolder
-    Trace "Creating standalone scripts in install folder $installFolder"
-    if {[catch {DoCreateStandalone} errMsg]} {
-        Trace "Failed creating standalone scripts in install folder $installFolder ($errMsg)"
-    }    
-}
-
-
 proc SaveSourceModAdmins {configName} {
     global $configName
     set config [set $configName]

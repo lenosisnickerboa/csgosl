@@ -235,11 +235,11 @@ proc CreateTitle {at startButtonEnabled} {
     if { !$serverPresent } {
         set buttonText "Install server"
     }
-    button $at.u -compound top -image updateImg -text "$buttonText" -command UpdateServer
-    pack $at.u -side left
+    button $at.update -compound top -image updateImg -text "$buttonText" -command UpdateServer
+    pack $at.update -side left
 	image create photo SaveImg -width $width -height $height -file [file join $starkit::topdir "save-240-120.jpg"]
-    button $at.s -compound top -image SaveImg -text "Save all settings" -command SaveAll
-    pack $at.s -side left
+    button $at.saveall -compound top -image SaveImg -text "Save all settings" -command SaveAll
+    pack $at.saveall -side left
     
     image create photo restartImg -width $width -height $height -file [file join $starkit::topdir "restart-240-120.png"]
     button $at.restart -compound top -image restartImg -text "Restart csgosl" -command Restart
