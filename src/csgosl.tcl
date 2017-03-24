@@ -46,20 +46,6 @@ proc Every {ms body} {
     after $ms [list after idle [info level 0]]
 }
 
-#inspiration: http://wiki.tcl.tk/808
-proc At {time args} {
-    if {[llength $args] == 1} {set args [lindex $args 0]}
-#    set dt [expr {([clock scan $time]-[clock seconds])*1000}]
-    set timeS [clock scan $time]
-    set nowS [clock seconds]
-    set dt 0
-    if {$timeS > $nowS} {
-        set dt [expr {($timeS-$nowS)*1000}]        
-    } else {
-        set dt [expr {([clock scan "00:00"]+$timeS-$nowS)*1000}]
-    }
-    after $dt $args
-}
 proc IsDryRun {} {
     global applicationConfig
     GetConfigValue $applicationConfig dryrun
@@ -654,8 +640,8 @@ proc RestartAt {time} {
         StopServer
     }
     global serverConfig
-    set autoUpdateOnRestart [GetConfigValue $serverConfig autoupdateonrestart]
-    if { $autoUpdateOnRestart == 1 } {
+    set updateServerOnRestart [GetConfigValue $serverConfig updateserveronrestart]
+    if { $updateServerOnRestart == 1 } {
         Trace "Auto updating and starting server again, hold on, may take a while..."
     } else {
         Trace "Starting server again, hold on, may take a while..."        
@@ -669,9 +655,9 @@ set lastTimeChecked [clock seconds]
 proc CheckRestartAt { } {
     global serverConfig
     global lastTimeChecked
-    set restartAt [GetConfigValue $serverConfig restartat]
+    set restartServerAt [GetConfigValue $serverConfig restartserverat]
     set now [clock seconds]
-    foreach time $restartAt {
+    foreach time $restartServerAt {
         set candidate [clock scan $time]
         if { ($now >= $candidate) && ($candidate > $lastTimeChecked) } {
             RestartAt $time
@@ -684,9 +670,9 @@ proc CheckRestartAt { } {
 proc StartStuffOnStart {} {
     UpdateAndStartServerAssync
     global serverConfig installFolder
-    set restartAt [GetConfigValue $serverConfig restartat]
-    if { $restartAt != "" } {
-        CreateAssyncUpdateAndStart "$installFolder/bin/onrestart" [GetConfigValue $serverConfig autoupdateonrestart] 1
+    set restartServerAt [GetConfigValue $serverConfig restartserverat]
+    if { $restartServerAt != "" } {
+        CreateAssyncUpdateAndStart "$installFolder/bin/onrestart" [GetConfigValue $serverConfig updateserveronrestart] 1
         Every 60000 CheckRestartAt
     }        
 }

@@ -21,7 +21,6 @@ variable steamConfig [CreateConfig \
         "bool"      [list makemeadmin "1" "Enable to be the sourcemod admin for your server. Requires steamusername and steamuserid to be filled in."]\
         "string"    [list gameserverlogintoken "" "Required to host public servers, see help page for more information."]\
         "string"    [list apiauthkey "" "Required to download maps from the workshop, see help page for more information."]\
-        "bool"      [list autoupdateonstart "0" "Automatically perform server update when csgosl is launched."]\
         "bool"      [list validateinstall "0" "Perform install validation when updating, i.e the downloaded server update is checked for validity."]\
         "url"       [list steamcmdurl "$steamCmdUrl" "URL to steamcmd. Leave as is if you don't have a very good reason to change this."]\
     ] \
@@ -48,7 +47,6 @@ variable steamLayout [CreateLayout \
         h2      [list "Installation"] \
         line    [list] \
         space   [list] \
-        parm    [list autoupdateonstart] \
         parm    [list validateinstall] \
         parm    [list steamcmdurl] \
     ] \

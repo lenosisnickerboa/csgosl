@@ -462,20 +462,20 @@ proc CreateAssyncUpdateAndStart {filename includeUpdate includeStart} {
 }
 
 proc UpdateAndStartServerAssync {} {
-    global steamConfig serverConfig
+    global serverConfig
     global currentOs
     global installFolder
 
-    set autoUpdateOnStart [GetConfigValue $steamConfig autoupdateonstart]
-    set autoStartOnStart [GetConfigValue $serverConfig autostartonstart]
+    set updateServerOnStart [GetConfigValue $serverConfig updateserveronstart]
+    set startOnStart [GetConfigValue $serverConfig startserveronstart]
 
-    if { ($autoUpdateOnStart == 0) && ($autoStartOnStart == 0) } {
+    if { ($updateServerOnStart == 0) && ($startOnStart == 0) } {
         return 0
     }
     
-    CreateAssyncUpdateAndStart "$installFolder/bin/onstart" $autoUpdateOnStart $autoStartOnStart    
+    CreateAssyncUpdateAndStart "$installFolder/bin/onstart" $updateServerOnStart $startOnStart    
         
-    if { $autoUpdateOnStart == 1 } {
+    if { $updateServerOnStart == 1 } {
         set status [DetectServerRunning]
         if { $status == "running" } {
             Trace "Server is running, stopping it to be able to update."
@@ -487,7 +487,7 @@ proc UpdateAndStartServerAssync {} {
         }
         Trace "Auto updating..."
     }
-    if { $autoStartOnStart == "1" } {
+    if { $startOnStart == "1" } {
         set status [DetectServerRunning]
         if { $status == "running" } {
             Trace "Server is already running, leaving it running."
