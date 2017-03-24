@@ -467,13 +467,13 @@ proc UpdateAndStartServerAssync {} {
     global installFolder
 
     set updateServerOnStart [GetConfigValue $serverConfig updateserveronstart]
-    set startOnStart [GetConfigValue $serverConfig startserveronstart]
+    set startServerOnStart [GetConfigValue $serverConfig startserveronstart]
 
-    if { ($updateServerOnStart == 0) && ($startOnStart == 0) } {
+    if { ($updateServerOnStart == 0) && ($startServerOnStart == 0) } {
         return 0
     }
     
-    CreateAssyncUpdateAndStart "$installFolder/bin/onstart" $updateServerOnStart $startOnStart    
+    CreateAssyncUpdateAndStart "$installFolder/bin/onstart" $updateServerOnStart $startServerOnStart    
         
     if { $updateServerOnStart == 1 } {
         set status [DetectServerRunning]
@@ -487,7 +487,7 @@ proc UpdateAndStartServerAssync {} {
         }
         Trace "Auto updating..."
     }
-    if { $startOnStart == "1" } {
+    if { $startServerOnStart == "1" } {
         set status [DetectServerRunning]
         if { $status == "running" } {
             Trace "Server is already running, leaving it running."
