@@ -721,14 +721,21 @@ proc UpgradeCheck {} {
         set latestRelease [GetLatestRelease]
         if { $latestRelease != "" } {
             if { $latestRelease != $version } {
-                set reply [tk_dialog .w "csgosl update $latestRelease is available!" \
-                "A new csgosl version $latestRelease is available!\n\nDo you want to update your version $version to $latestRelease?\n\nYou can disable this check in the Application Page.\nPlease be patient during upgrade, it takes a while to download the update.\ncsgosl will restart once the download is finished." \
-                info 0 "Install $latestRelease" "Take me to the download page" "Not now"]
-                if { $reply == 0 } {
-                    InstallRelease $latestRelease
-                } elseif { $reply == 1 } {
-                    Browser "https://github.com/lenosisnickerboa/csgosl/releases"
-                    Browser "https://github.com/lenosisnickerboa/csgosl/wiki/Upgrade%20a%20server"                    
+                set done 0
+                while { ! $done } {
+                    set done 1
+                    set reply [tk_dialog .w "csgosl update $latestRelease is available!" \
+                    "A new csgosl version $latestRelease is available!\n\nDo you want to update your version $version to $latestRelease?\n\nYou can disable this check in the Application Page.\nPlease be patient during upgrade, it takes a while to download the update.\ncsgosl will restart once the download is finished." \
+                    info 0 "First let me see what's in $latestRelease" "Install $latestRelease now" "Take me to the download page, want to update myself" "Not now"]
+                    if { $reply == 0 } {
+                        Browser "https://github.com/lenosisnickerboa/csgosl/releases"
+                        set done 0
+                    } elseif { $reply == 1 } {
+                        InstallRelease $latestRelease
+                    } elseif { $reply == 2 } {
+                        Browser "https://github.com/lenosisnickerboa/csgosl/releases"
+                        Browser "https://github.com/lenosisnickerboa/csgosl/wiki/Upgrade%20a%20server"                    
+                    }                    
                 }
             } else {
                 Trace "Running latest release."                    
