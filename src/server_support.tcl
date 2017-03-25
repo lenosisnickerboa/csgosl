@@ -129,7 +129,7 @@ proc StartServer { {returnCommandOnly 0} } {
                 -tickrate $tickRate \
                 $passwordOption \
                 $ipOption \
-                +hostname \\\"$serverName\\"\" $serverPortOption $serverLanOption \
+                +hostname \"$serverName\" $serverPortOption $serverLanOption \
                 $options"
         }
         RunAssync "$serverControlScript-start.bat \"$serverFolder/$srcdsName\" \
@@ -377,7 +377,7 @@ proc DoCreateStandalone {filename} {
     set standaloneUpdate [GetConfigValue $serverConfig standaloneupdate]
     set standaloneStart [GetConfigValue $serverConfig standalonestart]
     set fileName [MakeScriptFileName "$filename-start"]
-    if { $standaloneScript != "1" } {
+    if { $standaloneScript == 0 } {
         file delete -force "$fileName"
         file delete -force [MakeScriptFileName "$filename-stop"]
         return 0
@@ -387,19 +387,25 @@ proc DoCreateStandalone {filename} {
     set fileId [open $fileName "w"]
     StoreHeaderInScript $fileId
     if {$standaloneUpdate == 1} {
-        puts $fileId "[UpdateServer 1]"
+        if {$currentOs == "windows"} {
+            puts $fileId "start /wait \"Updater Launcher window\" [UpdateServer 1]"
+        } else {
+            puts $fileId "[UpdateServer 1]"
+        }
     }
     if {$standaloneStart == 1} {
         if {$currentOs == "windows"} {
-            puts $fileId "start \"Launcher window\" [StartServer 1]"            
+            puts $fileId "start \"Server Launcher window\" [StartServer 1]"
         } else {
-            puts $fileId "[StartServer 1]"            
+            puts $fileId "[StartServer 1]"
         }
     }
     close $fileId
+    
     if { $currentOs == "windows" } {
+        set x 1 
     } else {
-        file attributes $fileName -permissions "+x" 
+        file attributes $fileName -permissions "+x"
     }
 
 #No support for closing down server on windows yet, just skip it
@@ -417,8 +423,9 @@ proc DoCreateStandalone {filename} {
     close $fileId
     
     if { $currentOs == "windows" } {
+        set x 1
     } else {
-        file attributes $fileName -permissions "+x" 
+        file attributes $fileName -permissions "+x"
     }
 }
 
@@ -431,19 +438,25 @@ proc DoCreateAssyncUpdateAndStart {fileName includeUpdate includeStart} {
     set fileId [open $fileName "w"]
     StoreHeaderInScript $fileId
     if {$includeUpdate == 1} {
-        puts $fileId "[UpdateServer 1]"
+        if {$currentOs == "windows"} {
+            puts $fileId "start /wait \"Updater Launcher window\" [UpdateServer 1]"
+        } else {
+            puts $fileId "[UpdateServer 1]"
+        }
     }
     if {$includeStart == 1} {
         if {$currentOs == "windows"} {
-            puts $fileId "start \"Launcher window\" [StartServer 1]"            
+            puts $fileId "start \"Server Launcher window\" [StartServer 1]"
         } else {
-            puts $fileId "[StartServer 1]"            
+            puts $fileId "[StartServer 1]"
         }
     }
     close $fileId
+    
     if { $currentOs == "windows" } {
+        set x 1
     } else {
-        file attributes $fileName -permissions "+x" 
+        file attributes $fileName -permissions "+x"
     }
 }
 
