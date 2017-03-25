@@ -652,7 +652,7 @@ proc RestartAt {time} {
     global serverConfig
     set updateServerOnRestart [GetConfigValue $serverConfig updateserveronrestart]
     if { $updateServerOnRestart == 1 } {
-        Trace "Auto updating and starting server again, hold on, may take a while..."
+        Trace "Updating and starting server again, hold on, may take a while..."
     } else {
         Trace "Starting server again, hold on, may take a while..."        
     }
@@ -683,7 +683,7 @@ proc StartStuffOnStart {} {
     set restartServerAt [GetConfigValue $serverConfig restartserverat]
     if { $restartServerAt != "" } {
         CreateAssyncUpdateAndStart "$installFolder/bin/onrestart" [GetConfigValue $serverConfig updateserveronrestart] 1
-        Every 60000 CheckRestartAt
+        Every 30000 CheckRestartAt
     }        
 }
 
@@ -734,9 +734,10 @@ proc UpgradeCheck {} {
                 set done 0
                 while { ! $done } {
                     set done 1
+                    set noBitMap ""
                     set reply [tk_dialog .w "csgosl update $latestRelease is available!" \
-                    "A new csgosl version $latestRelease is available!\n\nDo you want to update your version $version to $latestRelease?\n\nYou can disable this check in the Application Page.\nPlease be patient during upgrade, it takes a while to download the update.\ncsgosl will restart once the download is finished." \
-                    info 0 "First let me see what's in $latestRelease" "Install $latestRelease now" "Take me to the download page, want to update myself" "Not now"]
+                    "A new csgosl version $latestRelease is available!\n\nDo you want to update your version $version to $latestRelease?\n\nYou can disable this check in the Application Page.\n\nPlease be patient during upgrade, it takes a while to download the update.\n\ncsgosl will restart once the download is finished." \
+                    $noBitMap 0 "First let me see what's in $latestRelease" "Install $latestRelease now" "Take me to the download page, want to update myself" "Not now"]
                     if { $reply == 0 } {
                         Browser "https://github.com/lenosisnickerboa/csgosl/releases"
                         set done 0

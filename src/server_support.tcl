@@ -485,7 +485,7 @@ proc UpdateAndStartServerAssync {} {
                 after 1000
             }
         }
-        Trace "Auto updating..."
+        Trace "Updating server..."
     }
     if { $startServerOnStart == "1" } {
         set status [DetectServerRunning]
@@ -493,7 +493,7 @@ proc UpdateAndStartServerAssync {} {
             Trace "Server is already running, leaving it running."
             return 0
         } else {
-            Trace "Auto starting server..."
+            Trace "Starting server..."
         }
     }
     
