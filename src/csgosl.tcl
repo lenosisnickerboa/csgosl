@@ -80,13 +80,12 @@ proc SaveAll { {skipStandalone ""} } {
             global serverConfig installFolder
             set updateServerOnStart [GetConfigValue $serverConfig updateserveronstart]
             set startServerOnStart [GetConfigValue $serverConfig startserveronstart]
-            if { ($updateServerOnStart != 0) || ($startServerOnStart != 0) } {
-                CreateAssyncUpdateAndStart "$installFolder/bin/onstart" $updateServerOnStart $startServerOnStart
-            } 
-            set restartServerAt [GetConfigValue $serverConfig restartserverat]
-            if { $restartServerAt != "" } {
-                CreateAssyncUpdateAndStart "$installFolder/bin/onrestart" [GetConfigValue $serverConfig updateserveronrestart] 1
-            }        
+            CreateAssyncUpdateAndStart "$installFolder/bin/onstart" $updateServerOnStart $startServerOnStart
+            set restartServerAtRestart 0
+            if {[GetConfigValue $serverConfig restartserverat] != ""} {
+                set restartServerAtRestart 1
+            }
+            CreateAssyncUpdateAndStart "$installFolder/bin/onrestart" [GetConfigValue $serverConfig updateserveronrestart] $restartServerAtRestart
         }
     }
 }
@@ -680,9 +679,12 @@ proc CheckRestartAt { } {
 proc StartStuffOnStart {} {
     UpdateAndStartServerAssync
     global serverConfig installFolder
-    set restartServerAt [GetConfigValue $serverConfig restartserverat]
-    if { $restartServerAt != "" } {
-        CreateAssyncUpdateAndStart "$installFolder/bin/onrestart" [GetConfigValue $serverConfig updateserveronrestart] 1
+    set restartServerAtRestart 0
+    if {[GetConfigValue $serverConfig restartserverat] != ""} {
+        set restartServerAtRestart 1        
+    }
+    CreateAssyncUpdateAndStart "$installFolder/bin/onrestart" [GetConfigValue $serverConfig updateserveronrestart] $restartServerAtRestart
+    if { $restartServerAtRestart != 0 } {
         Every 30000 CheckRestartAt
     }        
 }

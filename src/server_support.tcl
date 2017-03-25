@@ -129,7 +129,7 @@ proc StartServer { {returnCommandOnly 0} } {
                 -tickrate $tickRate \
                 $passwordOption \
                 $ipOption \
-                +hostname \"$serverName\" $serverPortOption $serverLanOption \
+                +hostname \\\"$serverName\\"\" $serverPortOption $serverLanOption \
                 $options"
         }
         RunAssync "$serverControlScript-start.bat \"$serverFolder/$srcdsName\" \
@@ -146,8 +146,7 @@ proc StartServer { {returnCommandOnly 0} } {
              $options"
     } else {
         if {$returnCommandOnly == 1} {
-            return "\"$serverFolder/$srcdsName\" $control \
-            \"$serverFolder/$srcdsName\" \
+            return "\"$serverFolder/$srcdsName\" \
              -game csgo $consoleCommand $rconCommand \
              +game_type $gameType +game_mode $gameMode \
              $mapGroupOption \
@@ -157,7 +156,7 @@ proc StartServer { {returnCommandOnly 0} } {
              -tickrate $tickRate \
              $passwordOption \
              $ipOption \
-             +hostname \"$serverName\" $serverPortOption $serverLanOption \
+             +hostname \\\"$serverName\\\" $serverPortOption $serverLanOption \
              $options"
         }
         chan configure stdout -buffering none
@@ -377,10 +376,12 @@ proc DoCreateStandalone {filename} {
     set standaloneScript [GetConfigValue $serverConfig standalonescript]
     set standaloneUpdate [GetConfigValue $serverConfig standaloneupdate]
     set standaloneStart [GetConfigValue $serverConfig standalonestart]
+    set fileName [MakeScriptFileName "$filename-start"]
     if { $standaloneScript != "1" } {
+        file delete -force "$fileName"
+        file delete -force [MakeScriptFileName "$filename-stop"]
         return 0
     }
-    set fileName [MakeScriptFileName "$filename-start"]
     Trace "Creating standalone script $fileName..."
     global currentOs
     set fileId [open $fileName "w"]
@@ -423,6 +424,7 @@ proc DoCreateStandalone {filename} {
 
 proc DoCreateAssyncUpdateAndStart {fileName includeUpdate includeStart} {
     if { ($includeUpdate == 0) && ($includeStart == 0) } {
+        file delete -force $fileName
         return 0
     }
     global currentOs
@@ -469,11 +471,11 @@ proc UpdateAndStartServerAssync {} {
     set updateServerOnStart [GetConfigValue $serverConfig updateserveronstart]
     set startServerOnStart [GetConfigValue $serverConfig startserveronstart]
 
+    CreateAssyncUpdateAndStart "$installFolder/bin/onstart" $updateServerOnStart $startServerOnStart    
+
     if { ($updateServerOnStart == 0) && ($startServerOnStart == 0) } {
         return 0
     }
-    
-    CreateAssyncUpdateAndStart "$installFolder/bin/onstart" $updateServerOnStart $startServerOnStart    
         
     if { $updateServerOnStart == 1 } {
         set status [DetectServerRunning]
