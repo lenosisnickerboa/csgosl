@@ -18,8 +18,8 @@ csgosl features:
 * Greatly simplified server settings with reasonable defaults 
 * [Advanced settings](https://github.com/lenosisnickerboa/csgosl/wiki/Advanced%20mode) mode for the control freak (supports all cvars with in app help texts)
 * [Override settings in one place](https://github.com/lenosisnickerboa/csgosl/wiki/Advanced%20mode) for all game modes/types
-* [Online help](https://github.com/lenosisnickerboa/csgosl/wiki/csgosl-online-help) easily accessible from the application
-* Custom cvar support
+* [Online help](https://github.com/lenosisnickerboa/csgosl/wiki) easily accessible from the application
+* [Custom cvar support](https://github.com/lenosisnickerboa/csgosl/wiki/Custom-cvars)
 * Comes preinstalled with [sourcemod](https://www.sourcemod.net/) and [metamod](https://www.metamodsource.net/) and some plugins. Read more about how it works [here](Help-on-Sourcemod).
 
 
