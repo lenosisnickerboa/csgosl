@@ -202,7 +202,7 @@ proc CreateConfigPageItemFromLayout {layout page type args widgetIx} {
 proc Donate {} {
     global currentOs
     if {$currentOs == "windows"} {
-        Browser { https://www.paypal.com/cgi-bin/webscr?cmd=_s-xclick&hosted_button_id=NESCKT8B4C638 }        
+        Browser {https://www.paypal.com/cgi-bin/webscr?cmd=_s-xclick&hosted_button_id=NESCKT8B4C638}
     } else {
         Browser "https://www.paypal.com/cgi-bin/webscr?cmd=_s-xclick&hosted_button_id=NESCKT8B4C638"
     }

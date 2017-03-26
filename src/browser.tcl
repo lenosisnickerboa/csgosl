@@ -8,6 +8,15 @@ package require http
 
 source [file join $starkit::topdir trace.tcl]
 
+proc BrowserWorkaroundWindows {url} {
+  global installFolder
+  set fileName [file nativename "$installFolder/bin/browser-workaround.bat"]
+  set fileId [open "$fileName" "w"]
+  puts $fileId "start \"Browser workaround launcher\" \"$url\""
+  close $fileId
+  exec $fileName &
+}
+
 proc Browser {url} {
   Trace "Browser: $url"
   # open is the OS X equivalent to xdg-open on Linux, start is used on Windows
@@ -26,7 +35,14 @@ proc Browser {url} {
   if {[string length $command] == 0} {
     return -code error "couldn't find browser"
   }
-  if {[catch {exec {*}$command $url &} error]} {
-    return -code error "couldn't execute '$command': $error"
+
+  #Apply workaround for urls containing "&"
+  global currentOs
+  if {($currentOs == "windows") && ([string match "*&*" $url])} {
+    BrowserWorkaroundWindows $url    
+  } else {
+    if {[catch {exec {*}$command $url &} error]} {
+      return -code error "couldn't execute '$command': $error"
+    }    
   }
 }
