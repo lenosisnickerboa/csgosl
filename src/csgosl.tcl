@@ -192,12 +192,21 @@ SetTitle "$name $version - loading configuration..."
 
 CreateSetDefaultImage
 CreateDeleteCustomImage
+
 source [file join $starkit::topdir page_server.tcl]
 
 EnsureConfigFile serverConfig
 LoadConfigFile serverConfig
 proc SaveConfigFileServer {} {
     SaveConfigFile serverConfig
+}
+
+source [file join $starkit::topdir page_gotv.tcl]
+
+EnsureConfigFile gotvConfig
+LoadConfigFile gotvConfig
+proc SaveConfigFileGoTv {} {
+    SaveConfigFile gotvConfig
 }
 
 variable serverOrigConfig [CreateConfig \
@@ -228,6 +237,11 @@ variable serverOrigConfig [CreateConfig \
         "int"       [list sm_weaponpaints_roundtimer "" ""]\
         "bool"      [list sm_weaponpaints_rmenu "" ""]\
         "bool"      [list sm_weaponpaints_zombiesv "" ""]\
+        "bool"      [list tv_enable "" ""]\
+        "int"       [list tv_port "" ""]\
+        "string"    [list tv_title "" ""]\
+        "string"    [list tv_password "" ""]\
+        "int"       [list tv_delay "" ""]\
     ] \
 ]
 
@@ -238,6 +252,7 @@ if { $serverPresent } {
 proc SaveConfigFileOrigServer {} {
     global serverOrigConfig
     global serverConfig
+    global gotvConfig
     SetConfigItem $serverOrigConfig sv_maxrate 0
     SetConfigItem $serverOrigConfig sv_minrate 100000
     set tickRate [GetConfigItem $serverConfig tickrate]
@@ -291,6 +306,36 @@ proc SaveConfigFileOrigServer {} {
         SetConfigItem $serverOrigConfig sm_weaponpaints_rmenu $ValueToSkip
         SetConfigItem $serverOrigConfig sm_weaponpaints_onlyadmin $ValueToSkip
         SetConfigItem $serverOrigConfig sm_weaponpaints_zombiesv $ValueToSkip
+    }
+    
+    set gotvEnable [GetConfigItem $gotvConfig gotvenable]
+    SetConfigItem $serverOrigConfig tv_enable $gotvEnable
+    if {$gotvEnable == 1} {
+        SetConfigItem $serverOrigConfig tv_title [GetConfigItem $gotvConfig gotvtitle]
+        SetConfigItem $serverOrigConfig tv_password [GetConfigItem $gotvConfig gotvpassword]
+        SetConfigItem $serverOrigConfig tv_delay [GetConfigItem $gotvConfig gotvdelay]
+        SetConfigItem $serverOrigConfig tv_port [GetConfigItem $gotvConfig gotvport]
+        SetConfigItem $serverOrigConfig tv_deltacache [GetConfigItem $gotvConfig gotvdeltacache]
+        SetConfigItem $serverOrigConfig tv_snapshotrate [GetConfigItem $gotvConfig gotvsnapshotrate]
+        SetConfigItem $serverOrigConfig tv_allowcameraman [GetConfigItem $gotvConfig gotvallowcameraman]
+        SetConfigItem $serverOrigConfig tv_allowstaticshots [GetConfigItem $gotvConfig gotvallowstaticshots]
+        SetConfigItem $serverOrigConfig tv_autorecord [GetConfigItem $gotvConfig gotvautorecord]
+        SetConfigItem $serverOrigConfig tv_chat [GetConfigItem $gotvConfig gotvchat]
+        SetConfigItem $serverOrigConfig tv_delaymapchange [GetConfigItem $gotvConfig gotvdelaymapchange]
+        SetConfigItem $serverOrigConfig tv_maxclients [GetConfigItem $gotvConfig gotvmaxclients]
+    } else {
+        SetConfigItem $serverOrigConfig tv_title $ValueToSkip
+        SetConfigItem $serverOrigConfig tv_password $ValueToSkip
+        SetConfigItem $serverOrigConfig tv_delay $ValueToSkip
+        SetConfigItem $serverOrigConfig tv_port $ValueToSkip
+        SetConfigItem $serverOrigConfig tv_deltacache $ValueToSkip
+        SetConfigItem $serverOrigConfig tv_snapshotrate $ValueToSkip
+        SetConfigItem $serverOrigConfig tv_allowcameraman $ValueToSkip
+        SetConfigItem $serverOrigConfig tv_allowstaticshots $ValueToSkip
+        SetConfigItem $serverOrigConfig tv_autorecord $ValueToSkip
+        SetConfigItem $serverOrigConfig tv_chat $ValueToSkip
+        SetConfigItem $serverOrigConfig tv_delaymapchange $ValueToSkip
+        SetConfigItem $serverOrigConfig tv_maxclients $ValueToSkip
     }
     
     SaveConfigFile serverOrigConfig
@@ -578,6 +623,9 @@ set enableTab 1
 
 CreateConfigPageTabFromLayout $cp.server $serverLayout $enableTab
 set serverPage [CreateConfigPageFromLayout $cp.server $serverLayout]
+
+CreateConfigPageTabFromLayout $cp.gotv $gotvLayout $enableTab
+set gotvPage [CreateConfigPageFromLayout $cp.gotv $gotvLayout]
 
 CreateConfigPageTabFromLayout $cp.steam $steamLayout $enableTab
 set steamPage [CreateConfigPageFromLayout $cp.steam $steamLayout]
