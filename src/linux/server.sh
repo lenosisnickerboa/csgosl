@@ -26,7 +26,7 @@ case "$action" in
     stop)
 	pid1=`status_ext srcds_run`
 	pid2=`status_ext srcds_linux`
-	[ ! -z "$pid1$pid2" ] && kill -9 $pid1 $pid2
+	[ ! -z "$pid1$pid2" ] && kill -s SIGHUP $pid1 $pid2
 	;;
     status)
 	pid=`status_ext srcds_linux`
