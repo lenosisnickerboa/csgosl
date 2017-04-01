@@ -5,8 +5,8 @@ METAMOD_HOME_URL="http://www.metamodsource.net/"
 METAMOD_URL="http://www.gsptalk.com/mirror/sourcemod/mmsource-1.10.6-linux.tar.gz"
 METAMOD_VERSION="1.10.6"
 SOURCEMOD_HOME_URL="http://www.sourcemod.net/"
-SOURCEMOD_URL="https://www.sourcemod.net/smdrop/1.8/sourcemod-1.8.0-git5978-linux.tar.gz"
-SOURCEMOD_VERSION="1.8.0-git5978"
+SOURCEMOD_URL="https://www.sourcemod.net/smdrop/1.8/sourcemod-1.8.0-git5981-linux.tar.gz"
+SOURCEMOD_VERSION="1.8.0-git5981"
 export
 
 all: mods
