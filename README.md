@@ -20,6 +20,7 @@ csgosl features:
 * [Override settings in one place](https://github.com/lenosisnickerboa/csgosl/wiki/Advanced%20mode) for all game modes/types
 * [Online help](https://github.com/lenosisnickerboa/csgosl/wiki) easily accessible from the application
 * [Custom cvar support](https://github.com/lenosisnickerboa/csgosl/wiki/Custom-cvars)
+* [GOTV support](https://github.com/lenosisnickerboa/csgosl/wiki/Host-a-GOTV-server)
 * Comes preinstalled with [sourcemod](https://www.sourcemod.net/) and [metamod](https://www.metamodsource.net/) and some plugins. Read more about how it works [here](https://github.com/lenosisnickerboa/csgosl/wiki/Help-on-Sourcemod).
 
 
