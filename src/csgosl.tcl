@@ -616,6 +616,11 @@ pack [CreateTitle .title $serverPresent] -side top
 #pack [Separator .topSep] -side left -fill x -expand true
 frame .config -borderwidth 10 
 pack [set cp [CreateConfigPages .config $windowWidth $windowHeigth]] -side left -fill both -expand true
+
+proc GetCp {} {
+    global cp
+    return $cp
+}
 #pack [Separator .bottomSep] -side left -fill x -expand true
 #pack [CreateStatus $top.status status currentDir hostName] -side left -fill x -expand true
 
@@ -680,6 +685,10 @@ set gameModeCustomPage [CreateConfigPageFromLayout $cp.gameModeCustom $gameModeC
 
 CreateConfigPageTabFromLayout $cp.gameModeCooperative $gameModeCooperativeLayout [expr $fullConfig && $serverPresent]
 set gameModeCooperativePage [CreateConfigPageFromLayout $cp.gameModeCooperative $gameModeCooperativeLayout]    
+
+puts "PerformOnChangeOnLayout"
+PerformOnChangeOnLayout $serverPage $serverLayout
+PerformOnChangeOnLayout $runPage $runLayout
 
 if {$serverPresent} {
     $cp select $runPage

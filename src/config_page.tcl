@@ -203,6 +203,24 @@ proc CreateConfigPageItemFromLayout {layout page type args widgetIx} {
     }    
 }
 
+proc PerformOnChangeOnConfigPageParm {layout page type args widgetIx} {
+    set pageOptions [dict get $layout options]
+    set configName [dict get $pageOptions configName]
+    global $configName
+    set config [set $configName]
+    set meta [dict get $config meta]
+    set parmName [join [lindex $args 0]]
+    set metaItem [dict get $meta $parmName]
+    if { [dict exists $metaItem onchange] } {
+        set onchangeCmd [dict get $metaItem onchange]
+        if {$onchangeCmd != ""} {
+            set parmValues [dict get $config values]
+            set parmValue [dict get $parmValues $parmName]
+            eval "$onchangeCmd" "$parmValue"
+        }
+    }
+}
+
 proc Donate {} {
     global currentOs
     if {$currentOs == "windows"} {
@@ -252,6 +270,34 @@ proc CreateConfigPageFromLayout {at layout} {
     }
     pack $at.scrollableitems -side top -anchor nw -fill both -expand true
     return $at
+}
+
+proc PerformOnChangeOnLayout {at layout} {
+    set components [dict get $layout components]
+    set page [sframe content $at.scrollableitems]    
+    set widgetIx 0
+    foreach {type args} $components {
+        if {$type == "parm"} {
+            PerformOnChangeOnConfigPageParm $layout $page $type $args $widgetIx
+        }
+        incr widgetIx
+    }
+}
+
+proc SetConfigItemState {at layout item state} {
+    set page [sframe content $at.scrollableitems]
+    set components [dict get $layout components]
+    set widgetIx 0
+    foreach {type args} $components {
+        if {$type == "parm"} {
+            set parmName [join [lindex $args 0]]
+            if {$parmName ==  $item} {
+                SetWidgetState $page.w$parmName $state
+                return 0
+            }
+        }
+        incr widgetIx
+    }
 }
 
 proc CreateMapsSelector {at maps selector} {

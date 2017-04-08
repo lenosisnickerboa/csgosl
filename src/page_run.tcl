@@ -17,7 +17,7 @@ variable runConfig [CreateConfig \
         "enum" [list startmap "de_dust2" "The first maps the server starts hosting. If you enter a workshop map id here that map will be hosted." $allMaps]\
         "int"  [list players "16" "Defines max number of players including bots." mappedto [list bot_quota]]\
         "int"  [list bots "0" "Only used when fillwithbots is disabled, ignored otherwhise. Defines exact number of bots." mappedto [list bot_quota]]\
-        "bool" [list fillwithbots "1" "Add bots until max number of players are reached." mappedto [list bot_quota bot_quota_mode]]\
+        "bool" [list fillwithbots "1" "Add bots until max number of players are reached." mappedto [list bot_quota bot_quota_mode] onchange "RunSetBotsState"]\
         "enum" [list botskill "Normal" "How intelligent bots do you want?" [dict keys $botSkillMapper] mappedto [list bot_difficulty]]\
         "bool" [list friendlyfire "0" "Enable this option to be able to hurt your team mates." mappedto [list mp_friendlyfire]]\
         "int"  [list roundtime "10" "Limit match time to this many minutes." mappedto [list mp_roundtime]]\
@@ -75,3 +75,13 @@ proc RunMapGroupChanged { value } {
     SetConfigItem $runConfig startmap [GetFirstMapInMapGroup $value]
     return $value
 }
+
+proc RunSetBotsState { value } {
+    global runLayout
+    set cp [GetCp]
+    set enabled [expr $value == 0]
+    SetConfigItemState $cp.run $runLayout bots $enabled
+    return $value
+}
+
+

@@ -62,6 +62,14 @@ proc CreateDisableButton {at controlledWidget1 controlledWidget2 disableParmsArg
     } 
 }
 
+proc SetDefaultEntry {variableName default onChangeCmd} {
+    global $variableName
+    set $variableName $default
+    if { $onChangeCmd != "" } {
+        set value [eval $onChangeCmd $default]
+    }
+}
+
 proc CreateEntry {at lead variableName default help custom disableParmsArgs onChangeCmd} {
     frame $at 
     label $at.l -width 40 -anchor w -text "$lead" -padx 0
@@ -72,7 +80,7 @@ proc CreateEntry {at lead variableName default help custom disableParmsArgs onCh
     } else {
         entry $at.e -width 40 -relief sunken -textvariable $variableName -background white -validate key -validatecommand "UpdateEntryChangedStatus %W \"%P\" \"$default\" \"$onChangeCmd\""
     }
-    button $at.d -image setDefaultImage -command "set $variableName \"$default\""
+    button $at.d -image setDefaultImage -command "SetDefaultEntry $variableName \"$default\" \"$onChangeCmd\""
     SetTooltip $at.d "Set parameter to default value $default"
     pack $at.l -side left -anchor w
     SetTooltip $at.l "$help" 
@@ -85,8 +93,20 @@ proc CreateEntry {at lead variableName default help custom disableParmsArgs onCh
         SetTooltip $at.del "Delete custom cvar $lead.\nYou must restart csgosl for changes to take effect."
         pack $at.del -side left -anchor w
     }
-    CreateDisableButton $at $at.e $at.d $disableParmsArgs
+    CreateDisableButton $at $at.e $at.d $disableParmsArgs    
     return $at
+}
+
+proc SetWidgetState {at state} {
+    if {$state == 1} {
+        if { [winfo exists $at.e] } {$at.e configure -state normal}
+        if { [winfo exists $at.b] } {$at.b configure -state normal}
+        if { [winfo exists $at.d] } {$at.d configure -state normal}
+    } else {
+        if { [winfo exists $at.e] } {$at.e configure -state disabled}
+        if { [winfo exists $at.b] } {$at.b configure -state disabled}
+        if { [winfo exists $at.d] } {$at.d configure -state disabled}
+    }
 }
 
 proc UpdateDirEntry {lead variableName initialDir} {
@@ -100,14 +120,14 @@ proc CreateDirEntry {at lead variableName default help disableParmsArgs onChange
     global $variableName
     set value [set $variableName]
     if { "$value" != "$default" } {
-        entry $at.e -relief sunken -textvariable $variableName -background lightgrey -validate key -validatecommand "UpdateEntryChangedStatus %W \"%P\" \"$default\""
+        entry $at.e -relief sunken -textvariable $variableName -background lightgrey -validate key -validatecommand "UpdateEntryChangedStatus %W \"%P\" \"$default\" \"onChangeCmd\""
     } else {
-        entry $at.e -relief sunken -textvariable $variableName -background white -validate key -validatecommand "UpdateEntryChangedStatus %W \"%P\" \"$default\""
+        entry $at.e -relief sunken -textvariable $variableName -background white -validate key -validatecommand "UpdateEntryChangedStatus %W \"%P\" \"$default\" \"onChangeCmd\""
     }
     set initialDirName [set $variableName]
     set initialDir $initialDirName
     button $at.gd -text "G" -command "UpdateDirEntry \"$lead\" $variableName \"$initialDir\""
-    button $at.d -image setDefaultImage -command "set $variableName \"$default\""
+    button $at.d -image setDefaultImage -command "SetDefaultEntry $variableName \"$default\" $onChangeCmd"
     SetTooltip $at.d "Set parameter to default value $default"
     pack $at.l -side left
     SetTooltip $at.l "$help" 
@@ -119,9 +139,12 @@ proc CreateDirEntry {at lead variableName default help disableParmsArgs onChange
     return $at
 }
 
-proc UpdateCheckboxStatus {w variableName default} {
+proc UpdateCheckboxStatus {w variableName default onChangeCmd} {
     global $variableName
     set value [set $variableName]
+    if {$onChangeCmd != ""} {
+        set value [eval $onChangeCmd $value]
+    }
     if { "$value" != "$default" } {
         $w configure -background lightgrey 
     } else {
@@ -136,15 +159,15 @@ proc UpdateCheckboxStatusAndControlledWidget {w cw1 cw2 variableName default} {
         $cw1 configure -state normal
         $cw2 configure -state normal
     } else {
-        $cw1 configure -state disabled        
-        $cw2 configure -state disabled        
+        $cw1 configure -state disabled
+        $cw2 configure -state disabled
     }
 }
 
-proc SetCheckboxStatus {w variableName default} {
+proc SetCheckboxStatus {w variableName default onChangeCmd} {
     global $variableName
     set $variableName $default
-    UpdateCheckboxStatus $w $variableName $default
+    UpdateCheckboxStatus $w $variableName $default $onChangeCmd
 }
 
 proc CreateCheckbox {at lead variableName default help disableParmsArgs onChangeCmd} {
@@ -153,11 +176,11 @@ proc CreateCheckbox {at lead variableName default help disableParmsArgs onChange
     global $variableName
     set value [set $variableName]
     if { "$value" != "$default" } {
-        checkbutton $at.b -anchor w -variable $variableName -width 40 -background lightgrey -command "UpdateCheckboxStatus $at.b $variableName \"$default\""
+        checkbutton $at.b -anchor w -variable $variableName -width 40 -background lightgrey -command "UpdateCheckboxStatus $at.b $variableName \"$default\" \"$onChangeCmd\""
     } else {
-        checkbutton $at.b -anchor w -variable $variableName -width 40 -background white -command "UpdateCheckboxStatus $at.b $variableName \"$default\""
+        checkbutton $at.b -anchor w -variable $variableName -width 40 -background white -command "UpdateCheckboxStatus $at.b $variableName \"$default\" \"$onChangeCmd\""
     }
-    button $at.d -image setDefaultImage -command "SetCheckboxStatus $at.b $variableName \"$default\""
+    button $at.d -image setDefaultImage -command "SetCheckboxStatus $at.b $variableName \"$default\" \"$onChangeCmd\""
     SetTooltip $at.d "Set parameter to default value $default"
     pack $at.l -side left -anchor w
     SetTooltip $at.l "$help" 
