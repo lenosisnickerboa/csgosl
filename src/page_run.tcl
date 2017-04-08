@@ -13,12 +13,12 @@ variable runConfig [CreateConfig \
     ] \
     [list \
         "enum" [list gamemodetype "Classic Casual" "Select the kind of game you want to play." [dict keys $gameModeMapper]]\
-        "enum" [list mapgroup "mg_active" "Select which maps you want to play, defined in the map group editor.\nIf you enter a workshop collection id here that collection will be hosted." [dict keys $mapGroupsMapper]]\
+        "enum" [list mapgroup "<allmaps>" "Select which maps you want to play, defined in the map group editor.\nIf you enter a workshop collection id here that collection will be hosted." [dict keys $mapGroupsMapper] onchange "RunMapGroupChanged"]\
         "enum" [list startmap "de_dust2" "The first maps the server starts hosting. If you enter a workshop map id here that map will be hosted." $allMaps]\
         "int"  [list players "16" "Defines max number of players including bots." mappedto [list bot_quota]]\
         "int"  [list bots "0" "Only used when fillwithbots is disabled, ignored otherwhise. Defines exact number of bots." mappedto [list bot_quota]]\
         "bool" [list fillwithbots "1" "Add bots until max number of players are reached." mappedto [list bot_quota bot_quota_mode]]\
-        "enum" [list botskill "Normal" "How intelligent bots dou you want?" [dict keys $botSkillMapper] mappedto [list bot_difficulty]]\
+        "enum" [list botskill "Normal" "How intelligent bots do you want?" [dict keys $botSkillMapper] mappedto [list bot_difficulty]]\
         "bool" [list friendlyfire "0" "Enable this option to be able to hurt your team mates." mappedto [list mp_friendlyfire]]\
         "int"  [list roundtime "10" "Limit match time to this many minutes." mappedto [list mp_roundtime]]\
         "bool" [list killcam "1" "Enable this option to be able to see who killed you and where he was located." mappedto [list mp_forcecamera]]\
@@ -69,3 +69,9 @@ variable runLayout [CreateLayout \
         parm    [list options] \
     ] \
 ]
+
+proc RunMapGroupChanged { value } {
+    global runConfig
+    SetConfigItem $runConfig startmap [GetFirstMapInMapGroup $value]
+    return $value
+}

@@ -72,19 +72,19 @@ proc CreateConfigPageUrl {at parms} {
     pack [Hyperlink $at -command [list Browser "$url"] -text "$text"] -side top -fill x -expand true
 }
 
-proc CreateConfigPageItem {at lead name value type default help selections custom disableParmsArgs} {
+proc CreateConfigPageItem {at lead name value type default help selections custom disableParmsArgs onChangeCmd} {
     if {$type == "directory"} {
-        pack [CreateDirEntry $at $lead $name $default $help $disableParmsArgs] -side top -fill x -expand true            
+        pack [CreateDirEntry $at $lead $name $default $help $disableParmsArgs $onChangeCmd] -side top -fill x -expand true            
     } elseif {$type == "url"} {
-        pack [CreateEntry $at $lead $name $default $help $custom $disableParmsArgs] -side top -fill x -expand true
+        pack [CreateEntry $at $lead $name $default $help $custom $disableParmsArgs $onChangeCmd] -side top -fill x -expand true
     } elseif {$type == "int"} {
-        pack [CreateEntry $at $lead $name $default $help $custom $disableParmsArgs] -side top -fill x -expand true
+        pack [CreateEntry $at $lead $name $default $help $custom $disableParmsArgs $onChangeCmd] -side top -fill x -expand true
     } elseif {$type == "bool"} {
-        pack [CreateCheckbox $at $lead $name $default $help $disableParmsArgs] -side top -fill x -expand true
+        pack [CreateCheckbox $at $lead $name $default $help $disableParmsArgs $onChangeCmd] -side top -fill x -expand true
     } elseif {$type == "enum"} {
-        pack [CreateSelector $at $lead $name $default $help $selections $disableParmsArgs] -side top -fill x -expand true
+        pack [CreateSelector $at $lead $name $default $help $selections $disableParmsArgs $onChangeCmd] -side top -fill x -expand true
     } elseif {$type != "line"} {
-        pack [CreateEntry $at $lead $name $default $help $custom $disableParmsArgs] -side top -fill x -expand true
+        pack [CreateEntry $at $lead $name $default $help $custom $disableParmsArgs $onChangeCmd] -side top -fill x -expand true
     }
 }
 
@@ -179,7 +179,11 @@ proc CreateConfigPageItemFromLayout {layout page type args widgetIx} {
                 set disableParmArgs [list]
             }
         }
-        CreateConfigPageItem $page.w$parmName $parmName $globalParmName $parmValue $parmType $parmDefault $help $selections $custom $disableParmArgs
+        set onchangeCmd ""
+        if { [dict exists $metaItem onchange] } {
+            set onchangeCmd [dict get $metaItem onchange]
+        }
+        CreateConfigPageItem $page.w$parmName $parmName $globalParmName $parmValue $parmType $parmDefault $help $selections $custom $disableParmArgs $onchangeCmd
     } elseif {$type == "func"} {
         CreateConfigPageFunc $page.func$widgetIx $help $layout $args
     } elseif {$type == "h1"} {

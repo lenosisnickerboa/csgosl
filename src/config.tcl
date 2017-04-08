@@ -43,28 +43,38 @@ proc CreateConfig {configOptions metaDefs} {
                 set values [dict set values $key $default]
                 set mappedToKey ""
                 set mappedTo ""
+                set onChangeKey ""
+                set onChange ""
                 if { $opt1 == "mappedto" } {
-                    set mappedToKey "mappedto"
+                    set mappedToKey $opt1
                     set mappedTo $opt1value
                     set parmDisableName "$DisableParmPrefix$key"
                     set values [dict set values $parmDisableName "$parmDisableDefault"]
                     set meta [dict set meta $parmDisableName [dict create type "list" default "$parmDisableDefault" help "$key controls the following advanced options:\n $opt1value\nUncheck this toggle to control the advanced options yourself."]]
+                } elseif { $opt1 == "onchange" } {
+                    set onChangeKey $opt1
+                    set onChange $opt1value
                 }
-                set meta [dict set meta "$key" [dict create type $type default $default help $help $mappedToKey $mappedTo]]
+                set meta [dict set meta "$key" [dict create type $type default $default help $help $mappedToKey $mappedTo $onChangeKey $onChange ]]
             }
         } elseif {$type == "enum"} {
             foreach {key default help selections opt1 opt1value } $metaItems {
                 set values [dict set values $key $default]
                 set mappedToKey ""
                 set mappedTo ""
+                set onChangeKey ""
+                set onChange ""
                 if { $opt1 == "mappedto" } {
-                    set mappedToKey "mappedto"
+                    set mappedToKey $opt1
                     set mappedTo $opt1value
                     set parmDisableName "$DisableParmPrefix$key"
                     set values [dict set values $parmDisableName "$parmDisableDefault"]
                     set meta [dict set meta $parmDisableName [dict create type "list" default "$parmDisableDefault" help "This is an option which controls the following advanced options:\n$opt1value\nDisable this option to control the advanced options yourself."]]
+                } elseif { $opt1 == "onchange" } {
+                    set onChangeKey $opt1
+                    set onChange $opt1value
                 }
-                set meta [dict set meta "$key" [dict create type $type default $default help $help selections $selections $mappedToKey $mappedTo]]
+                set meta [dict set meta "$key" [dict create type $type default $default help $help selections $selections $mappedToKey $mappedTo $onChangeKey $onChange]]
             }
         }
     }

@@ -279,7 +279,7 @@ proc SaveConfigFileOrigServer {} {
     global sourcemodConfig
     global runConfig
     global ValueToSkip
-    set maps [GetActiveMaps]
+    set maps [GetActiveMaps [GetConfigValue $runConfig mapgroup]]
     if { [IsSourcemodPluginEnabled [GetConfigItem $sourcemodConfig sm_mapchooser_enable] [GetConfigItem $sourcemodConfig sm_mapchooser_lanonly]] } {
         SetConfigItem $serverOrigConfig sm_mapvote_endvote [GetConfigItem $sourcemodConfig sm_mapchooser_mapvote_endvote]
         SetConfigItem $serverOrigConfig sm_mapvote_voteduration [GetConfigItem $runConfig roundtime]

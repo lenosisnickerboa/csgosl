@@ -18,10 +18,13 @@ proc GetDir {initialDir prompt} {
     return $dir
 }
 
-proc UpdateEntryChangedStatus {w value default} {
+proc UpdateEntryChangedStatus {w value default onChangeCmd} {
     #Weird fix needed to handle when entry is empty and value {} is returned?!?
     if {$value == "{}"} {
         set value ""
+    }
+    if { $onChangeCmd != "" } {
+        set value [eval $onChangeCmd $value]
     }
 #    puts "UpdateEntryChangedStatus w=$w, value=$value, default=$default"
     if { "$value" != "$default" } {
@@ -59,15 +62,15 @@ proc CreateDisableButton {at controlledWidget1 controlledWidget2 disableParmsArg
     } 
 }
 
-proc CreateEntry {at lead variableName default help custom disableParmsArgs} {
+proc CreateEntry {at lead variableName default help custom disableParmsArgs onChangeCmd} {
     frame $at 
     label $at.l -width 40 -anchor w -text "$lead" -padx 0
     global $variableName
     set value [set $variableName]
     if { "$value" != "$default" } {
-        entry $at.e -width 40 -relief sunken -textvariable $variableName -background lightgrey -validate key -validatecommand "UpdateEntryChangedStatus %W \"%P\" \"$default\""
+        entry $at.e -width 40 -relief sunken -textvariable $variableName -background lightgrey -validate key -validatecommand "UpdateEntryChangedStatus %W \"%P\" \"$default\" \"$onChangeCmd\""
     } else {
-        entry $at.e -width 40 -relief sunken -textvariable $variableName -background white -validate key -validatecommand "UpdateEntryChangedStatus %W \"%P\" \"$default\""
+        entry $at.e -width 40 -relief sunken -textvariable $variableName -background white -validate key -validatecommand "UpdateEntryChangedStatus %W \"%P\" \"$default\" \"$onChangeCmd\""
     }
     button $at.d -image setDefaultImage -command "set $variableName \"$default\""
     SetTooltip $at.d "Set parameter to default value $default"
@@ -91,7 +94,7 @@ proc UpdateDirEntry {lead variableName initialDir} {
     set $variableName [GetDir \"$initialDir\" \"$lead\"]
 }
 
-proc CreateDirEntry {at lead variableName default help disableParmsArgs} {
+proc CreateDirEntry {at lead variableName default help disableParmsArgs onChangeCmd} {
     frame $at 
     label $at.l -width 40 -anchor w -text "$lead" -padx 0
     global $variableName
@@ -144,7 +147,7 @@ proc SetCheckboxStatus {w variableName default} {
     UpdateCheckboxStatus $w $variableName $default
 }
 
-proc CreateCheckbox {at lead variableName default help disableParmsArgs} {
+proc CreateCheckbox {at lead variableName default help disableParmsArgs onChangeCmd} {
     frame $at 
     label $at.l -width 40 -anchor w -text "$lead" -padx 0
     global $variableName
@@ -165,8 +168,11 @@ proc CreateCheckbox {at lead variableName default help disableParmsArgs} {
     return $at
 }
 
-proc UpdateSelectorChangedStatus {w value default} {
+proc UpdateSelectorChangedStatus {w value default onChangeCmd} {
 #    puts "UpdateSelectorChangedStatus w=$w, value=$value, default=$default"
+    if { $onChangeCmd != "" } {
+        set value [eval $onChangeCmd $value]
+    }
     if { "$value" != "$default" } {
         ttk::style configure $w -background lightgrey
     } else {
@@ -175,7 +181,15 @@ proc UpdateSelectorChangedStatus {w value default} {
     return true
 }
 
-proc CreateSelector {at lead variableName default help selections disableParmsArgs} {
+proc SetDefaultSelector {variableName default onChangeCmd} {
+    global $variableName
+    set $variableName $default
+    if { $onChangeCmd != "" } {
+        eval "$onChangeCmd \"$default\""
+    }
+}
+
+proc CreateSelector {at lead variableName default help selections disableParmsArgs onChangeCmd} {
     frame $at 
     label $at.l -width 40 -anchor w -text "$lead" -padx 0
     global $variableName
@@ -186,9 +200,9 @@ proc CreateSelector {at lead variableName default help selections disableParmsAr
     } else {
         set combo [ttk::combobox $at.sel -textvariable $variableName -background white]
     }
-    bind $combo <<ComboboxSelected>> "[subst -nocommands { UpdateSelectorChangedStatus %W \"[%W get]\" \"$default\" }]"
+    bind $combo <<ComboboxSelected>> "[subst -nocommands { UpdateSelectorChangedStatus %W \"[%W get]\" \"$default\" \"$onChangeCmd\" }]"
     $at.sel configure -values $selections
-    button $at.d -image setDefaultImage  -command "set $variableName \"$default\""
+    button $at.d -image setDefaultImage -command "SetDefaultSelector $variableName \"$default\" \"$onChangeCmd\""
     SetTooltip $at.d "Set parameter to default value $default"
     pack $at.l -side left
     SetTooltip $at.l "$help" 
