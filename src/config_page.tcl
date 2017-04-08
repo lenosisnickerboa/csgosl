@@ -338,6 +338,7 @@ proc AddMapGroup {lb} {
     global addMapGroupName
     global mapGroupsMapper
     if { $addMapGroupName != "" } {
+        set addMapGroupName [regsub -all {\s+} $addMapGroupName _]
         $lb insert end "$addMapGroupName"
         set mapGroups [set $mapGroupsName]
         set mapGroupsMapper [dict set mapGroupsMapper $addMapGroupName [list]]
