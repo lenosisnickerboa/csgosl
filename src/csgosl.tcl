@@ -636,7 +636,7 @@ CreateConfigPageTabFromLayout $cp.steam $steamLayout $enableTab
 set steamPage [CreateConfigPageFromLayout $cp.steam $steamLayout]
 
 CreateConfigPageTabFromLayout $cp.sourcemod $sourcemodLayout $enableTab
-set steamPage [CreateConfigPageFromLayout $cp.sourcemod $sourcemodLayout]
+set sourcemodPage [CreateConfigPageFromLayout $cp.sourcemod $sourcemodLayout]
 
 CreateConfigPageTabFromLayout $cp.maps $mapsLayout $enableTab
 set mapsPage [CreateConfigPageFromLayout $cp.maps $mapsLayout]
@@ -688,7 +688,11 @@ set gameModeCooperativePage [CreateConfigPageFromLayout $cp.gameModeCooperative 
 
 puts "PerformOnChangeOnLayout"
 PerformOnChangeOnLayout $serverPage $serverLayout
+PerformOnChangeOnLayout $gotvPage $gotvLayout
+PerformOnChangeOnLayout $steamPage $steamLayout
+PerformOnChangeOnLayout $sourcemodPage $sourcemodLayout
 PerformOnChangeOnLayout $runPage $runLayout
+PerformOnChangeOnLayout $applicationPage $applicationLayout
 
 if {$serverPresent} {
     $cp select $runPage

@@ -12,7 +12,7 @@ variable gotvConfig [CreateConfig \
         saveProc "SaveConfigFileGoTv" \
     ] \
     [list \
-        "bool"      [list gotvenable "0" "Enable gotv server"]\
+        "bool"      [list gotvenable "0" "Enable gotv server" onchange "SetGoTvState"]\
         "int"       [list gotvport "27020" "Your gotv server port. You need to open this port in your router and forward it to your external IP address.\nRead more about this on the help page."]\
         "string"    [list gotvtitle "Your gotv server at $hostName operated by $name" "This is the gotv server name which is presented to gotv spectators."]\
         "string"    [list gotvpassword "" "Your gotv server password which anyone connecting to your gotv server must enter to log in and spectate.\nWhen running a LAN only server this can be left empty for no password."]\
@@ -67,3 +67,13 @@ variable gotvLayout [CreateLayout \
         parm    [list gotvdeltacache] \
     ] \
 ]
+
+proc SetGoTvState { value } {
+    global gotvLayout
+    set cp [GetCp]
+    set enabled $value
+    foreach parm [list gotvport gotvtitle gotvpassword gotvdelay gotvdeltacache gotvsnapshotrate gotvallowcameraman gotvallowstaticshots gotvautorecord gotvchat gotvdelaymapchange gotvmaxclients] {
+        SetConfigItemState $cp.gotv $gotvLayout $parm $enabled        
+    }
+    return $value        
+}

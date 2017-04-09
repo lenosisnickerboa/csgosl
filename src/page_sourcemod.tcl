@@ -29,24 +29,24 @@ variable sourcemodConfig [CreateConfig \
         saveProc "SaveConfigFileSourcemod" \
     ] \
     [list \
-        "bool"      [list enable "1" "Controls if sourcemod functionality is enabled. If disabled ALL other plugins below are also disabled."]\
+        "bool"      [list enable "1" "Controls if sourcemod functionality is enabled. If disabled ALL other plugins below are also disabled." onchange "SetSourcemodState"]\
         "bool"      [list lanonly "0" "Only enable sourcemod in lanonly mode"]\
         "bool"      [list banprotection "1" "Disables all known unsafe plugins and sets FollowCSGOServerGuidelines to \"yes\".\nWhen you disable ban protection FollowCSGOServerGuidelines is set to \"no\" to allow plugins full access.\nDO NOT DISABLE THIS OPTION UNLESS YOU HAVE READ THE HELP PAGE FIRST!\nYOUR SERVER MAY BE BANNED!"]\
         "string"    [list admins "" "List all users (separated by space) you want to give admin permissions on your server\nA user is identified by their steam id (e.g STEAM_1:1:12345678) or ip address (e.g. 192.168.1.123).\nSee help page for more information about how to obtain your steam id or find users ip address."]\
-        "bool"      [list sm_mapchooser_enable "0" "Controls if this sourcemod plugin is enabled."]\
+        "bool"      [list sm_mapchooser_enable "0" "Controls if this sourcemod plugin is enabled." onchange "SetSourcemodMapChooserState"]\
         "bool"      [list sm_mapchooser_lanonly "1" "Only enable this sourcemod plugin in lanonly mode"]\
         "bool"      [list sm_mapchooser_mapvote_endvote "1" "Specifies if MapChooser should run an end of map vote."]\
-        "bool"      [list sm_nominations_enable "0" "Controls if this sourcemod plugin is enabled.\nRequires mapchooser enabled."]\
+        "bool"      [list sm_nominations_enable "0" "Controls if this sourcemod plugin is enabled.\nRequires mapchooser enabled." onchange "SetSourcemodNominationsState"]\
         "bool"      [list sm_nominations_lanonly "1" "Only enable this sourcemod plugin in lanonly mode"]\
-        "bool"      [list sm_rockthevote_enable "0" "Controls if this sourcemod plugin is enabled.\nRequires mapchooser enabled."]\
+        "bool"      [list sm_rockthevote_enable "0" "Controls if this sourcemod plugin is enabled.\nRequires mapchooser enabled." onchange "SetSourcemodRockTheVoteState"]\
         "bool"      [list sm_rockthevote_lanonly "1" "Only enable this sourcemod plugin in lanonly mode"]\
-        "bool"      [list sm_nextmap_enable "0" "Controls if this sourcemod plugin is enabled."]\
+        "bool"      [list sm_nextmap_enable "0" "Controls if this sourcemod plugin is enabled." onchange "SetSourcemodNextMapState"]\
         "bool"      [list sm_nextmap_lanonly "1" "Only enable this sourcemod plugin in lanonly mode"]\
-        "bool"      [list sm_randomcycle_enable "0" "Controls if this sourcemod plugin is enabled."]\
+        "bool"      [list sm_randomcycle_enable "0" "Controls if this sourcemod plugin is enabled." onchange "SetSourcemodRandomCycleState"]\
         "bool"      [list sm_randomcycle_lanonly "1" "Only enable this sourcemod plugin in lanonly mode"]\
-        "bool"      [list sm_warmod_enable "0" "Controls if this sourcemod plugin is enabled."]\
+        "bool"      [list sm_warmod_enable "0" "Controls if this sourcemod plugin is enabled." onchange "SetSourcemodWarmodState"]\
         "bool"      [list sm_warmod_lanonly "1" "Only enable this sourcemod plugin in lanonly mode"]\
-        "bool"      [list sm_multi1v1_enable "0" "Controls if this sourcemod plugin is enabled."]\
+        "bool"      [list sm_multi1v1_enable "0" "Controls if this sourcemod plugin is enabled." onchange "SetSourcemodMulti1v1State"]\
         "bool"      [list sm_multi1v1_lanonly "1" "Only enable this sourcemod plugin in lanonly mode"]\
         "bool"      [list sm_multi1v1_flashbangs_enable "0" "Controls if this sourcemod plugin is enabled."]\
         "bool"      [list sm_multi1v1_flashbangs_lanonly "1" "Only enable this sourcemod plugin in lanonly mode"]\
@@ -54,9 +54,9 @@ variable sourcemodConfig [CreateConfig \
         "bool"      [list sm_multi1v1_kniferounds_lanonly "1" "Only enable this sourcemod plugin in lanonly mode"]\
         "bool"      [list sm_multi1v1_online_stats_viewer_enable "0" "Controls if this sourcemod plugin is enabled."]\
         "bool"      [list sm_multi1v1_online_stats_viewer_lanonly "1" "Only enable this sourcemod plugin in lanonly mode"]\
-        "bool"      [list sm_gunmenu_enable "0" "Controls if this sourcemod plugin is enabled."]\
+        "bool"      [list sm_gunmenu_enable "0" "Controls if this sourcemod plugin is enabled." onchange "SetSourcemodGunMenuState"]\
         "bool"      [list sm_gunmenu_lanonly "1" "Only enable this sourcemod plugin in lanonly mode"]\
-        "bool"      [list sm_franug_weaponpaints_enable "0" "Controls if this sourcemod plugin is enabled.\nType !ws in chat to use."]\
+        "bool"      [list sm_franug_weaponpaints_enable "0" "Controls if this sourcemod plugin is enabled.\nType !ws in chat to use." onchange "SetSourcemodFranugWeaponPaintsState"]\
         "bool"      [list sm_franug_weaponpaints_lanonly "1" "Only enable this sourcemod plugin in lanonly mode"]\
         "bool"      [list sm_franug_weaponpaints_onlyadmin "1" "This feature is only for admins. 1 = enabled, 0 = disabled.\n(Use the value 1 and try to keep this plugin secret for the normal users because they can report it)"]\
         "bool"      [list sm_franug_weaponpaints_c4 "1" "Enable or disable that people can apply paints to the C4. 1 = enabled, 0 = disabled"]\
@@ -64,7 +64,7 @@ variable sourcemodConfig [CreateConfig \
         "int"       [list sm_franug_weaponpaints_roundtimer "-1" "Time in seconds roundstart for can use the commands for change the paints.\n-1 = always can use the command"]\
         "bool"      [list sm_franug_weaponpaints_rmenu "0" "Re-open the menu when you select a option. 1 = enabled, 0 = disabled."]\
         "bool"      [list sm_franug_weaponpaints_zombiesv "1" "Enable this for prevent crashes in zombie and 1v1 servers for knifes.\n1 = enabled, 0 = disabled. (Use the value 1 if you use my knife plugin)"]\
-        "bool"      [list sm_franug_knifes_enable "0" "Controls if this sourcemod plugin is enabled.\nType !knife in chat to use."]\
+        "bool"      [list sm_franug_knifes_enable "0" "Controls if this sourcemod plugin is enabled.\nType !knife in chat to use." onchange "SetSourcemodFranugKnifesState"]\
         "bool"      [list sm_franug_knifes_lanonly "1" "Only enable this sourcemod plugin in lanonly mode"]\
     ] \
 ]
@@ -156,3 +156,135 @@ variable sourcemodLayout [CreateLayout \
         parm    [list sm_franug_knifes_lanonly] \
     ] \
 ]
+
+proc SetSourcemodState { value } {
+    global sourcemodLayout
+    set cp [GetCp]
+    set enabled $value
+    foreach parm [list lanonly banprotection admins sm_mapchooser_enable sm_mapchooser_lanonly sm_mapchooser_mapvote_endvote\
+                  sm_nominations_enable sm_nominations_lanonly sm_rockthevote_enable sm_rockthevote_lanonly\
+                  sm_nextmap_enable sm_nextmap_lanonly sm_randomcycle_enable sm_randomcycle_lanonly\
+                  sm_warmod_enable sm_warmod_lanonly sm_multi1v1_enable sm_multi1v1_lanonly sm_multi1v1_flashbangs_enable\
+                  sm_multi1v1_flashbangs_lanonly sm_multi1v1_kniferounds_enable sm_multi1v1_kniferounds_lanonly\
+                  sm_multi1v1_online_stats_viewer_enable sm_multi1v1_online_stats_viewer_enable sm_multi1v1_online_stats_viewer_lanonly\
+                  sm_gunmenu_enable sm_gunmenu_lanonly sm_franug_weaponpaints_enable sm_franug_weaponpaints_lanonly sm_franug_weaponpaints_onlyadmin\
+                  sm_franug_weaponpaints_c4 sm_franug_weaponpaints_saytimer sm_franug_weaponpaints_roundtimer sm_franug_weaponpaints_rmenu\
+                  sm_franug_weaponpaints_zombiesv sm_franug_knifes_enable sm_franug_knifes_lanonly] {
+        SetConfigItemState $cp.sourcemod $sourcemodLayout $parm $enabled        
+    }
+    global sourcemodConfig
+    SetSourcemodMapChooserState [expr $enabled && [GetConfigItem $sourcemodConfig sm_mapchooser_enable]]
+    SetSourcemodNominationsState [expr $enabled && [GetConfigItem $sourcemodConfig sm_nominations_enable]]
+    SetSourcemodRockTheVoteState [expr $enabled && [GetConfigItem $sourcemodConfig sm_rockthevote_enable]]
+    SetSourcemodNextMapState [expr $enabled && [GetConfigItem $sourcemodConfig sm_nextmap_enable]]
+    SetSourcemodRandomCycleState [expr $enabled && [GetConfigItem $sourcemodConfig sm_randomcycle_enable]]
+    SetSourcemodWarmodState [expr $enabled && [GetConfigItem $sourcemodConfig sm_warmod_enable]]
+    SetSourcemodMulti1v1State [expr $enabled && [GetConfigItem $sourcemodConfig sm_multi1v1_enable]]
+    SetSourcemodGunMenuState [expr $enabled && [GetConfigItem $sourcemodConfig sm_gunmenu_enable]]
+    SetSourcemodFranugWeaponPaintsState [expr $enabled && [GetConfigItem $sourcemodConfig sm_franug_weaponpaints_enable]]
+    SetSourcemodFranugKnifesState [expr $enabled && [GetConfigItem $sourcemodConfig sm_franug_knifes_enable]]
+    return $value        
+}
+
+
+proc SetSourcemodMapChooserState { value } {
+    global sourcemodLayout
+    set cp [GetCp]
+    set enabled $value
+    foreach parm [list sm_mapchooser_lanonly sm_mapchooser_mapvote_endvote] {
+        SetConfigItemState $cp.sourcemod $sourcemodLayout $parm $enabled        
+    }
+    return $value        
+}
+
+proc SetSourcemodNominationsState { value } {
+    global sourcemodLayout
+    set cp [GetCp]
+    set enabled $value
+    foreach parm [list sm_nominations_lanonly] {
+        SetConfigItemState $cp.sourcemod $sourcemodLayout $parm $enabled        
+    }
+    return $value        
+}
+
+proc SetSourcemodRockTheVoteState { value } {
+    global sourcemodLayout
+    set cp [GetCp]
+    set enabled $value
+    foreach parm [list sm_rockthevote_lanonly] {
+        SetConfigItemState $cp.sourcemod $sourcemodLayout $parm $enabled        
+    }
+    return $value        
+}
+
+proc SetSourcemodNextMapState { value } {
+    global sourcemodLayout
+    set cp [GetCp]
+    set enabled $value
+    foreach parm [list sm_nextmap_lanonly] {
+        SetConfigItemState $cp.sourcemod $sourcemodLayout $parm $enabled        
+    }
+    return $value        
+}
+proc SetSourcemodRandomCycleState { value } {
+    global sourcemodLayout
+    set cp [GetCp]
+    set enabled $value
+    foreach parm [list sm_randomcycle_lanonly] {
+        SetConfigItemState $cp.sourcemod $sourcemodLayout $parm $enabled        
+    }
+    return $value        
+}
+proc SetSourcemodWarmodState { value } {
+    global sourcemodLayout
+    set cp [GetCp]
+    set enabled $value
+    foreach parm [list sm_warmod_lanonly] {
+        SetConfigItemState $cp.sourcemod $sourcemodLayout $parm $enabled        
+    }
+    return $value        
+}
+proc SetSourcemodMulti1v1State { value } {
+    global sourcemodLayout
+    set cp [GetCp]
+    set enabled $value
+    foreach parm [list sm_multi1v1_lanonly sm_multi1v1_flashbangs_enable\
+                  sm_multi1v1_flashbangs_lanonly sm_multi1v1_kniferounds_enable sm_multi1v1_kniferounds_lanonly\
+                  sm_multi1v1_online_stats_viewer_enable sm_multi1v1_online_stats_viewer_enable sm_multi1v1_online_stats_viewer_lanonly] {
+        SetConfigItemState $cp.sourcemod $sourcemodLayout $parm $enabled        
+    }
+    return $value        
+}
+proc SetSourcemodGunMenuState { value } {
+    global sourcemodLayout
+    set cp [GetCp]
+    set enabled $value
+    foreach parm [list sm_gunmenu_lanonly] {
+        SetConfigItemState $cp.sourcemod $sourcemodLayout $parm $enabled        
+    }
+    return $value        
+}
+
+proc SetSourcemodFranugWeaponPaintsState { value } {
+    global sourcemodLayout
+    set cp [GetCp]
+    set enabled $value
+    foreach parm [list sm_franug_weaponpaints_lanonly sm_franug_weaponpaints_onlyadmin\
+                  sm_franug_weaponpaints_c4 sm_franug_weaponpaints_saytimer sm_franug_weaponpaints_roundtimer sm_franug_weaponpaints_rmenu\
+                  sm_franug_weaponpaints_zombiesv] {
+        SetConfigItemState $cp.sourcemod $sourcemodLayout $parm $enabled        
+    }
+    return $value        
+}
+
+proc SetSourcemodFranugKnifesState { value } {
+    global sourcemodLayout
+    set cp [GetCp]
+    set enabled $value
+    foreach parm [list sm_franug_knifes_lanonly] {
+        SetConfigItemState $cp.sourcemod $sourcemodLayout $parm $enabled        
+    }
+    return $value        
+}
+
+

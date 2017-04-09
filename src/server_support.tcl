@@ -8,7 +8,6 @@ source [file join $starkit::topdir sed.tcl]
 proc StartServer { {returnCommandOnly 0} } {
     global configPages
     global runPage
-    $configPages select $runPage
     SaveAll skipStandalone
     global serverConfig
     global steamConfig
