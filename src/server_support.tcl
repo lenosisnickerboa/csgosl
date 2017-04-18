@@ -5,30 +5,82 @@ exec wish "$0" ${1+"$@"}
 
 source [file join $starkit::topdir sed.tcl]
 
-proc StartServer { {returnCommandOnly 0} } {
-    global configPages
-    global runPage
+proc MakeScriptFileName {fileName} {
+    global currentOs
+    set f "$fileName.sh"
+    if {$currentOs == "windows"} {
+        set f "$fileName.bat"
+    }
+    return [file nativename $f]
+}
+
+proc RunScriptAssync {fileName} {
+    exec $fileName &
+}
+
+proc RunScript {fileName} {
+    exec $fileName
+}
+
+proc RunCommandAssync {fileName command parms} {
+    Trace "Executing command: $command $parms"
+    if { [IsDryRun] } {
+        Trace "*** THIS IS A DRY RUN! ***"
+        return 0
+    }
+    CreateCommandFile $fileName $command $parms
+    RunScriptAssync $fileName
+}
+
+proc RunCommand {fileName command parms} {
+    Trace "Executing command: $command $parms"
+    if { [IsDryRun] } {
+        Trace "*** THIS IS A DRY RUN! ***"
+        return 0
+    }
+    CreateCommandFile $fileName $command $parms
+    RunScript $fileName
+}
+
+proc StartServer {} {
     SaveAll skipStandalone
+    global sourcemodConfig
+    set banProtection [GetConfigValue $sourcemodConfig banprotection]
+    if { $banProtection == 0 } {
+        Trace "====================================================================="
+        Trace "Sourcemod banprotection is disabled, enforcing GSLT-less lanonly mode"
+        Trace "====================================================================="
+    }
+    global installFolder
+
+    set control "start"
+    global serverConfig
+    if { [GetConfigValue $serverConfig autorestart] == "1" } {
+        set control "autorestart"
+    }
+    
+    global currentOs
+    global serverControlScript
+    set controlScript "\"$serverControlScript\" $control"
+    if { $currentOs == "windows" } {
+        set controlScript "$serverControlScript-$control.bat"
+    }
+    RunCommandAssync [MakeScriptFileName "$installFolder/bin/cmd-start"] $controlScript [GetStartServerCommand]
+}
+
+proc GetStartServerCommand {} {
     global serverConfig
     global steamConfig
     global installFolder
     global serverFolder
     set serverName [GetConfigValue $serverConfig name]
-    if { "$serverName" == "" } {
-        FlashConfigItem $serverPage name
-        return 
-    }
     
     global sourcemodConfig
     set banProtection [GetConfigValue $sourcemodConfig banprotection]
     set steamAccountOption ""
     set apiAuthKeyOption ""
     set serverLanOption "+sv_lan 1"
-    if { $banProtection == 0 } {
-        Trace "====================================================================="
-        Trace "Sourcemod banprotection is disabled, enforcing GSLT-less lanonly mode"
-        Trace "====================================================================="
-    } else {
+    if { $banProtection != 0 } {
         set serverLan [GetConfigValue $serverConfig lanonly]
         set serverLanOption "+sv_lan $serverLan"
         if { $serverLan == 0 } {
@@ -104,94 +156,39 @@ proc StartServer { {returnCommandOnly 0} } {
     }
 
     set options [GetConfigValue $runConfig options]
-
-    set control "start"
-    if { [GetConfigValue $serverConfig autorestart] == "1" } {
-        set control "autorestart"
-    }
+    
     set ipOption ""
     if { $bindIp != "" } {
         set ipOption "-ip $bindIp"        
     }
     
-    global serverControlScript
     global srcdsName
     if { $currentOs == "windows" } {
-        if {$returnCommandOnly == 1} {
-            return "\"[file nativename $serverFolder/$srcdsName]\" \
-                -game csgo $consoleCommand $rconCommand \
-                +game_type $gameType +game_mode $gameMode \
-                $mapGroupOption \
-                $mapOption \
-                $steamAccountOption $apiAuthKeyOption \
-                -maxplayers_override $players \
-                -tickrate $tickRate \
-                $passwordOption \
-                $ipOption \
-                +hostname \"$serverName\" $serverPortOption $serverLanOption \
-                $options"
-        }
-        RunAssync "$serverControlScript-start.bat \"$serverFolder/$srcdsName\" \
-             -game csgo $consoleCommand $rconCommand \
-             +game_type $gameType +game_mode $gameMode \
-             $mapGroupOption \
-             $mapOption \
-             $steamAccountOption $apiAuthKeyOption \
-             -maxplayers_override $players \
-             -tickrate $tickRate \
-             $passwordOption \
-             $ipOption \
-             +hostname \"$serverName\" $serverPortOption $serverLanOption \
-             $options"
+        return "\"[file nativename $serverFolder/$srcdsName]\" \
+            -game csgo $consoleCommand $rconCommand \
+            +game_type $gameType +game_mode $gameMode \
+            $mapGroupOption \
+            $mapOption \
+            $steamAccountOption $apiAuthKeyOption \
+            -maxplayers_override $players \
+            -tickrate $tickRate \
+            $passwordOption \
+            $ipOption \
+            +hostname \"$serverName\" $serverPortOption $serverLanOption \
+            $options"
     } else {
-        if {$returnCommandOnly == 1} {
-            return "\"$serverFolder/$srcdsName\" \
-             -game csgo $consoleCommand $rconCommand \
-             +game_type $gameType +game_mode $gameMode \
-             $mapGroupOption \
-             $mapOption \
-             $steamAccountOption $apiAuthKeyOption \
-             -maxplayers_override $players \
-             -tickrate $tickRate \
-             $passwordOption \
-             $ipOption \
-             +hostname \\\"$serverName\\\" $serverPortOption $serverLanOption \
-             $options"
-        }
-        chan configure stdout -buffering none
-        chan configure stderr -buffering none
-        Trace "Executing $serverControlScript $control \
-            $serverFolder/$srcdsName \
-             -game csgo $consoleCommand $rconCommand \
-             +game_type $gameType +game_mode $gameMode \
-             $mapGroupOption \
-             $mapOption \
-             $steamAccountOption $apiAuthKeyOption \
-             -maxplayers_override $players \
-             -tickrate $tickRate \
-             $passwordOption \
-             $ipOption \
-             +hostname \"$serverName\" $serverPortOption $serverLanOption \
-             $options"
-        
-        if { [IsDryRun] } {
-            Trace "*** THIS IS A DRY RUN! ***"
-            return 0
-        }
-        
-        exec >@stdout 2>@stderr "$serverControlScript" $control \
-            "$serverFolder/$srcdsName" \
-             -game csgo $consoleCommand $rconCommand \
-             +game_type $gameType +game_mode $gameMode \
-             $mapGroupOption \
-             $mapOption \
-             $steamAccountOption $apiAuthKeyOption \
-             -maxplayers_override $players \
-             -tickrate $tickRate \
-             $passwordOption \
-             $ipOption \
-             +hostname \"$serverName\" $serverPortOption $serverLanOption \
-             $options
+        return "\"$serverFolder/$srcdsName\" \
+            -game csgo $consoleCommand $rconCommand \
+            +game_type $gameType +game_mode $gameMode \
+            $mapGroupOption \
+            $mapOption \
+            $steamAccountOption $apiAuthKeyOption \
+            -maxplayers_override $players \
+            -tickrate $tickRate \
+            $passwordOption \
+            $ipOption \
+            +hostname \\\"$serverName\\\" $serverPortOption $serverLanOption \
+            $options"
     }
 }
 
@@ -206,58 +203,55 @@ proc StopWindowsServer {} {
     exec "$serverControlScript-stop.bat" $pid
 }
 
-proc StopServer { {returnCommandOnly 0} } {
+proc StopServer {} {
     global currentOs
-    if {$returnCommandOnly == 1} {
-        if { $currentOs == "windows" } {
-            return "@echo Not supported on windows, use Task Manager to terminate your server\n@pause"
-        } else {
-            global serverControlScript
-            return "$serverControlScript stop"
-        }
-    }
     if { $currentOs == "windows" } {
         StopWindowsServer
     } else {
-        global serverControlScript
-        chan configure stdout -buffering none
-        chan configure stderr -buffering none
-        exec >@stdout 2>@stderr "$serverControlScript" stop
+        global installFolder
+        RunCommand [MakeScriptFileName "$installFolder/bin/cmd-stop"] [GetStopServerCommand] 
     }
 }
 
-proc UpdateServer { {returnCommandOnly 0} } {
+proc GetStopServerCommand {} {
+    global currentOs
+    if { $currentOs == "windows" } {
+        return "@echo Not supported on windows, use Task Manager to terminate your server\n@pause"
+    } else {
+        global serverControlScript
+        return "$serverControlScript stop"
+    }
+}
+
+proc GetUpdateServerCommand {} {
     global steamcmdFolder
-    set steamCmdExe "steamcmd.sh"
+    global currentOs
+    global steamUpdateFilename
+    global steamCmdExe
+    
+    if {$currentOs == "windows"} {
+        return "\"[file nativename $steamcmdFolder/$steamCmdExe]\" +runscript \"[file nativename $steamUpdateFilename]\""
+    } else {
+        return "\"$steamcmdFolder/$steamCmdExe\" +runscript \"$steamUpdateFilename\""
+    }
+}
+
+proc UpdateServer {} {
+    global steamcmdFolder
     global currentOs
     global binFolder
     global installFolder
-    set filename "$installFolder/$binFolder/steamcmd.txt"
-    
-    if {$currentOs == "windows"} {
-        set steamCmdExe "steamcmd.exe"        
-    }
-    if {$returnCommandOnly == 1} {
-        if {$currentOs == "windows"} {
-            return "\"[file nativename $steamcmdFolder/$steamCmdExe]\" +runscript \"[file nativename $filename]\""
-        } else {
-            return "\"$steamcmdFolder/$steamCmdExe\" +runscript \"$filename\""
-        }
-    }
-    
+    global steamUpdateFilename
+    global steamCmdExe
+        
     set status [DetectServerRunning]
     if { $status == "running" } {
         Trace "Server is running! Stop server first and retry update!"
         return 1
-    }    
-    
-    global consolePage
-    global currentOs
-    if {$currentOs == "windows"} {
-        SetConfigPage $consolePage        
     }
-    global serverFolder
     SaveAll skipStandalone
+    
+    global serverFolder
     if { ! [file isdirectory $serverFolder] } {
         Trace "Creating a new server directory $serverFolder \[Server->directory is left empty\]"
         file mkdir "$serverFolder"
@@ -305,7 +299,7 @@ proc UpdateServer { {returnCommandOnly 0} } {
     }
     
     set validateInstall [GetConfigValue $steamConfig validateinstall]
-    set fileId [open "$filename" "w"]
+    set fileId [open "steamUpdateFilename" "w"]
     puts $fileId "login anonymous"
     puts $fileId "force_install_dir \"$serverFolder\""
     if { $validateInstall == "1"} {
@@ -317,20 +311,17 @@ proc UpdateServer { {returnCommandOnly 0} } {
     close $fileId
 
     Trace "--------------------------------------------------------------------------------"
-    Trace "Updating your server at $serverFolder \[$steamcmdFolder/steamcmd +runscript $filename\]"
+    Trace "Updating your server at $serverFolder \[$steamcmdFolder/steamcmd +runscript $steamUpdateFilename\]"
     Trace "This can potentially take several minutes depending on update size and your connection."
     Trace "Please be patient and wait for the console window to close until moving on."
     Trace "If you don't see the following message at the end please restart the update and"
     Trace "the update will resume from where it failed."
     Trace "Message to look out for: Success! App '740' fully installed."
     Trace "--------------------------------------------------------------------------------"
-    if {$currentOs == "windows"} {
-        RunAssync "\"$steamcmdFolder/$steamCmdExe\" +runscript \"$filename\""
-    } else {
-        Trace "$steamcmdFolder/$steamCmdExe +runscript $filename"
-        exec >@stdout 2>@stderr "$steamcmdFolder/$steamCmdExe" +runscript "$filename"
-    }
-
+    
+    global installFolder
+    RunCommand [MakeScriptFileName "$installFolder/bin/cmd-update"] [GetUpdateServerCommand]
+    
     UpdateMods
     
     Trace "----------------"
@@ -357,17 +348,32 @@ proc DetectServerRunning {} {
     }
 }
 
-proc MakeScriptFileName {filename} {
+proc MakeExecutable {fileName} {
     global currentOs
-    set f "$filename.sh"
-    if {$currentOs == "windows"} {
-        set f "$filename.bat"
-    }
-    return [file nativename $f]
+    if { $currentOs == "windows" } {
+        set x 1
+    } else {
+        file attributes $fileName -permissions "+x"
+    }    
 }
 
-proc RunScriptAssync {filename} {
-    exec [MakeScriptFileName $filename] &
+proc DoCreateCommandFile {fileName command parms} {
+    global currentOs
+    set fileId [open $fileName "w"]
+    StoreHeaderInScript $fileId
+    if {$currentOs == "windows"} {
+        puts $fileId "\"[file nativename $command]\" $parms"
+    } else {
+        puts $fileId "$command"
+    }    
+    close $fileId
+    MakeExecutable $fileName
+}
+proc CreateCommandFile {fileName command parms} {
+    Trace "Creating assync command script $fileName containing command $command $parms"
+    if {[catch {DoCreateCommandFile $fileName $command $parms} errMsg]} {
+        Trace "Failed creating assync command script $fileName ($errMsg)"
+    }        
 }
 
 proc DoCreateStandalone {filename} {
@@ -387,25 +393,21 @@ proc DoCreateStandalone {filename} {
     StoreHeaderInScript $fileId
     if {$standaloneUpdate == 1} {
         if {$currentOs == "windows"} {
-            puts $fileId "start /wait \"Updater Launcher window\" [UpdateServer 1]"
+            puts $fileId "start /wait \"Updater Launcher window\" [GetUpdateServerCommand]"
         } else {
-            puts $fileId "[UpdateServer 1]"
+            puts $fileId "[GetUpdateServerCommand]"
         }
     }
     if {$standaloneStart == 1} {
         if {$currentOs == "windows"} {
-            puts $fileId "start \"Server Launcher window\" [StartServer 1]"
+            puts $fileId "start \"Server Launcher window\" [GetStartServerCommand]"
         } else {
-            puts $fileId "[StartServer 1]"
+            puts $fileId "[GetStartServerCommand]"
         }
     }
     close $fileId
     
-    if { $currentOs == "windows" } {
-        set x 1 
-    } else {
-        file attributes $fileName -permissions "+x"
-    }
+    MakeExecutable $fileName
 
 #No support for closing down server on windows yet, just skip it
     if { $currentOs == "windows" } {
@@ -417,15 +419,11 @@ proc DoCreateStandalone {filename} {
     set fileId [open $fileName "w"]
     StoreHeaderInScript $fileId
     if {$standaloneStart == 1} {
-        puts $fileId "[StopServer 1]"
+        puts $fileId "[GetStopServerCommand]"
     }
     close $fileId
     
-    if { $currentOs == "windows" } {
-        set x 1
-    } else {
-        file attributes $fileName -permissions "+x"
-    }
+    MakeExecutable $fileName
 }
 
 proc DoCreateAssyncUpdateAndStart {fileName includeUpdate includeStart} {
@@ -438,25 +436,21 @@ proc DoCreateAssyncUpdateAndStart {fileName includeUpdate includeStart} {
     StoreHeaderInScript $fileId
     if {$includeUpdate == 1} {
         if {$currentOs == "windows"} {
-            puts $fileId "start /wait \"Updater Launcher window\" [UpdateServer 1]"
+            puts $fileId "start /wait \"Updater Launcher window\" [GetUpdateServerCommand]"
         } else {
-            puts $fileId "[UpdateServer 1]"
+            puts $fileId "[GetUpdateServerCommand]"
         }
     }
     if {$includeStart == 1} {
         if {$currentOs == "windows"} {
-            puts $fileId "start \"Server Launcher window\" [StartServer 1]"
+            puts $fileId "start \"Server Launcher window\" [GetStartServerCommand]"
         } else {
-            puts $fileId "[StartServer 1]"
+            puts $fileId "[GetStartServerCommand]"
         }
     }
     close $fileId
     
-    if { $currentOs == "windows" } {
-        set x 1
-    } else {
-        file attributes $fileName -permissions "+x"
-    }
+    MakeExecutable $fileName
 }
 
 proc CreateStandalone {} {

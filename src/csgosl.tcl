@@ -119,11 +119,6 @@ set traceEnabled 0
 
 variable currentOs [Os]
 
-set serverControlScript "bin/server.sh"
-if { $currentOs == "windows" } {
-    set serverControlScript "bin/server"
-}
-
 set installFolder [pwd]
 set NeedsUpgradeFileName "$installFolder/bin/needsupgrade"
 set needsUpgrade [file exists "$NeedsUpgradeFileName"]
@@ -138,6 +133,10 @@ if { $currentOs == "windows" } {
 set serverExeFullName "$serverFolder/$srcdsName"
 set serverPresent [DetectServerInstalled "$serverFolder"]
 
+set serverControlScript "$installFolder/bin/server.sh"
+if { $currentOs == "windows" } {
+    set serverControlScript "$installFolder/bin/server"
+}
 if { !$serverPresent } {
     tk_dialog .w "No installed server detected..." \
     "No installed server was detected. csgosl will start in minimal mode to allow a server to be installed. When install is finished restart csgosl to get access to the full application." \
@@ -148,6 +147,13 @@ set configFolder "cfg"
 file mkdir $configFolder
 set binFolder "bin"
 file mkdir $binFolder
+
+set steamUpdateFilename "$installFolder/$binFolder/steamcmd.txt"
+
+set steamCmdExe "steamcmd.sh"
+if {$currentOs == "windows"} {
+    set steamCmdExe "steamcmd.exe"        
+}
 
 set name "csgosl"
 set currentDir [pwd]
