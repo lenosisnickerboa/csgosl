@@ -16,23 +16,23 @@ proc ExecutorCreate {at} {
 	# Create the command buttons.
 	
 	#button $at.top.quit -text Quit -command exit
-	global executorRunButton
-	set executorRunButton [button $at.top.run -text "Run it" -command ExecutorRun]
+##	global executorRunButton
+##	set executorRunButton [button $at.top.run -text "Run it" -command ExecutorRun]
 	#pack $at.top.quit $at.top.run -side right
 	
 	# Create a labeled entry for the command
 	
-	label $at.top.l -text Command: -padx 0
-	entry $at.top.cmd -width 80 -relief sunken \
+##	label $at.top.l -text Command: -padx 0
+##	entry $at.top.cmd -width 80 -relief sunken \
 		-textvariable executorCommand
-	pack $at.top.l -side left
-	pack $at.top.cmd -side left -fill x -expand true
+##	pack $at.top.l -side left
+##	pack $at.top.cmd -side left -fill x -expand true
 	
 	# Set up key binding equivalents to the buttons
 	
-	bind $at.top.cmd <Return> ExecutorRun
+##	bind $at.top.cmd <Return> ExecutorRun
 	#bind $at.top.cmd <Control-c> ExecutorStop
-	focus $at.top.cmd
+##	focus $at.top.cmd
 	
 	# Create a text widget to log the output
 	
