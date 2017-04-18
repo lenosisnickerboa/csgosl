@@ -22,23 +22,23 @@ proc RunScript {fileName} {
     exec $fileName
 }
 
-proc RunCommandAssync {fileName command parms} {
-    Trace "Executing command: $command $parms"
+proc RunCommandAssync {fileName command} {
+    Trace "Executing command: $command"
     if { [IsDryRun] } {
         Trace "*** THIS IS A DRY RUN! ***"
         return 0
     }
-    CreateCommandFile $fileName $command $parms
+    CreateCommandFile $fileName $command
     RunScriptAssync $fileName
 }
 
-proc RunCommand {fileName command parms} {
-    Trace "Executing command: $command $parms"
+proc RunCommand {fileName command} {
+    Trace "Executing command: $command"
     if { [IsDryRun] } {
         Trace "*** THIS IS A DRY RUN! ***"
         return 0
     }
-    CreateCommandFile $fileName $command $parms
+    CreateCommandFile $fileName $command
     RunScript $fileName
 }
 
@@ -65,7 +65,7 @@ proc StartServer {} {
     if { $currentOs == "windows" } {
         set controlScript "$serverControlScript-$control.bat"
     }
-    RunCommandAssync [MakeScriptFileName "$installFolder/bin/cmd-start"] $controlScript [GetStartServerCommand]
+    RunCommandAssync [MakeScriptFileName "$installFolder/bin/cmd-start"] "\"[file nativename $controlScript]\" [GetStartServerCommand]"
 }
 
 proc GetStartServerCommand {} {
@@ -320,7 +320,13 @@ proc UpdateServer {} {
     Trace "--------------------------------------------------------------------------------"
     
     global installFolder
-    RunCommand [MakeScriptFileName "$installFolder/bin/cmd-update"] [GetUpdateServerCommand]
+    if { $currentOs == "windows" } {
+        global serverControlScript
+        set controlScript "$serverControlScript-start.bat"
+        RunCommand [MakeScriptFileName "$installFolder/bin/cmd-update"] "start \"Launcher\" [GetUpdateServerCommand]"
+    } else {
+        RunCommand [MakeScriptFileName "$installFolder/bin/cmd-update"] [GetUpdateServerCommand]        
+    }
     
     UpdateMods
     
@@ -328,6 +334,7 @@ proc UpdateServer {} {
     Trace "UPDATE FINISHED!"
     Trace "----------------"
 }
+#        RunCommand [MakeScriptFileName "$installFolder/bin/cmd-update"] "start \"Launcher\" \"[file nativename $controlScript]\" [GetUpdateServerCommand]"
 
 proc DetectServerInstalled {sd} {
     global srcdsName
@@ -357,21 +364,16 @@ proc MakeExecutable {fileName} {
     }    
 }
 
-proc DoCreateCommandFile {fileName command parms} {
-    global currentOs
+proc DoCreateCommandFile {fileName command} {
     set fileId [open $fileName "w"]
     StoreHeaderInScript $fileId
-    if {$currentOs == "windows"} {
-        puts $fileId "\"[file nativename $command]\" $parms"
-    } else {
-        puts $fileId "$command"
-    }    
+    puts $fileId "$command"
     close $fileId
     MakeExecutable $fileName
 }
-proc CreateCommandFile {fileName command parms} {
-    Trace "Creating assync command script $fileName containing command $command $parms"
-    if {[catch {DoCreateCommandFile $fileName $command $parms} errMsg]} {
+proc CreateCommandFile {fileName command} {
+    Trace "Creating command script $fileName containing command $command"
+    if {[catch {DoCreateCommandFile $fileName $command} errMsg]} {
         Trace "Failed creating assync command script $fileName ($errMsg)"
     }        
 }
