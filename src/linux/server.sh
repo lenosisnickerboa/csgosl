@@ -1,7 +1,7 @@
 #!/bin/bash
 
 full_path=`dirname "$(readlink -f "$0")"`
-full_path_srcds=`dirname $full_path`/server
+full_path_srcds=`dirname "$full_path"`/server
 
 function status_ext() {
     local pids=`pgrep $1`
@@ -13,13 +13,23 @@ function status_ext() {
 
 action="$1" ; shift
 
+#Ugly workaround for Valves srcds_run which doesn't properly
+#handle spaces in install directory.
+fullcommand="$1" ; shift
+fulldir="`dirname \"$fullcommand\"`"
+lastdir="`basename \"$fulldir\"`"
+command="`basename \"$fullcommand\"`"
+usecommand="$lastdir/$command"
+
+cd "$fulldir/.."
+
 case "$action" in 
     start)
-	"$@" &
+	"$usecommand" "$@" &
 	;;
     autorestart)
-	while : ; do
-	    "$@" &
+    while : ; do
+        "$usecommand" "$@" &
 	    echo Server was stopped or crashed, restarting...
 	done
 	;;

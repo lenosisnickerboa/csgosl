@@ -15,11 +15,25 @@ proc MakeScriptFileName {fileName} {
 }
 
 proc RunScriptAssync {fileName} {
-    exec $fileName &
+    global currentOs
+    if {$currentOs == "windows"} {
+        exec $fileName &
+    } else {
+        chan configure stdout -buffering none
+        chan configure stderr -buffering none
+        exec >@stdout 2>@stderr $fileName &
+    }
 }
 
 proc RunScript {fileName} {
-    exec $fileName
+    global currentOs
+    if {$currentOs == "windows"} {
+        exec $fileName
+    } else {
+        chan configure stdout -buffering none
+        chan configure stderr -buffering none
+        exec >@stdout 2>@stderr $fileName        
+    }
 }
 
 proc RunCommandAssync {fileName command} {
@@ -42,6 +56,21 @@ proc RunCommand {fileName command} {
     RunScript $fileName
 }
 
+proc GetServerControlScriptString {} {
+    set control "start"
+    global serverConfig
+    if { [GetConfigValue $serverConfig autorestart] == "1" } {
+        set control "autorestart"
+    }    
+    global serverControlScript
+    set controlScript "\"$serverControlScript\" $control"
+    global currentOs
+    if { $currentOs == "windows" } {
+        set controlScript "$serverControlScript-$control.bat"
+    }
+    return $controlScript
+}
+
 proc StartServer {} {
     SaveAll skipStandalone
     global sourcemodConfig
@@ -52,20 +81,14 @@ proc StartServer {} {
         Trace "====================================================================="
     }
     global installFolder
-
-    set control "start"
-    global serverConfig
-    if { [GetConfigValue $serverConfig autorestart] == "1" } {
-        set control "autorestart"
-    }
     
     global currentOs
-    global serverControlScript
-    set controlScript "\"$serverControlScript\" $control"
+    set controlScript [GetServerControlScriptString]
     if { $currentOs == "windows" } {
-        set controlScript "$serverControlScript-$control.bat"
+        RunCommandAssync [MakeScriptFileName "$installFolder/bin/cmd-start"] "\"[file nativename $controlScript]\" [GetStartServerCommand]"
+    } else {
+        RunCommandAssync [MakeScriptFileName "$installFolder/bin/cmd-start"] "$controlScript [GetStartServerCommand]"
     }
-    RunCommandAssync [MakeScriptFileName "$installFolder/bin/cmd-start"] "\"[file nativename $controlScript]\" [GetStartServerCommand]"
 }
 
 proc GetStartServerCommand {} {
@@ -116,7 +139,7 @@ proc GetStartServerCommand {} {
     set mapGroup [GetConfigValue $runConfig mapgroup]
     set startMap [GetConfigValue $runConfig startmap]
 
-    set mapGroupOption "+mapgroup $mapGroup"
+    set mapGroupOption "+mapgroup \"$mapGroup\""
     set mapOption "+map $startMap"
     
     if { [string is wideinteger $mapGroup] } {
@@ -187,7 +210,7 @@ proc GetStartServerCommand {} {
             -tickrate $tickRate \
             $passwordOption \
             $ipOption \
-            +hostname \\\"$serverName\\\" $serverPortOption $serverLanOption \
+            +hostname \"$serverName\" $serverPortOption $serverLanOption \
             $options"
     }
 }
@@ -209,7 +232,7 @@ proc StopServer {} {
         StopWindowsServer
     } else {
         global installFolder
-        RunCommand [MakeScriptFileName "$installFolder/bin/cmd-stop"] [GetStopServerCommand] 
+        RunCommand [MakeScriptFileName "$installFolder/bin/cmd-stop"] [GetStopServerCommand]
     }
 }
 
@@ -219,7 +242,7 @@ proc GetStopServerCommand {} {
         return "@echo Not supported on windows, use Task Manager to terminate your server\n@pause"
     } else {
         global serverControlScript
-        return "$serverControlScript stop"
+        return "\"$serverControlScript\" stop"
     }
 }
 
@@ -299,7 +322,7 @@ proc UpdateServer {} {
     }
     
     set validateInstall [GetConfigValue $steamConfig validateinstall]
-    set fileId [open "steamUpdateFilename" "w"]
+    set fileId [open "$steamUpdateFilename" "w"]
     puts $fileId "login anonymous"
     puts $fileId "force_install_dir \"$serverFolder\""
     if { $validateInstall == "1"} {
@@ -334,7 +357,6 @@ proc UpdateServer {} {
     Trace "UPDATE FINISHED!"
     Trace "----------------"
 }
-#        RunCommand [MakeScriptFileName "$installFolder/bin/cmd-update"] "start \"Launcher\" \"[file nativename $controlScript]\" [GetUpdateServerCommand]"
 
 proc DetectServerInstalled {sd} {
     global srcdsName
@@ -400,11 +422,14 @@ proc DoCreateStandalone {filename} {
             puts $fileId "[GetUpdateServerCommand]"
         }
     }
+    
+    
     if {$standaloneStart == 1} {
         if {$currentOs == "windows"} {
             puts $fileId "start \"Server Launcher window\" [GetStartServerCommand]"
         } else {
-            puts $fileId "[GetStartServerCommand]"
+            set controlScript [GetServerControlScriptString]
+            puts $fileId "$controlScript [GetStartServerCommand]"
         }
     }
     close $fileId
@@ -447,7 +472,8 @@ proc DoCreateAssyncUpdateAndStart {fileName includeUpdate includeStart} {
         if {$currentOs == "windows"} {
             puts $fileId "start \"Server Launcher window\" [GetStartServerCommand]"
         } else {
-            puts $fileId "[GetStartServerCommand]"
+            set controlScript [GetServerControlScriptString]
+            puts $fileId "$controlScript [GetStartServerCommand]"
         }
     }
     close $fileId
@@ -507,7 +533,7 @@ proc UpdateAndStartServerAssync {} {
         }
     }
     
-    RunScriptAssync "$installFolder/bin/onstart"
+    RunScriptAssync [MakeScriptFileName "$installFolder/bin/onstart"]
 }
 
 proc IsSourcemodEnabled {} {
