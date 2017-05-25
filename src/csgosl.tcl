@@ -25,6 +25,7 @@ source [file join $starkit::topdir maps_support.tcl]
 source [file join $starkit::topdir layout.tcl]
 source [file join $starkit::topdir widgets.tcl]
 source [file join $starkit::topdir executor.tcl]
+source [file join $starkit::topdir rcon_executor.tcl]
 source [file join $starkit::topdir server_support.tcl]
 source [file join $starkit::topdir wget.tcl]
 source [file join $starkit::topdir trace.tcl]
@@ -62,6 +63,7 @@ proc SaveAll { {skipStandalone ""} } {
     }
     SaveConfigFileSteam
     if { $serverPresent } {
+        SaveConfigFileRconCli
         SaveConfigFileMapGroups
         SaveConfigFileRun 
         SaveConfigFileSourcemod
@@ -205,6 +207,13 @@ EnsureConfigFile serverConfig
 LoadConfigFile serverConfig
 proc SaveConfigFileServer {} {
     SaveConfigFile serverConfig
+}
+
+source [file join $starkit::topdir page_rcon_cli.tcl]
+EnsureConfigFile rconCliConfig
+LoadConfigFile rconCliConfig
+proc SaveConfigFileRconCli {} {
+    SaveConfigFile rconCliConfig    
 }
 
 source [file join $starkit::topdir page_gotv.tcl]
@@ -512,7 +521,6 @@ proc SaveConfigFileRun {} {
 }
 
 ## Console config
-
 source [file join $starkit::topdir page_console.tcl]
 
 ## About config
@@ -634,6 +642,9 @@ set enableTab 1
 
 CreateConfigPageTabFromLayout $cp.server $serverLayout $enableTab
 set serverPage [CreateConfigPageFromLayout $cp.server $serverLayout]
+
+CreateConfigPageTabFromLayout $cp.rconcli $rconCliLayout $enableTab
+set rconCliPage [CreateConfigPageFromLayout $cp.rconcli $rconCliLayout]
 
 CreateConfigPageTabFromLayout $cp.gotv $gotvLayout $enableTab
 set gotvPage [CreateConfigPageFromLayout $cp.gotv $gotvLayout]

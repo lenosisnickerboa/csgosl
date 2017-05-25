@@ -498,6 +498,16 @@ proc LayoutFuncConsole {at help layout parms} {
     return $at    
 }
 
+proc LayoutFuncRconCli {at help layout parms} {   
+    frame $at 
+    frame $at.rconcli -borderwidth 10
+    frame $at.rconcliexecf -borderwidth 10
+    ::rcon::ExecutorCreate $at.rconcliexecf
+    pack $at.rconcliexecf -side top -fill both -expand true
+    pack $at
+    return $at    
+}
+
 proc CreateConfigPages { at w h } {
     ttk::notebook $at.n 
     ttk::notebook::enableTraversal $at.n
