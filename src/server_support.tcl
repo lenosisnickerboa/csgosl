@@ -210,7 +210,7 @@ proc GetStartServerCommand {} {
             -tickrate $tickRate \
             $passwordOption \
             $ipOption \
-            +hostname \"$serverName\" $serverPortOption $serverLanOption \
+            +hostname \\\"$serverName\\\" $serverPortOption $serverLanOption \
             $options"
     }
 }
