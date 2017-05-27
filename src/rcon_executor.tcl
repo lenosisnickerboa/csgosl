@@ -15,6 +15,7 @@ namespace eval rcon {
 	variable executorLog
 	variable currentRconIp ""
 	variable currentRconPort ""
+	variable cmds [list]
 	#Size:4, ID:4, TYPE:4
 	variable HEADER_SIZE 12
 	variable TYPE_SERVERDATA_AUTH 3
@@ -25,6 +26,75 @@ namespace eval rcon {
 	variable ID_CMD 24
 	variable lastError ""
 }
+
+proc rcon::SetCmd {cmd} {
+	global ::rcon::executorCommand
+	set ::rcon::executorCommand $cmd
+}
+
+proc rcon::AddCmd {cmd} {
+	if {$cmd == ""} {
+		return 0
+	}
+	global ::rcon::cmds
+	if {[lsearch $::rcon::cmds $cmd] != -1} {
+		#already exists, don't add
+		return 0
+	}
+	lappend ::rcon::cmds $cmd 
+}
+
+proc rcon::PrevCmd {} {
+	global ::rcon::cmds 
+	if {[llength $::rcon::cmds] == 0} {
+		#No commands
+		bell
+		return 1
+	}
+	global ::rcon::executorCommand
+	set currentIndex [lsearch $::rcon::cmds $::rcon::executorCommand]
+	if {$currentIndex == -1} {
+		#at end of list, command has not yet been added
+		set newCmd [lrange $cmds end end]
+		AddCmd $::rcon::executorCommand
+		set ::rcon::executorCommand $newCmd
+		return 1
+	}
+	if {$currentIndex == 0} {
+		#at top
+		bell
+		return 1
+	}
+	set index [expr $currentIndex - 1]
+	set ::rcon::executorCommand [lrange $cmds $index $index]		
+	return 0
+}
+
+proc rcon::NextCmd {} {
+	global ::rcon::cmds
+	if {[llength $::rcon::cmds] == 0} {
+		#No commands
+		bell
+		return 1
+	}
+	global ::rcon::executorCommand
+	set currentIndex [lsearch $::rcon::cmds $::rcon::executorCommand]
+	if {$currentIndex == -1} {
+		#at end of list, command has not yet been added
+		bell
+		return 1
+	}
+	if {$currentIndex == [llength $cmds]} {
+		#at bottom
+		bell
+		return 0
+	}
+	set index [expr $currentIndex + 1]
+	set ::rcon::executorCommand [lrange $cmds $index $index]		
+	return 0
+}
+
+
 
 proc rcon::PacketSize {cmd} {
 	# The initial header size field is not included in packet size -> 8 bytes
@@ -201,8 +271,10 @@ proc rcon::ExecutorCreate {at} {
 	
 	# Set up key binding equivalents to the buttons
 	
-	bind $at.top.cmd <Return> ExecutorRun
-	#bind $at.top.cmd <Control-c> ExecutorStop
+	bind $at.top.cmd <Return> ::rcon::ExecutorRun
+	bind $at.top.cmd <Key-Up> ::rcon::PrevCmd
+	bind $at.top.cmd <Key-Down> ::rcon::NextCmd
+#bind $at.top.cmd <Control-c> ExecutorStop
 	focus $at.top.cmd
 	
 	# Create a text widget to log the output
@@ -222,8 +294,9 @@ proc rcon::ExecutorCreate {at} {
 	pack $at.t -side top -fill both -expand true    
 }
 
-proc ExecutorRun {} {
+proc rcon::ExecutorRun {} {
 	global ::rcon::executorCommand
+	AddCmd $::rcon::executorCommand
 	set chan [::rcon::ConnectToServer]
 	Trace "rcon@[::rcon::GetCurrentRconAddress]> $::rcon::executorCommand"
 	::rcon::TraceConsole "rcon@[::rcon::GetCurrentRconAddress]> $::rcon::executorCommand\n"

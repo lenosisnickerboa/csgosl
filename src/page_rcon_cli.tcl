@@ -27,8 +27,9 @@ variable rconCliLayout [CreateLayout \
     [list \
         h1      [list "RconCli settings"] \
         space   [list] \
-        h2      [list "General"] \
+        h2      [list "Console"] \
         line    [list] \
+        text    [list "Use CRSR-UP/DOWN for command history."] \
         space   [list] \
         func    [list LayoutFuncRconCli] \
         warning [list "You may get a firewall warning when running rcon commands, simply allow and remember the access."] \
