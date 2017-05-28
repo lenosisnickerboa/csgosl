@@ -27,10 +27,27 @@ variable rconCliLayout [CreateLayout \
     [list \
         h1      [list "RconCli settings"] \
         space   [list] \
+        h2      [list "Shortcuts"] \
+        line    [list] \
+        space   [list] \
+        buttons [list [list push clear clear {rcon::ClearLog}] \
+                      [list push status status {rcon::ExecuteCommand status}] \
+                      [list push stats stats {rcon::ExecuteCommand stats}] \
+                      [list push users users {rcon::ExecuteCommand users}] \
+                      [list push kickallbots kickallbots {rcon::ExecuteCommand "bot_kick all"}] \
+                      [list push reload reload {rcon::ExecuteCommand reload}] \
+                      [list push cheatson cheatson {rcon::ExecuteCommand "sv_cheats 1"}] \
+                      [list push cheatsoff cheatsoff {rcon::ExecuteCommand "sv_cheats 0"}] \
+                ] \
+        buttons [list [list entry kick kick {rcon::ExecuteCommand kick} rconCliCommandKickEntry] \
+                      [list entry ban30min ban30min {rcon::ExecuteCommand banid 30} rconCliCommandBanEntry] \
+                      [list entry permban permban {rcon::ExecuteCommand banid 0} rconCliCommandPermBanEntry] \
+                ] \
+        space   [list] \
         h2      [list "Console"] \
         line    [list] \
-        text    [list "Use CRSR-UP/DOWN for command history."] \
         space   [list] \
+        text    [list "Use CRSR-UP/DOWN for command history."] \
         func    [list LayoutFuncRconCli] \
         warning [list "You may get a firewall warning when running rcon commands, simply allow and remember the access."] \
         line    [list] \

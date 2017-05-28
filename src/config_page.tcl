@@ -43,6 +43,27 @@ proc CreateConfigPageH1 {at parms} {
     pack [label $at -text "$text" -anchor w -font {-size -18 -weight bold}] -side top -fill x -expand true
 }
 
+proc CreateConfigPageActions {at parms} {
+    frame $at
+    foreach button $parms {
+        set btype [lindex $button 0]
+        set bname [lindex $button 1]
+        set btext [lindex $button 2]
+        set bfunc [lindex $button 3]
+        if {$btype == "push"} {
+            pack [button $at.b$bname -text "$btext" -command $bfunc -padx 2 -pady 2] -side left -anchor w
+        } elseif {$btype == "entry"} {
+            set bvariablename [lindex $button 4]
+            pack [label $at.l$bname -anchor w -text "$btext" -padx 0 -pady 2] -side left -anchor w
+            pack [entry $at.e$bname -relief sunken -textvariable $bvariablename -background white] -side left -anchor w
+            global $bvariablename
+#            Trace "Set [subst $bfunc $bvariablename]"
+            bind $at.e$bname <Return> [subst "$bfunc \\$$bvariablename"]
+        }
+    }
+    pack $at -side top -fill x -expand true
+}
+
 proc CreateConfigPageH2 {at parms} {
     set text [lindex $parms 0]
     pack [label $at -text "$text" -anchor w -font {-size -14 -weight bold}] -side top -fill x -expand true
@@ -186,6 +207,8 @@ proc CreateConfigPageItemFromLayout {layout page type args widgetIx} {
         CreateConfigPageItem $page.w$parmName $parmName $globalParmName $parmValue $parmType $parmDefault $help $selections $custom $disableParmArgs $onchangeCmd
     } elseif {$type == "func"} {
         CreateConfigPageFunc $page.func$widgetIx $help $layout $args
+    } elseif {$type == "buttons"} {
+        CreateConfigPageActions $page.func$widgetIx $args
     } elseif {$type == "h1"} {
         CreateConfigPageH1 $page.h1$widgetIx $args
     } elseif {$type == "h2"} {

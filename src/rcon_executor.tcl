@@ -41,7 +41,7 @@ proc rcon::AddCmd {cmd} {
 		#already exists, don't add
 		return 0
 	}
-	lappend ::rcon::cmds $cmd 
+	lappend ::rcon::cmds $cmd
 }
 
 proc rcon::PrevCmd {} {
@@ -55,7 +55,7 @@ proc rcon::PrevCmd {} {
 	set currentIndex [lsearch $::rcon::cmds $::rcon::executorCommand]
 	if {$currentIndex == -1} {
 		#at end of list, command has not yet been added
-		set newCmd [lrange $cmds end end]
+		set newCmd [string trim [lrange $cmds end end] "\{\}"]
 		AddCmd $::rcon::executorCommand
 		set ::rcon::executorCommand $newCmd
 		return 1
@@ -66,7 +66,7 @@ proc rcon::PrevCmd {} {
 		return 1
 	}
 	set index [expr $currentIndex - 1]
-	set ::rcon::executorCommand [lrange $cmds $index $index]		
+	set ::rcon::executorCommand [string trim [lrange $cmds $index $index] "\{\}"]
 	return 0
 }
 
@@ -90,11 +90,9 @@ proc rcon::NextCmd {} {
 		return 0
 	}
 	set index [expr $currentIndex + 1]
-	set ::rcon::executorCommand [lrange $cmds $index $index]		
+	set ::rcon::executorCommand [string trim [lrange $cmds $index $index] "\{\}"]
 	return 0
 }
-
-
 
 proc rcon::PacketSize {cmd} {
 	# The initial header size field is not included in packet size -> 8 bytes
@@ -113,6 +111,11 @@ proc rcon::TraceConsole {line} {
 	global ::rcon::executorLog
 	$::rcon::executorLog insert end $line
 	$::rcon::executorLog see end    
+}
+
+proc rcon::ClearLog {} {
+	global ::rcon::executorLog
+	$::rcon::executorLog delete 1.0 end
 }
 
 proc rcon::MyIp {} {
@@ -233,7 +236,7 @@ proc rcon::DoSendCommand {chan cmd} {
 	set packet [::rcon::BuildCommand $id $cmd]
 	puts -nonewline $chan $packet
 	set body [Recv_SERVERDATA_RESPONSE_VALUE $chan $id]
-	::rcon::TraceConsole "$body\n"
+	::rcon::TraceConsole "$body"
 }
 
 proc rcon::SendCommand {chan cmd} {
@@ -294,12 +297,12 @@ proc rcon::ExecutorCreate {at} {
 	pack $at.t -side top -fill both -expand true    
 }
 
-proc rcon::ExecutorRun {} {
-	global ::rcon::executorCommand
-	AddCmd $::rcon::executorCommand
+proc rcon::ExecuteCommand {cmd1 args} {
+	set cmd [join "$cmd1 $args"]
+	AddCmd $cmd
 	set chan [::rcon::ConnectToServer]
-	Trace "rcon@[::rcon::GetCurrentRconAddress]> $::rcon::executorCommand"
-	::rcon::TraceConsole "rcon@[::rcon::GetCurrentRconAddress]> $::rcon::executorCommand\n"
+	Trace "rcon@[::rcon::GetCurrentRconAddress]> $cmd"
+	::rcon::TraceConsole "rcon@[::rcon::GetCurrentRconAddress]> $cmd\n"
 	if {$chan == -1} {
 		::rcon::TraceConsole "$::rcon::lastError\n"
 		return -1
@@ -309,12 +312,18 @@ proc rcon::ExecutorRun {} {
         catch {close $chan}
 		return -1
 	}
-	if { [::rcon::SendCommand $chan $::rcon::executorCommand] != 0 } {
+	if { [::rcon::SendCommand $chan $cmd] != 0 } {
 		::rcon::TraceConsole "$::rcon::lastError\n"
         catch {close $chan}
 		return -1
 	}
-	set ::rcon::executorCommand ""
 	catch {close $chan}
+	return 0
 }
 
+proc rcon::ExecutorRun {} {
+	global ::rcon::executorCommand
+	if {[::rcon::ExecuteCommand $::rcon::executorCommand] == 0} {
+		set ::rcon::executorCommand ""		
+	}
+}
