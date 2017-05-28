@@ -16,7 +16,7 @@ csgosl features:
 * Manage all your maps and [create your own map groups](https://github.com/lenosisnickerboa/csgosl/wiki/Create%20your%20own%20map%20groups) using the map group editor
 * Easily [view](https://github.com/lenosisnickerboa/csgosl/wiki/Help-on-Maps) and select all installed maps using map previews
 * Greatly simplified server settings with reasonable defaults 
-* RCON control via dedicated console or shortcut buttons
+* [RCON](https://github.com/lenosisnickerboa/csgosl/wiki/Help-on-RconCli) control via dedicated console or shortcut buttons
 * [Advanced settings](https://github.com/lenosisnickerboa/csgosl/wiki/Advanced%20mode) mode for the control freak (supports all cvars with in app help texts)
 * [Override settings in one place](https://github.com/lenosisnickerboa/csgosl/wiki/Advanced%20mode) for all game modes/types
 * [Online help](https://github.com/lenosisnickerboa/csgosl/wiki) easily accessible from the application
