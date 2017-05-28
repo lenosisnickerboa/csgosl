@@ -148,7 +148,7 @@ proc rcon::Connect {} {
 	} else {
 		set ::rcon::currentRconPort $overridePort
 	}
-	Trace "Connecting to RCON at [::rcon::GetCurrentRconAddress]..."
+#	Trace "Connecting to RCON at [::rcon::GetCurrentRconAddress]..."
 	set chan [socket $currentRconIp $currentRconPort]
 	chan configure $chan -buffering none -translation binary -encoding binary
 	return $chan

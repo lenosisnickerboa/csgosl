@@ -7,6 +7,7 @@ source [file join $starkit::topdir widgets.tcl]
 source [file join $starkit::topdir hyperlink.tcl]
 source [file join $starkit::topdir config_file.tcl]
 source [file join $starkit::topdir browser.tcl]
+source [file join $starkit::topdir tooltip.tcl]
 
 proc Shift {parms} {
     return [lreplace $parms 0  0]
@@ -49,16 +50,22 @@ proc CreateConfigPageActions {at parms} {
         set btype [lindex $button 0]
         set bname [lindex $button 1]
         set btext [lindex $button 2]
-        set bfunc [lindex $button 3]
-        if {$btype == "push"} {
-            pack [button $at.b$bname -text "$btext" -command $bfunc -padx 2 -pady 2] -side left -anchor w
-        } elseif {$btype == "entry"} {
-            set bvariablename [lindex $button 4]
+        if {$btype == "text"} {
             pack [label $at.l$bname -anchor w -text "$btext" -padx 0 -pady 2] -side left -anchor w
-            pack [entry $at.e$bname -relief sunken -textvariable $bvariablename -background white] -side left -anchor w
-            global $bvariablename
-#            Trace "Set [subst $bfunc $bvariablename]"
-            bind $at.e$bname <Return> [subst "$bfunc \\$$bvariablename"]
+        } else {
+            set bfunc [lindex $button 3]
+            set bhelp [lindex $button 4]
+            if {$btype == "push"} {
+                pack [button $at.b$bname -text "$btext" -command $bfunc -padx 2 -pady 2] -side left -anchor w
+                SetTooltip $at.b$bname "$bhelp"
+            } elseif {$btype == "entry"} {
+                set bvariablename [lindex $button 5]
+                pack [label $at.l$bname -anchor w -text "$btext" -padx 0 -pady 2] -side left -anchor w
+                pack [entry $at.e$bname -relief sunken -textvariable $bvariablename -background white] -side left -anchor w
+                SetTooltip $at.e$bname "$bhelp"
+                global $bvariablename
+                bind $at.e$bname <Return> [subst "$bfunc \\$$bvariablename"]
+            }
         }
     }
     pack $at -side top -fill x -expand true
