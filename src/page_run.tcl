@@ -26,6 +26,14 @@ variable runConfig [CreateConfig \
         "int"  [list buytime "30" "Seconds you are allowed to buy stuff when the match begins." mappedto [list mp_buytime]]\
         "int"  [list warmuptime "0" "Seconds to warm up before the match begins." mappedto [list mp_warmuptime]]\
         "int"  [list freezetime "0" "How many seconds to keep players frozen when the round starts." mappedto [list mp_freezetime]]\
+        "int"  [list startmoney "800" "Amount of money each player gets when they reset.\n<800-16000>" mappedto [list mp_startmoney]]\
+        "int"  [list c4timer "45" "The amount of time in seconds before bomb explodes after planted.\n<10-90>" mappedto [list mp_c4timer]]\
+        "int"  [list fraglimit "0" "Amount of frags a player can exceed before changing maps." mappedto [list mp_fraglimit]]\
+        "int"  [list maxrounds "0" "Amount of rounds to play before server changes maps." mappedto [list mp_maxrounds]]\
+        "int"  [list winlimit "0" "Max number of rounds one team can win before server changes maps." mappedto [list mp_winlimit]]\
+        "bool" [list enablebunnyhopping "0" "Disables the air-velocity clamping to 110% of maximum running speed." mappedto [list sv_enablebunnyhopping]]\
+        "bool" [list autobunnyhopping "0" "Holding +jump causes players to automatically re-jump at the exact landing tick." mappedto [list sv_autobunnyhopping]]\
+        "int"  [list airaccelerate "10" "Makes you accelerate faster or slower when in the air." mappedto [list sv_airaccelerate]]\
     ] \
 ]
 
@@ -53,19 +61,34 @@ variable runLayout [CreateLayout \
         line    [list] \
         space   [list] \
         parm    [list players] \
-        parm    [list bots func] \
+        parm    [list bots] \
         parm    [list fillwithbots] \
         parm    [list botskill] \
-    	parm    [list friendlyfire] \
         space   [list] \
-        h2      [list "Misc"] \
+        h2      [list "Gameplay"] \
         line    [list] \
         space   [list] \
+    	parm    [list friendlyfire] \
         parm    [list killcam] \
+        parm    [list enablebunnyhopping] \
+        parm    [list autobunnyhopping] \
+        parm    [list airaccelerate] \
+        space   [list] \
+        h2      [list "Round"] \
+        line    [list] \
         parm    [list roundtime] \
         parm    [list warmuptime] \
         parm    [list buytime] \
         parm    [list freezetime] \
+        parm    [list c4timer] \
+        parm    [list fraglimit] \
+        parm    [list maxrounds] \
+        parm    [list winlimit] \
+        parm    [list startmoney] \
+        space   [list] \
+        h2      [list "Misc"] \
+        line    [list] \
+        space   [list] \
         parm    [list options] \
     ] \
 ]

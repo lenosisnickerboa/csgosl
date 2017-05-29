@@ -26,11 +26,28 @@ variable serverConfig [CreateConfig \
         "int"       [list tickrate "128" "Server tickrate, that is the frequency with which the server and connecting clients communicate. Connecting clients are automatically instructed to use this frequency."]\
         "bool"      [list rcon "0" "Enable servers Remote Console. This allows you (and anyone else with the rcon password) to connect to your server and control it using commands." onchange "ServerSetRconPasswordState"]\
         "string"    [list rconpassword "$hostName" "Your RCON password, set to your hostname by default. If you enable rcon set a better password!"]\
+        "int"       [list rconbanpenalty "0" "Number of minutes to ban users who fail rcon authentication." mappedto [list sv_rcon_banpenalty]]\
+        "int"       [list rconmaxfailures "10" "Max number of times a user can fail rcon authentication before being banned.\n<0-20>" mappedto [list sv_rcon_maxfailures]]\
         "int"       [list netmaxfilesize "64" "Controls how large maps clients are allowed to download from your server. Leave as is if you don't know what this is."]\
         "bool"      [list standalonescript "0" "Generate standalone start/stop scripts in the csgosl installation folder which can be used to control the csgo server without\nstarting the csgosl GUI. The script will be automatically regenerated when parameter changes are\nsaved so it always stays up-to-date with your configuration."]\
         "bool"      [list standaloneupdate "0" "Include a server update in the standalone script."]\
         "bool"      [list standalonestart "0" "Include a server start in the standalone script."]\
-    ] \
+        "bool"      [list pausable "0" "Anyone can pause the server." mappedto [list sv_pausable]]\
+        "bool"      [list clientconsistency "0" "Force clients to pass consistency check for critical files before joining server" mappedto [list sv_consistency]]\
+        "bool"      [list voice "0" "Allow clients to use mic." mappedto [list sv_voiceenable]]\
+        "bool"      [list spectators "0" "Allow spectators on the server." mappedto [list mp_allowspectators]]\
+        "bool"      [list logenable "0" "Enable server logging?" mappedto [list log]]\
+        "bool"      [list logbans "0" "Log server bans in the server logs." mappedto [list sv_logbans]]\
+        "bool"      [list logecho "1" "Echo log information to the console." mappedto [list sv_logecho]]\
+        "bool"      [list logfile "1" "Log server information in the log file." mappedto [list sv_logfile]]\
+        "bool"      [list logonefile "0" "Log server information to only one file." mappedto [list sv_log_onefile]]\
+        "bool"      [list alltalk "0" "Players can hear all other players, no team restrictions." mappedto [list sv_alltalk]]\
+        "bool"      [list cheats "0" "Allow cheats on server." mappedto [list sv_cheats]]\
+        "int"       [list gravity "800" "World Gravity" mappedto [list sv_gravity]]\
+        "bool"      [list autoteambalance "0" "Balance teams automatically (please find better help text...)." mappedto [list mp_autoteambalance]]\
+        "bool"      [list autokick "0" "Kick idle/team-killing players." mappedto [list mp_autokick]]\
+        "bool"      [list tkpunish "0" "Punish team killers on next round?" mappedto [list mp_tkpunish]]\
+] \
 ]
 
 variable serverLayout [CreateLayout \
@@ -54,8 +71,23 @@ variable serverLayout [CreateLayout \
         space   [list] \
         parm    [list port] \
         parm    [list lanonly] \
+        space   [list] \
+        h2      [list "Rcon"] \
+        line    [list] \
+        space   [list] \
         parm    [list rcon] \
         parm    [list rconpassword] \
+        parm    [list rconbanpenalty] \
+        parm    [list rconmaxfailures] \
+        space   [list] \
+        h2      [list "Logging"] \
+        line    [list] \
+        space   [list] \
+        parm    [list logenable] \
+        parm    [list logbans] \
+        parm    [list logecho] \
+        parm    [list logfile] \
+        parm    [list logonefile] \
         space   [list] \
         h2      [list "Startup server options"] \
         line    [list] \
@@ -79,9 +111,19 @@ variable serverLayout [CreateLayout \
         h2      [list "Misc"] \
         line    [list] \
         space   [list] \
+        parm    [list tickrate] \
+        parm    [list voice] \
+        parm    [list alltalk] \
+        parm    [list cheats] \
+        parm    [list autokick] \
+        parm    [list autoteambalance] \
+        parm    [list tkpunish] \
+        parm    [list gravity] \
+        parm    [list spectators] \
+        parm    [list clientconsistency] \
+        parm    [list pausable] \
         parm    [list bindip] \
         parm    [list autorestart] \
-        parm    [list tickrate] \
         parm    [list netmaxfilesize] \        
     ] \
 ]

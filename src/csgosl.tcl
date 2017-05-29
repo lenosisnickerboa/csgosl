@@ -206,7 +206,80 @@ source [file join $starkit::topdir page_server.tcl]
 EnsureConfigFile serverConfig
 LoadConfigFile serverConfig
 proc SaveConfigFileServer {} {
-    SaveConfigFile serverConfig
+    SaveConfigFile serverConfig   
+    
+    global serverConfig
+    global gameModeAllConfig
+    global DisableParmPrefix    
+    
+    set pausableEnableSetting [GetConfigItem $serverConfig ${DisableParmPrefix}pausable]
+    if { $pausableEnableSetting == "1" } {
+        SetConfigItem $gameModeAllConfig sv_pausable [GetConfigItem $serverConfig pausable]
+    }
+    set clientconsistencyEnableSetting [GetConfigItem $serverConfig ${DisableParmPrefix}clientconsistency]
+    if { $clientconsistencyEnableSetting == "1" } {
+        SetConfigItem $gameModeAllConfig sv_consistency [GetConfigItem $serverConfig clientconsistency]
+    }
+    set voiceEnableSetting [GetConfigItem $serverConfig ${DisableParmPrefix}voice]
+    if { $voiceEnableSetting == "1" } {
+        SetConfigItem $gameModeAllConfig sv_voiceenable [GetConfigItem $serverConfig voice]
+    }
+    set spectatorsEnableSetting [GetConfigItem $serverConfig ${DisableParmPrefix}spectators]
+    if { $spectatorsEnableSetting == "1" } {
+        SetConfigItem $gameModeAllConfig mp_allowspectators [GetConfigItem $serverConfig spectators]
+    }
+    set rconbanpenaltyEnableSetting [GetConfigItem $serverConfig ${DisableParmPrefix}rconbanpenalty]
+    if { $rconbanpenaltyEnableSetting == "1" } {
+        SetConfigItem $gameModeAllConfig sv_rcon_banpenalty [GetConfigItem $serverConfig rconbanpenalty]
+    }
+    set rconmaxfailuresEnableSetting [GetConfigItem $serverConfig ${DisableParmPrefix}rconmaxfailures]
+    if { $rconmaxfailuresEnableSetting == "1" } {
+        SetConfigItem $gameModeAllConfig sv_rcon_maxfailures [GetConfigItem $serverConfig rconmaxfailures]
+    }
+    set logenableEnableSetting [GetConfigItem $serverConfig ${DisableParmPrefix}logenable]
+    if { $logenableEnableSetting == "1" } {
+        SetConfigItem $gameModeAllConfig log [GetConfigItem $serverConfig logenable]
+    }
+    set logbansEnableSetting [GetConfigItem $serverConfig ${DisableParmPrefix}logbans]
+    if { $logbansEnableSetting == "1" } {
+        SetConfigItem $gameModeAllConfig sv_logbans [GetConfigItem $serverConfig logbans]
+    }
+    set logechoEnableSetting [GetConfigItem $serverConfig ${DisableParmPrefix}logecho]
+    if { $logechoEnableSetting == "1" } {
+        SetConfigItem $gameModeAllConfig sv_logecho [GetConfigItem $serverConfig logecho]
+    }
+    set logfileEnableSetting [GetConfigItem $serverConfig ${DisableParmPrefix}logfile]
+    if { $logfileEnableSetting == "1" } {
+        SetConfigItem $gameModeAllConfig sv_logfile [GetConfigItem $serverConfig logfile]
+    }
+    set logonefileEnableSetting [GetConfigItem $serverConfig ${DisableParmPrefix}logonefile]
+    if { $logonefileEnableSetting == "1" } {
+        SetConfigItem $gameModeAllConfig sv_log_onefile [GetConfigItem $serverConfig logonefile]
+    }
+    set alltalkEnableSetting [GetConfigItem $serverConfig ${DisableParmPrefix}alltalk]
+    if { $alltalkEnableSetting == "1" } {
+        SetConfigItem $gameModeAllConfig sv_alltalk [GetConfigItem $serverConfig alltalk]
+    }
+    set cheatsEnableSetting [GetConfigItem $serverConfig ${DisableParmPrefix}cheats]
+    if { $cheatsEnableSetting == "1" } {
+        SetConfigItem $gameModeAllConfig sv_cheats [GetConfigItem $serverConfig cheats]
+    }
+    set gravityEnableSetting [GetConfigItem $serverConfig ${DisableParmPrefix}gravity]
+    if { $gravityEnableSetting == "1" } {
+        SetConfigItem $gameModeAllConfig sv_gravity [GetConfigItem $serverConfig gravity]
+    }   
+    set autoteambalanceEnableSetting [GetConfigItem $serverConfig ${DisableParmPrefix}autoteambalance]
+    if { $autoteambalanceEnableSetting == "1" } {
+        SetConfigItem $gameModeAllConfig mp_autoteambalance [GetConfigItem $serverConfig autoteambalance]
+    }   
+    set autokickEnableSetting [GetConfigItem $serverConfig ${DisableParmPrefix}autokick]
+    if { $autokickEnableSetting == "1" } {
+        SetConfigItem $gameModeAllConfig mp_autokick [GetConfigItem $serverConfig autokick]
+    }
+    set tkpunishEnableSetting [GetConfigItem $serverConfig ${DisableParmPrefix}tkpunish]
+    if { $tkpunishEnableSetting == "1" } {
+        SetConfigItem $gameModeAllConfig mp_tkpunish [GetConfigItem $serverConfig tkpunish]
+    }
 }
 
 source [file join $starkit::topdir page_rcon_cli.tcl]
@@ -493,21 +566,6 @@ proc SaveConfigFileRun {} {
     if { $friendlyFireEnableSetting == "1" } {
         SetConfigItem $gameModeAllConfig mp_friendlyfire [GetConfigItem $runConfig friendlyfire]
     }
-#    set vote [GetConfigItem $runConfig vote]
-#    SetConfigItem $gameModeAllConfig sv_allow_votes $vote
-#    SetConfigItem $gameModeAllConfig sv_vote_issue_kick_allowed $vote
-#    SetConfigItem $gameModeAllConfig sv_vote_issue_restart_game_allowed $vote
-#    SetConfigItem $gameModeAllConfig sv_vote_allow_spectators $vote
-#    SetConfigItem $gameModeAllConfig sv_vote_allow_in_warmup $vote
-#    SetConfigItem $gameModeAllConfig mp_endmatch_votenextmap_keepcurrent $vote
-#    SetConfigItem $gameModeAllConfig mp_endmatch_votenextmap $vote
-#    SetConfigItem $gameModeAllConfig mp_match_end_restart $vote
-#    SetConfigItem $gameModeAllConfig mp_match_end_changelevel $vote
-#    if {$vote == "1"} {
-#        SetConfigItem $gameModeAllConfig sv_vote_to_changelevel_before_match_point 0      
-#    } else {
-#        SetConfigItem $gameModeAllConfig sv_vote_to_changelevel_before_match_point 1
-#    }
     
     set killCam [GetConfigItem $runConfig killcam]
     set killCamEnableSetting [GetConfigItem $runConfig ${DisableParmPrefix}killcam]
@@ -518,6 +576,40 @@ proc SaveConfigFileRun {} {
             SetConfigItem $gameModeAllConfig mp_forcecamera 1       
         }
     }
+
+    set startmoneyEnableSetting [GetConfigItem $runConfig ${DisableParmPrefix}startmoney]
+    if { $startmoneyEnableSetting == "1" } {
+        SetConfigItem $gameModeAllConfig mp_startmoney [GetConfigItem $runConfig startmoney]
+    }
+
+    set c4timerEnableSetting [GetConfigItem $runConfig ${DisableParmPrefix}c4timer]
+    if { $c4timerEnableSetting == "1" } {
+        SetConfigItem $gameModeAllConfig mp_c4timer [GetConfigItem $runConfig c4timer]
+    }
+    set fraglimitEnableSetting [GetConfigItem $runConfig ${DisableParmPrefix}fraglimit]
+    if { $fraglimitEnableSetting == "1" } {
+        SetConfigItem $gameModeAllConfig mp_fraglimit [GetConfigItem $runConfig fraglimit]
+    }
+    set maxroundsEnableSetting [GetConfigItem $runConfig ${DisableParmPrefix}maxrounds]
+    if { $maxroundsEnableSetting == "1" } {
+        SetConfigItem $gameModeAllConfig mp_maxrounds [GetConfigItem $runConfig maxrounds]
+    }
+    set winlimitEnableSetting [GetConfigItem $runConfig ${DisableParmPrefix}winlimit]
+    if { $winlimitEnableSetting == "1" } {
+        SetConfigItem $gameModeAllConfig mp_winlimit [GetConfigItem $runConfig winlimit]
+    }
+    set enablebunnyhoppingEnableSetting [GetConfigItem $runConfig ${DisableParmPrefix}enablebunnyhopping]
+    if { $enablebunnyhoppingEnableSetting == "1" } {
+        SetConfigItem $gameModeAllConfig sv_enablebunnyhopping [GetConfigItem $runConfig enablebunnyhopping]
+    }   
+    set autobunnyhoppingEnableSetting [GetConfigItem $runConfig ${DisableParmPrefix}autobunnyhopping]
+    if { $autobunnyhoppingEnableSetting == "1" } {
+        SetConfigItem $gameModeAllConfig sv_autobunnyhopping [GetConfigItem $runConfig autobunnyhopping]
+    }   
+    set airaccelerateEnableSetting [GetConfigItem $runConfig ${DisableParmPrefix}airaccelerate]
+    if { $airaccelerateEnableSetting == "1" } {
+        SetConfigItem $gameModeAllConfig sv_airaccelerate [GetConfigItem $runConfig airaccelerate]
+    }   
 }
 
 ## Console config

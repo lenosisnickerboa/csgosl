@@ -34,7 +34,7 @@ variable rconCliLayout [CreateLayout \
         buttons [list [list text tgeneral "General"] \
                       [list push clear clear {rcon::ClearLog} "Clear the console log window"] \
                       [list push status status {rcon::ExecuteCommand status} "Show server status"] \
-                      [list push stats stats {rcon::ExecuteCommand stats} "Show server stats"] \
+                      [list push stats stats {rcon::ExecuteCommand stats} "Provides a console output with information about time CPU, IN, OUT, Uptime, FPS Player and the Server."] \
                       [list push reload reload {rcon::ExecuteCommand reload} "Reload the current map and start fresh"] \
                       [list push serverlogon serverlogon {rcon::ExecuteCommand log on} "Enable server logging"] \
                       [list push serverlogoff serverlogoff {rcon::ExecuteCommand log off} "Disable server logging"] \
@@ -53,12 +53,12 @@ variable rconCliLayout [CreateLayout \
                       [list entry ban30min ban30min {rcon::ExecuteCommand banid 30} "Ban user id entered in text box for 30 minutes" rconCliCommandBanEntry] \
                       [list entry permban permban {rcon::ExecuteCommand banid 0} "Permanently ban user id entered in text box" rconCliCommandPermBanEntry] \
                       [list push kickallbots kickallbots {rcon::ExecuteCommand "bot_kick all"} "Kick all bots"] \
-                      [list push autoteambalanceon autoteambalanceon {rcon::ExecuteCommand "mp_autoteambalance 1"} "Force clients to auto-join the opposite team if they are not balanced."] \
-                      [list push autoteambalanceoff autoteambalanceoff {rcon::ExecuteCommand "mp_autoteambalance 0"} "Don't force clients to auto-join the opposite team if they are not balanced."] \
                 ] \
         buttons [list [list text tusers "Users(2)"] \
                       [list push autokickon autokickon {rcon::ExecuteCommand "mp_autokick 1"} "Kick idle/team-killing players."] \
                       [list push autokickoff autokickoff {rcon::ExecuteCommand "mp_autokick 0"} "Don't kick idle/team-killing players."] \
+                      [list push autoteambalanceon autoteambalanceon {rcon::ExecuteCommand "mp_autoteambalance 1"} "Force clients to auto-join the opposite team if they are not balanced."] \
+                      [list push autoteambalanceoff autoteambalanceoff {rcon::ExecuteCommand "mp_autoteambalance 0"} "Don't force clients to auto-join the opposite team if they are not balanced."] \
                       [list push tkpunishon tkpunishon {rcon::ExecuteCommand "mp_tkpunish 1"} "Punish team killers on next round."] \
                       [list push tkpunishoff tkpunishoff {rcon::ExecuteCommand "mp_tkpunish 0"} "Don't punish team killers on next round."] \
                 ] \
@@ -76,6 +76,7 @@ variable rconCliLayout [CreateLayout \
                       [list push on on {rcon::ExecuteCommand "tv_enable 1"} "Activates GOTV on local game server."] \
                       [list push off off {rcon::ExecuteCommand "tv_enable 0"} "Deactivates GOTV on local game server."] \
                       [list push stop stop {rcon::ExecuteCommand "tv_stop"} "Stops broadcasting the game via GOTV."] \
+                      [list entry msg msg {rcon::ExecuteCommand "tv_msg"} "Send a HUD message to all connected SourceTV spectator clients." rconCliCommandSendMsgEntry] \
                       [list entry startrecord startrecord {rcon::ExecuteCommand "tv_record"} "Starts a GOTV demo recording that records all entities & events (master only) with the name entered in text box" rconCliCommandStartRecordEntry] \
                       [list push stoprecord stoprecord {rcon::ExecuteCommand "tv_stoprecord"} "Stops GOTV demo recording (master only)."] \
                       [list push autorecordon autorecordon {rcon::ExecuteCommand "tv_autorecord 1"} "Automatically records every game, demo file name format is auto-YYYYMMDD-hhmm-map.dem."] \

@@ -15,6 +15,7 @@ variable gotvConfig [CreateConfig \
         "bool"      [list gotvenable "0" "Enable gotv server" onchange "SetGoTvState"]\
         "int"       [list gotvport "27020" "Your gotv server port. You need to open this port in your router and forward it to your external IP address.\nRead more about this on the help page."]\
         "string"    [list gotvtitle "Your gotv server at $hostName operated by $name" "This is the gotv server name which is presented to gotv spectators."]\
+        "string"    [list gotvname "Your gotv server at $hostName operated by $name" "This is the gotv server name as it appears in server browser and scoreboard."]\
         "string"    [list gotvpassword "" "Your gotv server password which anyone connecting to your gotv server must enter to log in and spectate.\nWhen running a LAN only server this can be left empty for no password."]\
         "int"       [list gotvdelay "10" "The number of seconds to delay your broadcast."]\
         "int"       [list gotvdeltacache "2" "Control broadcast smoothness"]\
@@ -42,6 +43,7 @@ variable gotvLayout [CreateLayout \
         space   [list] \
         parm    [list gotvenable] \
         parm    [list gotvtitle] \
+        parm    [list gotvname] \
         parm    [list gotvpassword] \
         parm    [list gotvmaxclients] \
         parm    [list gotvchat] \
