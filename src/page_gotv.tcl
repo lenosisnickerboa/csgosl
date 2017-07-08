@@ -74,7 +74,7 @@ proc SetGoTvState { value } {
     global gotvLayout
     set cp [GetCp]
     set enabled $value
-    foreach parm [list gotvport gotvtitle gotvpassword gotvdelay gotvdeltacache gotvsnapshotrate gotvallowcameraman gotvallowstaticshots gotvautorecord gotvchat gotvdelaymapchange gotvmaxclients] {
+    foreach parm [list gotvport gotvtitle gotvname gotvpassword gotvdelay gotvdeltacache gotvsnapshotrate gotvallowcameraman gotvallowstaticshots gotvautorecord gotvchat gotvdelaymapchange gotvmaxclients] {
         SetConfigItemState $cp.gotv $gotvLayout $parm $enabled        
     }
     return $value        

@@ -58,6 +58,7 @@ proc SaveProcDummy {} {
 proc SaveAll { {skipStandalone ""} } {
     global serverPresent
     SaveConfigFileServer
+    SaveConfigFileGoTv
     if { $serverPresent } {
         SaveConfigFileOrigServer
     }
@@ -330,6 +331,13 @@ variable serverOrigConfig [CreateConfig \
         "string"    [list tv_title "" ""]\
         "string"    [list tv_password "" ""]\
         "int"       [list tv_delay "" ""]\
+        "string"    [list tv_name "" ""]\
+        "int"       [list tv_deltacache "" ""]\
+        "int"       [list tv_snapshotrate "" ""]\
+        "bool"      [list tv_allow_static_shots "" ""]\
+        "int"       [list tv_delaymapchange "" ""]\
+        "int"       [list tv_maxclients "" ""]\
+        "int"       [list tv_advertise_watchable "" ""]\
     ] \
 ]
 
@@ -399,6 +407,7 @@ proc SaveConfigFileOrigServer {} {
     set gotvEnable [GetConfigItem $gotvConfig gotvenable]
     SetConfigItem $serverOrigConfig tv_enable $gotvEnable
     if {$gotvEnable == 1} {
+        SetConfigItem $serverOrigConfig tv_name [GetConfigItem $gotvConfig gotvname]
         SetConfigItem $serverOrigConfig tv_title [GetConfigItem $gotvConfig gotvtitle]
         SetConfigItem $serverOrigConfig tv_password [GetConfigItem $gotvConfig gotvpassword]
         SetConfigItem $serverOrigConfig tv_delay [GetConfigItem $gotvConfig gotvdelay]
@@ -406,12 +415,14 @@ proc SaveConfigFileOrigServer {} {
         SetConfigItem $serverOrigConfig tv_deltacache [GetConfigItem $gotvConfig gotvdeltacache]
         SetConfigItem $serverOrigConfig tv_snapshotrate [GetConfigItem $gotvConfig gotvsnapshotrate]
         SetConfigItem $serverOrigConfig tv_allowcameraman [GetConfigItem $gotvConfig gotvallowcameraman]
-        SetConfigItem $serverOrigConfig tv_allowstaticshots [GetConfigItem $gotvConfig gotvallowstaticshots]
+        SetConfigItem $serverOrigConfig tv_allow_static_shots [GetConfigItem $gotvConfig gotvallowstaticshots]
         SetConfigItem $serverOrigConfig tv_autorecord [GetConfigItem $gotvConfig gotvautorecord]
         SetConfigItem $serverOrigConfig tv_chat [GetConfigItem $gotvConfig gotvchat]
         SetConfigItem $serverOrigConfig tv_delaymapchange [GetConfigItem $gotvConfig gotvdelaymapchange]
         SetConfigItem $serverOrigConfig tv_maxclients [GetConfigItem $gotvConfig gotvmaxclients]
+        SetConfigItem $serverOrigConfig tv_advertise_watchable 1
     } else {
+        SetConfigItem $serverOrigConfig tv_name $ValueToSkip
         SetConfigItem $serverOrigConfig tv_title $ValueToSkip
         SetConfigItem $serverOrigConfig tv_password $ValueToSkip
         SetConfigItem $serverOrigConfig tv_delay $ValueToSkip
@@ -419,11 +430,12 @@ proc SaveConfigFileOrigServer {} {
         SetConfigItem $serverOrigConfig tv_deltacache $ValueToSkip
         SetConfigItem $serverOrigConfig tv_snapshotrate $ValueToSkip
         SetConfigItem $serverOrigConfig tv_allowcameraman $ValueToSkip
-        SetConfigItem $serverOrigConfig tv_allowstaticshots $ValueToSkip
+        SetConfigItem $serverOrigConfig tv_allow_static_shots $ValueToSkip
         SetConfigItem $serverOrigConfig tv_autorecord $ValueToSkip
         SetConfigItem $serverOrigConfig tv_chat $ValueToSkip
         SetConfigItem $serverOrigConfig tv_delaymapchange $ValueToSkip
         SetConfigItem $serverOrigConfig tv_maxclients $ValueToSkip
+        SetConfigItem $serverOrigConfig tv_advertise_watchable $ValueToSkip
     }
     
     SaveConfigFile serverOrigConfig
