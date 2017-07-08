@@ -34,7 +34,7 @@ If you feel this software served you well and saved  you a lot of time you could
 
 ----------
 
-So far, after nearly 17000 downloads I have received four (yes really, four!) donations adding up to a total of 30$. Not quitting my daytime job anytime soon...
+So far, after 18200+ downloads I have received four (yes really, four!) donations adding up to a total of 30$. Not quitting my daytime job anytime soon...
 
 ----------
 
