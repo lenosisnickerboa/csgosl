@@ -12,7 +12,7 @@ dl:
 
 build: dl
 	unzip -o franug-weapon-paint.zip
-	cp -f databases.cfg $(MODS_CONFIGS)/
+	#Will be appended by common.mk instead... cp -f databases.cfg $(MODS_CONFIGS)/
 	(cd Franug-Weapon_Paints-* ; mkdir -p $(MODS_CONFIGS) && cp -f csgo_wpaints.cfg $(MODS_CONFIGS)/)
 	(cd Franug-Weapon_Paints-* ; mkdir -p $(MODS_PLUGINS)/disabled && cp -f franug_weaponpaints_public.smx $(MODS_PLUGINS)/disabled/)
 	(cd Franug-Weapon_Paints-* ; mkdir -p $(MODS_TRANSLATIONS) && cp -f franug_weaponpaints.phrases.txt $(MODS_TRANSLATIONS)/)

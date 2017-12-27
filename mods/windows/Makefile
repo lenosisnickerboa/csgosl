@@ -34,6 +34,7 @@ mods: dl-metamod dl-sourcemod
 	$(MAKE) -C ../mods/warmod
 	$(MAKE) -C ../mods/multi1v1
 	$(MAKE) -C ../mods/gunmenu
+	$(DEVTOOLS_ROOT)/merge_databases_cfg.sh $(CSGOSL_ROOT)/mods/databases.cfg $(shell find $(CSGOSL_ROOT)/mods/*/ -name databases.cfg) > $(MODS_CONFIGS)/databases.cfg
 	(cd $(MODS_ROOT) ; zip -r ../mods.zip *)
 	\rm -rf $(MODS_ROOT) >/dev/null 2>&1
 	mkdir -p $(MODS_ROOT)

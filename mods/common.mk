@@ -1,3 +1,4 @@
+DEVTOOLS_ROOT=$(CSGOSL_ROOT)/devtools
 MODS_ROOT=$(CSGOSL_ROOT)/mods/$(TARGET)/mods
 MODS_SOURCEMOD_ROOT=$(MODS_ROOT)/addons/sourcemod
 MODS_CONFIGS=$(MODS_ROOT)/addons/sourcemod/configs
