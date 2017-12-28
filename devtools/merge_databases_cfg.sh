@@ -5,10 +5,12 @@ BASE_FILE="$1"
 [ ! -f "$BASE_FILE" ] && { echo "Base file $BASE_FILE does not exist!" ; exit 1 ; }
 shift
 
-echo "//Generated `date`, will be rewritten every csgosl update"
+echo -e "//Generated `date`, will be rewritten every csgosl update.\r"
+echo
 head -n -1 $BASE_FILE
+echo
 for i in $* ; do
-    echo "// Merging $i"
+    echo -e "// Merging $i\r"
     cat $i 
 done
 
