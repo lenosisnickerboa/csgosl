@@ -1,6 +1,6 @@
 # csgosl
 
-Quickie: [Get started](https://github.com/lenosisnickerboa/csgosl/wiki). Download **2.2** : [Linux](https://github.com/lenosisnickerboa/csgosl/releases/download/v2.2/csgosl-linux.zip) [Windows](https://github.com/lenosisnickerboa/csgosl/releases/download/v2.2/csgosl-windows.zip) 
+Quickie: [Get started](https://github.com/lenosisnickerboa/csgosl/wiki). Download **2.3** : [Linux](https://github.com/lenosisnickerboa/csgosl/releases/download/v2.3/csgosl-linux.zip) [Windows](https://github.com/lenosisnickerboa/csgosl/releases/download/v2.3/csgosl-windows.zip) 
 <br>Download stats [here](http://www.somsubhra.com/github-release-stats/?username=lenosisnickerboa&repository=csgosl)
 
 csgosl is a graphical user interface (GUI) for a [Counter Striker Global Offensive server](https://developer.valvesoftware.com/wiki/Counter-Strike:_Global_Offensive_Dedicated_Servers) (CSGO server from now on).  csgosl supports one-click install, update, start and stop server on windows and linux platforms ([supported platforms](https://github.com/lenosisnickerboa/csgosl/wiki/Platform-support)). If you just want your own CSGO server up and running in no time this is the place for you. csgosl provides a graphical user interface supporting most mainstream server options. For the control freak there is also an advanced mode providing support for nearly any imaginable setting and on top of that GUI support for adding custom cvars to the advanced mode tabs.
@@ -34,7 +34,7 @@ If you feel this software served you well and saved  you a lot of time you could
 
 ----------
 
-So far, after 18200+ downloads I have received four (yes really, four!) donations adding up to a total of 30$. Not quitting my daytime job anytime soon...
+So far, after 18200+ downloads I have received five (yes really, five!) donations adding up to a total of 32$. Not quitting my daytime job anytime soon...
 
 ----------
 
@@ -50,6 +50,8 @@ The following free software is part of csgosl:
  - [Warmod](https://forums.alliedmods.net/showthread.php?t=225474) (Sourcemod plugin)
  - [Multi1v1](https://github.com/splewis/csgo-multi-1v1) (Sourcemod plugin)
  - [GunMenu](https://forums.alliedmods.net/showthread.php?t=259355) (Sourcemod plugin)
+ - [CkSurf](https://forums.alliedmods.net/showthread.php?t=264498) (Sourcemod plugin)
+ - [Retakes](https://github.com/splewis/csgo-retakes) (Sourcemod plugin)
  - [Metamod](https://www.metamodsource.net/) (Linux/Windows: installed automatically when server is installed)
  - [Unzip](http://www.info-zip.org/UnZip.html) (Windows: for unzipping stuff)
  - [Img](http://www.tcl.tk/starkits/) (Windows: image handling)
