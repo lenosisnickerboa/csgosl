@@ -17,6 +17,10 @@ variable sourcemodPlugins [list \
     multi1v1_online_stats_viewer [list false sm_multi1v1_online_stats_viewer_enable sm_multi1v1_online_stats_viewer_lanonly multi1v1_online_stats_viewer.smx] \
     gunmenu [list false sm_gunmenu_enable sm_gunmenu_lanonly csgo_gunmenu.smx] \
     cksurf [list false sm_cksurf_enable sm_cksurf_lanonly cksurf.smx] \
+    retakes [list false sm_retakes_enable sm_retakes_lanonly retakes.smx] \
+    retakes_sitepicker [list false sm_retakes_sitepicker_enable sm_retakes_sitepicker_lanonly retakes_sitepicker.smx] \
+    retakes_standardallocator [list false sm_retakes_standardallocator_enable sm_retakes_standardallocator_lanonly retakes_standardallocator.smx] \
+    retakes_pistolallocator [list false sm_retakes_pistolallocator_enable sm_retakes_pistolallocator_lanonly retakes_pistolallocator.smx] \
     franug_weaponpaints [list true sm_franug_weaponpaints_enable sm_franug_weaponpaints_lanonly franug_weaponpaints_public.smx] \
     franug_knifes [list true sm_franug_knifes_enable sm_franug_knifes_lanonly sm_franugknife.smx]
 ]
@@ -59,6 +63,14 @@ variable sourcemodConfig [CreateConfig \
         "bool"      [list sm_gunmenu_lanonly "1" "Only enable this sourcemod plugin in lanonly mode"]\
         "bool"      [list sm_cksurf_enable "0" "Controls if this sourcemod plugin is enabled." onchange "SetSourcemodCkSurfState"]\
         "bool"      [list sm_cksurf_lanonly "1" "Only enable this sourcemod plugin in lanonly mode"]\
+        "bool"      [list sm_retakes_enable "0" "Controls if this sourcemod plugin is enabled." onchange "SetSourcemodRetakesState"]\
+        "bool"      [list sm_retakes_lanonly "1" "Only enable this sourcemod plugin in lanonly mode"]\
+        "bool"      [list sm_retakes_sitepicker_enable "0" "Controls if this sourcemod plugin is enabled."]\
+        "bool"      [list sm_retakes_sitepicker_lanonly "1" "Only enable this sourcemod plugin in lanonly mode"]\
+        "bool"      [list sm_retakes_standardallocator_enable "0" "Controls if this sourcemod plugin is enabled."]\
+        "bool"      [list sm_retakes_standardallocator_lanonly "1" "Only enable this sourcemod plugin in lanonly mode"]\
+        "bool"      [list sm_retakes_pistolallocator_enable "0" "Controls if this sourcemod plugin is enabled."]\
+        "bool"      [list sm_retakes_pistolallocator_lanonly "1" "Only enable this sourcemod plugin in lanonly mode"]\
         "bool"      [list sm_franug_weaponpaints_enable "0" "Controls if this sourcemod plugin is enabled.\nType !ws in chat to use." onchange "SetSourcemodFranugWeaponPaintsState"]\
         "bool"      [list sm_franug_weaponpaints_lanonly "1" "Only enable this sourcemod plugin in lanonly mode"]\
         "bool"      [list sm_franug_weaponpaints_onlyadmin "1" "This feature is only for admins. 1 = enabled, 0 = disabled.\n(Use the value 1 and try to keep this plugin secret for the normal users because they can report it)"]\
@@ -137,6 +149,22 @@ variable sourcemodLayout [CreateLayout \
         parm    [list sm_cksurf_enable] \
         parm    [list sm_cksurf_lanonly] \
         space   [list] \
+        h2      [list "Plugin: retakes"] \
+        parm    [list sm_retakes_enable] \
+        parm    [list sm_retakes_lanonly] \
+        space   [list] \
+        h2      [list "Plugin: retakes_sitepicker"] \
+        parm    [list sm_retakes_sitepicker_enable] \
+        parm    [list sm_retakes_sitepicker_lanonly] \
+        space   [list] \
+        h2      [list "Plugin: retakes_standardallocator"] \
+        parm    [list sm_retakes_standardallocator_enable] \
+        parm    [list sm_retakes_standardallocator_lanonly] \
+        space   [list] \
+        h2      [list "Plugin: retakes_pistolallocator"] \
+        parm    [list sm_retakes_pistolallocator_enable] \
+        parm    [list sm_retakes_pistolallocator_lanonly] \
+        space   [list] \
         warning [list "All plugins below this line require the banprotection to be disabled. Read the help page carefully before"] \
         warning [list "disabling banprotection. Running misbehaving sourcemod plugins may cause your server to be banned by Valve."] \
         warning [list "*** I take no responsibility for if your server gets banned ***"] \
@@ -174,8 +202,10 @@ proc SetSourcemodState { value } {
                   sm_warmod_enable sm_warmod_lanonly sm_multi1v1_enable sm_multi1v1_lanonly sm_multi1v1_flashbangs_enable\
                   sm_multi1v1_flashbangs_lanonly sm_multi1v1_kniferounds_enable sm_multi1v1_kniferounds_lanonly\
                   sm_multi1v1_online_stats_viewer_enable sm_multi1v1_online_stats_viewer_enable sm_multi1v1_online_stats_viewer_lanonly\
-                  sm_gunmenu_enable sm_gunmenu_lanonly sm_cksurf_enable sm_cksurf_lanonly sm_franug_weaponpaints_enable\
-                  sm_franug_weaponpaints_lanonly sm_franug_weaponpaints_onlyadmin\
+                  sm_gunmenu_enable sm_gunmenu_lanonly sm_cksurf_enable sm_cksurf_lanonly\
+                  sm_retakes_enable sm_retakes_lanonly sm_retakes_sitepicker_enable sm_retakes_sitepicker_lanonly\
+                  sm_retakes_standardallocator_enable sm_retakes_standardallocator_lanonly sm_retakes_pistolallocator_enable sm_retakes_pistolallocator_lanonly\
+                  sm_franug_weaponpaints_enable sm_franug_weaponpaints_lanonly sm_franug_weaponpaints_onlyadmin\
                   sm_franug_weaponpaints_c4 sm_franug_weaponpaints_saytimer sm_franug_weaponpaints_roundtimer sm_franug_weaponpaints_rmenu\
                   sm_franug_weaponpaints_zombiesv sm_franug_knifes_enable sm_franug_knifes_lanonly] {
         SetConfigItemState $cp.sourcemod $sourcemodLayout $parm $enabled        
@@ -190,6 +220,7 @@ proc SetSourcemodState { value } {
     SetSourcemodMulti1v1State [expr $enabled && [GetConfigItem $sourcemodConfig sm_multi1v1_enable]]
     SetSourcemodGunMenuState [expr $enabled && [GetConfigItem $sourcemodConfig sm_gunmenu_enable]]
     SetSourcemodCkSurfState [expr $enabled && [GetConfigItem $sourcemodConfig sm_cksurf_enable]]
+    SetSourcemodRetakesState [expr $enabled && [GetConfigItem $sourcemodConfig sm_retakes_enable]]
     SetSourcemodFranugWeaponPaintsState [expr $enabled && [GetConfigItem $sourcemodConfig sm_franug_weaponpaints_enable]]
     SetSourcemodFranugKnifesState [expr $enabled && [GetConfigItem $sourcemodConfig sm_franug_knifes_enable]]
     return $value        
@@ -259,7 +290,7 @@ proc SetSourcemodMulti1v1State { value } {
     set enabled $value
     foreach parm [list sm_multi1v1_lanonly sm_multi1v1_flashbangs_enable\
                   sm_multi1v1_flashbangs_lanonly sm_multi1v1_kniferounds_enable sm_multi1v1_kniferounds_lanonly\
-                  sm_multi1v1_online_stats_viewer_enable sm_multi1v1_online_stats_viewer_enable sm_multi1v1_online_stats_viewer_lanonly] {
+                  sm_multi1v1_online_stats_viewer_enable sm_multi1v1_online_stats_viewer_lanonly] {
         SetConfigItemState $cp.sourcemod $sourcemodLayout $parm $enabled
     }
     return $value        
@@ -278,6 +309,17 @@ proc SetSourcemodCkSurfState { value } {
     set cp [GetCp]
     set enabled $value
     foreach parm [list sm_cksurf_lanonly] {
+        SetConfigItemState $cp.sourcemod $sourcemodLayout $parm $enabled
+    }
+    return $value        
+}
+proc SetSourcemodRetakesState { value } {
+    global sourcemodLayout
+    set cp [GetCp]
+    set enabled $value
+    foreach parm [list sm_retakes_lanonly sm_retakes_sitepicker_enable\
+                  sm_retakes_sitepicker_lanonly sm_retakes_standardallocator_enable sm_retakes_standardallocator_lanonly\
+                  sm_retakes_pistolallocator_enable sm_retakes_pistolallocator_lan_only] {
         SetConfigItemState $cp.sourcemod $sourcemodLayout $parm $enabled
     }
     return $value        

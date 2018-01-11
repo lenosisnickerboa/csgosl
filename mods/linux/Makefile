@@ -20,6 +20,7 @@ contribs:
 	$(MAKE) -C ../mods/multi1v1 contrib
 	$(MAKE) -C ../mods/gunmenu contrib
 	$(MAKE) -C ../mods/cksurf contrib
+	$(MAKE) -C ../mods/retakes contrib
 
 dl-metamod:
 	wget $(METAMOD_URL) -O metamod.tar.gz
@@ -36,6 +37,7 @@ mods: dl-metamod dl-sourcemod
 	$(MAKE) -C ../mods/multi1v1
 	$(MAKE) -C ../mods/gunmenu
 	$(MAKE) -C ../mods/cksurf
+	$(MAKE) -C ../mods/retakes
 	$(DEVTOOLS_ROOT)/merge_databases_cfg.sh $(CSGOSL_ROOT)/mods/databases.cfg $(shell find $(CSGOSL_ROOT)/mods/*/ -name databases.cfg) > $(MODS_CONFIGS)/databases.cfg
 	(cd $(MODS_ROOT) ; zip -r ../mods.zip *)
 	\rm -rf $(MODS_ROOT) >/dev/null 2>&1
@@ -52,5 +54,6 @@ clean:
 	$(MAKE) -C ../mods/multi1v1 clean
 	$(MAKE) -C ../mods/gunmenu clean
 	$(MAKE) -C ../mods/cksurf clean
+	$(MAKE) -C ../mods/retakes clean
 	\rm -f metamod.tar.gz sourcemod.tar.gz mods*.zip
 
