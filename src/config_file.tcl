@@ -497,6 +497,12 @@ proc SaveSourceModAdmins {configName} {
 }
 
 proc SaveGameModesServer {filename} {
+    global applicationConfig
+    set generategamemodeservers [GetConfigValue $applicationConfig generategamemodeservers]
+    if {$generategamemodeservers != 1} {
+        Trace "Skipping generation of gameModes_server.txt"
+        return
+    }
     global mapGroupsMapper
     set fileid [open "$filename" "w"]
     StoreHeader $fileid
@@ -540,7 +546,7 @@ proc SaveGameModesServer {filename} {
         puts $fileid "\t\t\t\"maps\""
         puts $fileid "\t\t\t{"
         foreach map $maps {
-			puts $fileid "\t\t\t\t\"$map\" \"\""
+   			puts $fileid "\t\t\t\t\"$map\" \"\""                
         }
         puts $fileid "\t\t\t}"
         puts $fileid "\t\t}"

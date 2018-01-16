@@ -18,6 +18,7 @@ variable applicationConfig [CreateConfig \
         "bool"      [list dryrun "0" "Performs everything except actually starting the server.\nSometimes convenient when troubleshooting or testing.\nCommand line is traced."]\
         "bool"      [list updatecheck "1" "Checks for csgosl updates after program has started."]\
         "bool"      [list showdonation "1" "Disable to stop showing donation button. Please consider donating first though :)"]\
+        "bool"      [list generategamemodeservers "1" "Disable automatic regeneration of gamemode_servers.txt."]\
         "string"    [list mainwingeometry "800x600+100+100" "last saved windows size and location."]\
     ] \
 ]
@@ -44,6 +45,7 @@ variable applicationLayout [CreateLayout \
         parm    [list tclconsole] \
         parm    [list trace] \
         parm    [list showdonation] \
+        parm    [list generategamemodeservers] \
         space   [list] \
         func    [list LayoutFuncSetDefaultsAll] \
         space   [list] \
