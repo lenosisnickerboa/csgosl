@@ -24,6 +24,8 @@ variable serverConfig [CreateConfig \
         "int"       [list port "27015" "Your server port."]\
         "bool"      [list lanonly "1" "If enabled server is only available on your LAN. Default enabled for security reasons, disable when you want to play with friends over the Internet."]\
         "int"       [list tickrate "128" "Server tickrate, that is the frequency with which the server and connecting clients communicate. Connecting clients are automatically instructed to use this frequency."]\
+        "int"       [list minrate "" "Leave blank to let csgosl manage this setting for you, corresponds to sv_minrate."]\
+        "int"       [list maxrate "" "Leave blank to let csgosl manage this setting for you, corresponds to sv_maxrate."]\
         "bool"      [list rcon "0" "Enable servers Remote Console. This allows you (and anyone else with the rcon password) to connect to your server and control it using commands." onchange "ServerSetRconPasswordState"]\
         "string"    [list rconpassword "$hostName" "Your RCON password, set to your hostname by default. If you enable rcon set a better password!"]\
         "int"       [list rconbanpenalty "0" "Number of minutes to ban users who fail rcon authentication." mappedto [list sv_rcon_banpenalty]]\
@@ -112,6 +114,8 @@ variable serverLayout [CreateLayout \
         line    [list] \
         space   [list] \
         parm    [list tickrate] \
+        parm    [list minrate] \
+        parm    [list maxrate] \
         parm    [list voice] \
         parm    [list alltalk] \
         parm    [list cheats] \

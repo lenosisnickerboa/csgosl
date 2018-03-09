@@ -349,8 +349,16 @@ proc SaveConfigFileOrigServer {} {
     global serverOrigConfig
     global serverConfig
     global gotvConfig
-    SetConfigItem $serverOrigConfig sv_maxrate 0
-    SetConfigItem $serverOrigConfig sv_minrate 100000
+    set minRate [GetConfigItem $serverConfig minrate]
+    if { $minRate == "" } {
+        set minRate "100000"
+    }
+    set maxRate [GetConfigItem $serverConfig maxrate]
+    if { $maxRate == "" } {
+        set maxRate "0"
+    }
+    SetConfigItem $serverOrigConfig sv_maxrate $maxRate
+    SetConfigItem $serverOrigConfig sv_minrate $minRate
     set tickRate [GetConfigItem $serverConfig tickrate]
     SetConfigItem $serverOrigConfig sv_minupdaterate $tickRate
     SetConfigItem $serverOrigConfig sv_maxupdaterate $tickRate
