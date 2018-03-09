@@ -5,6 +5,7 @@ exec wish "$0" ${1+"$@"}
 
 source [file join $starkit::topdir restart.tcl]
 source [file join $starkit::topdir version.tcl]
+source [file join $starkit::topdir maps_support.tcl]
 
 package require Tk
 
@@ -538,6 +539,9 @@ proc SaveGameModesServer {filename} {
 	puts $fileid "\t}"
 	puts $fileid "\t\"mapgroups\""
 	puts $fileid "\t{"    
+
+    global applicationConfig
+    set includeworkshopmappath [GetConfigValue $applicationConfig includeworkshopmappath]
     
     dict for {mapGroup maps} $mapGroupsMapper {        
 		puts $fileid "\t\t\"$mapGroup\""
@@ -546,7 +550,15 @@ proc SaveGameModesServer {filename} {
         puts $fileid "\t\t\t\"maps\""
         puts $fileid "\t\t\t{"
         foreach map $maps {
-   			puts $fileid "\t\t\t\t\"$map\" \"\""                
+            if { $includeworkshopmappath == "1" } {
+                set path [GetWorkshopMapPath $map]
+                if { $path != "" } {
+                    set map "$path/$map"
+                }
+       			puts $fileid "\t\t\t\t\"$map\" \"\""                                
+            } else {
+       			puts $fileid "\t\t\t\t\"$map\" \"\""                                
+            }
         }
         puts $fileid "\t\t\t}"
         puts $fileid "\t\t}"

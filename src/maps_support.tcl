@@ -183,3 +183,17 @@ proc GetFirstMapInMapGroup {selectedMapGroup} {
         return [lindex $allMaps 0]  
     }    
 }
+
+proc GetWorkshopMapPath { thisMap } {
+    global allMapsMeta
+    dict for {map metaMap} $allMapsMeta {
+        if { $map == $thisMap } {
+            set type [dict get $metaMap type]
+            if { $type == "workshop" } {
+                set id [dict get $metaMap id]
+                return "workshop/$id"
+            }
+        }
+    }
+    return ""
+}
