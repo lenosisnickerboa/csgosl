@@ -94,8 +94,6 @@ variable runLayout [CreateLayout \
 ]
 
 proc RunMapGroupChanged { value } {
-#    global runConfig
-#    SetConfigItem $runConfig startmap [GetFirstMapInMapGroup $value]
     UpdateRunPage
     return $value
 }

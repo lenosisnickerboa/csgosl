@@ -418,12 +418,17 @@ proc UpdateRunPage {} {
     }
 }
 
+proc FixMapGroupName { name } {
+    return [regsub -all {\s+} $name "_"]
+}
+
 proc AddMapGroup {lb} {
     set mapGroupsName [GetGlobalConfigVariableName MapGroups mapGroups]
     global $mapGroupsName
     global addMapGroupName
     global mapGroupsMapper
     if { $addMapGroupName != "" } {
+        set addMapGroupName [FixMapGroupName $addMapGroupName]
         set addMapGroupName [regsub -all {\s+} $addMapGroupName _]
         $lb insert end "$addMapGroupName"
         set mapGroups [set $mapGroupsName]
@@ -447,9 +452,6 @@ proc EditMapGroup {lb} {
     set mapGroups [set $mapGroupsName]
     set sel [lindex $mapGroups $idx]
     global allMaps
-    if { ! [dict exists $mapGroupsMapper $sel] } {
-        set mapGroupsMapper [dict set mapGroupsMapper $sel [list]]
-    }
     SetMapsState $allMaps [dict get $mapGroupsMapper $sel]
     CreateMapsSelectorWindow "Select maps which should be included in map group $sel and then close the window when done." $allMaps true
     set mapGroup [GetMapsState $allMaps]
