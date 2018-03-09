@@ -402,11 +402,17 @@ proc UpdateRunPage {} {
         set mapGroup [lindex $values 0]
         set $mapGroupName $mapGroup
     }
-    set startMapName [GetGlobalConfigVariableName Run startmap]   
+    set startMapName [GetGlobalConfigVariableName Run startmap]
     global $startMapName
     set startMap [set $startMapName]
-    global mapGroupsMapper
-    set maps [lsort [dict get $mapGroupsMapper $mapGroup]]
+    if { $mapGroup == "<allmaps>" } {
+        global allMaps
+        set maps $allMaps
+    } else {
+        set maps [lsort [dict get $mapGroupsMapper $mapGroup]]        
+    }
+    set mapStartMapSel [GetConfigPageSelectorWidget $runPage startmap]
+    $mapStartMapSel configure -values $maps
     if { [lsearch -exact $maps $startMap] == -1 } {
         set $startMapName [lindex $maps 0]
     }

@@ -241,6 +241,7 @@ proc LoadMapGroupsMapper {filename} {
     close $fp
     #skip first header line
     set data [lreplace [split $fileData "\n"] 0 0] 
+    dict set mapGroupsMapper "<allmaps>" ""
     foreach line $data {
         set tokens [ParseConfigLine $line]
         set mapGroup [string trim [lindex $tokens 0] "\""]
@@ -257,7 +258,9 @@ proc SaveMapGroupsMapper {filename} {
     set fileId [open "$filename" "w"]
     StoreHeader $fileId
     dict for {mapGroup maps} $mapGroupsMapper {
-        puts $fileId "mg-$mapGroup \"$maps\""
+        if { $mapGroup != "<allmaps>" } {
+            puts $fileId "mg-$mapGroup \"$maps\""            
+        }
     }
     close $fileId        
 }
