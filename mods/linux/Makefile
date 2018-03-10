@@ -5,8 +5,8 @@ METAMOD_HOME_URL="http://www.metamodsource.net/"
 METAMOD_URL="https://mms.alliedmods.net/mmsdrop/1.10/mmsource-1.10.7-git961-linux.tar.gz"
 METAMOD_VERSION="1.10.7-git961"
 SOURCEMOD_HOME_URL="http://www.sourcemod.net/"
-SOURCEMOD_URL="https://sm.alliedmods.net/smdrop/1.8/sourcemod-1.8.0-git6040-linux.tar.gz"
-SOURCEMOD_VERSION="1.8.0-git6040"
+SOURCEMOD_URL="https://sm.alliedmods.net/smdrop/1.8/sourcemod-1.8.0-git6041-linux.tar.gz"
+SOURCEMOD_VERSION="1.8.0-git6041"
 export
 
 all: mods
