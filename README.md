@@ -1,6 +1,6 @@
 # csgosl
 
-Quickie: [Get started](https://github.com/lenosisnickerboa/csgosl/wiki). Download **2.3.1** : [Linux](https://github.com/lenosisnickerboa/csgosl/releases/download/v2.3.1/csgosl-linux.zip) [Windows](https://github.com/lenosisnickerboa/csgosl/releases/download/v2.3.1/csgosl-windows.zip) 
+Quickie: [Get started](https://github.com/lenosisnickerboa/csgosl/wiki). Download **2.4** : [Linux](https://github.com/lenosisnickerboa/csgosl/releases/download/v2.4/csgosl-linux.zip) [Windows](https://github.com/lenosisnickerboa/csgosl/releases/download/v2.4/csgosl-windows.zip) 
 <br>Download stats [here](http://www.somsubhra.com/github-release-stats/?username=lenosisnickerboa&repository=csgosl)
 
 csgosl is a graphical user interface (GUI) for a [Counter Striker Global Offensive server](https://developer.valvesoftware.com/wiki/Counter-Strike:_Global_Offensive_Dedicated_Servers) (CSGO server from now on).  csgosl supports one-click install, update, start and stop server on windows and linux platforms ([supported platforms](https://github.com/lenosisnickerboa/csgosl/wiki/Platform-support)). If you just want your own CSGO server up and running in no time this is the place for you. csgosl provides a graphical user interface supporting most mainstream server options. For the control freak there is also an advanced mode providing support for nearly any imaginable setting and on top of that GUI support for adding custom cvars to the advanced mode tabs.
@@ -31,10 +31,6 @@ csgosl features:
 If you feel this software served you well and saved  you a lot of time you could spend enjoying yourself instead of reading endless forum threads on how to setup your own server just right, why not show your appreciation and donate whatever amount you feel appropriate. Your appreciation is much appreciated :)
 
 [![](https://camo.githubusercontent.com/f896f7d176663a1559376bb56aac4bdbbbe85ed1/68747470733a2f2f7777772e70617970616c6f626a656374732e636f6d2f656e5f55532f692f62746e2f62746e5f646f6e61746543435f4c472e676966)](https://www.paypal.com/cgi-bin/webscr?cmd=_s-xclick&hosted_button_id=NESCKT8B4C638)
-
-----------
-
-So far, after 18200+ downloads I have received five (yes really, five!) donations adding up to a total of 32$. Not quitting my daytime job anytime soon...
 
 ----------
 
