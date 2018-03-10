@@ -15,6 +15,7 @@ variable runConfig [CreateConfig \
         "enum" [list gamemodetype "Classic Casual" "Select the kind of game you want to play." [dict keys $gameModeMapper]]\
         "enum" [list mapgroup "<allmaps>" "Select which maps you want to play, defined in the map group editor.\nIf you enter a workshop collection id here that collection will be hosted." [dict keys $mapGroupsMapper] onchange "RunMapGroupChanged"]\
         "enum" [list startmap "de_dust2" "The first maps the server starts hosting. If you enter a workshop map id here that map will be hosted." ""]\
+        "bool" [list randomstartmap "0" "Select a random start map from the selected map group when the server is started" onchange "RunRandomStartMapChanged"]\
         "int"  [list players "16" "Defines max number of players including bots." mappedto [list bot_quota]]\
         "int"  [list bots "0" "Only used when fillwithbots is disabled, ignored otherwhise. Defines exact number of bots." mappedto [list bot_quota]]\
         "bool" [list fillwithbots "1" "Add bots until max number of players are reached." mappedto [list bot_quota bot_quota_mode] onchange "RunSetBotsState"]\
@@ -56,6 +57,7 @@ variable runLayout [CreateLayout \
         space   [list] \
         parm    [list mapgroup] \
         parm    [list startmap] \
+        parm    [list randomstartmap] \
         space   [list] \
         h2      [list "Players"] \
         line    [list] \
@@ -106,4 +108,10 @@ proc RunSetBotsState { value } {
     return $value
 }
 
-
+proc RunRandomStartMapChanged { value } {
+    global runLayout
+    set cp [GetCp]
+    set enabled [expr $value == 0]
+    SetConfigItemState $cp.run $runLayout startmap $enabled
+    return $value    
+}

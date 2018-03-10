@@ -102,10 +102,12 @@ proc SetWidgetState {at state} {
         if { [winfo exists $at.e] } {$at.e configure -state normal}
         if { [winfo exists $at.b] } {$at.b configure -state normal}
         if { [winfo exists $at.d] } {$at.d configure -state normal}
+        if { [winfo exists $at.sel] } {$at.sel configure -state normal}
     } else {
         if { [winfo exists $at.e] } {$at.e configure -state disabled}
         if { [winfo exists $at.b] } {$at.b configure -state disabled}
         if { [winfo exists $at.d] } {$at.d configure -state disabled}
+        if { [winfo exists $at.sel] } {$at.sel configure -state disabled}
     }
 }
 

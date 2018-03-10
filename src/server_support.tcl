@@ -91,6 +91,10 @@ proc StartServer {} {
     }
 }
 
+proc lrandom { L } {
+    lindex $L [expr {int(rand()*[llength $L])}]
+}
+
 proc GetStartServerCommand {} {
     global serverConfig
     global steamConfig
@@ -138,6 +142,17 @@ proc GetStartServerCommand {} {
 
     set mapGroup [GetConfigValue $runConfig mapgroup]
     set startMap [GetConfigValue $runConfig startmap]
+    set randomStartMap [GetConfigValue $runConfig randomstartmap]
+    if { $randomStartMap == "1" } {
+        global mapGroupsMapper
+        if { $mapGroup == "<allmaps>" } {
+            global allMaps
+            set startMap [lrandom $allMaps]                        
+        } else {
+            set startMap [lrandom [dict get $mapGroupsMapper $mapGroup]]            
+        }
+        Trace "Selected start map $startMap"
+    } 
 
     set mapGroupOption "+mapgroup \"$mapGroup\""
     set mapOption "+map $startMap"
