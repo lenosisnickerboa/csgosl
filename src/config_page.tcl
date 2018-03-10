@@ -427,17 +427,16 @@ proc AddMapGroup {lb} {
     global $mapGroupsName
     global addMapGroupName
     global mapGroupsMapper
-    if { $addMapGroupName != "" } {
+    if { $addMapGroupName != "" && $addMapGroupName != "<allmaps>" } {
         set addMapGroupName [FixMapGroupName $addMapGroupName]
         set addMapGroupName [regsub -all {\s+} $addMapGroupName _]
         $lb insert end "$addMapGroupName"
         set mapGroups [set $mapGroupsName]
         set mapGroupsMapper [dict set mapGroupsMapper $addMapGroupName [list]]
-        set $mapGroupsName [lsort [dict keys $mapGroupsMapper] ]
+        set $mapGroupsName [lsearch -all -inline -not -exact [lsort [dict keys $mapGroupsMapper]] "<allmaps>"]
         UpdateRunPage
     }
 }
-
 proc AddMapGroupZ {lb} {
     AddMapGroup $lb
     global addMapGroupName
@@ -465,11 +464,11 @@ proc DeleteMapGroup {lb} {
     global mapGroupsMapper
     set mapGroups [set $mapGroupsName]
     set idx [$lb curselection]
-    if { $idx > 0 } {
-	set sel [lindex $mapGroups $idx]
-	$lb delete $idx
-	set mapGroupsMapper [dict remove $mapGroupsMapper $sel]
-	UpdateRunPage
+    if { $idx >= 0 } {
+    	set sel [lindex $mapGroups $idx]
+    	$lb delete $idx
+    	set mapGroupsMapper [dict remove $mapGroupsMapper $sel]
+    	UpdateRunPage
     }
 }
 
