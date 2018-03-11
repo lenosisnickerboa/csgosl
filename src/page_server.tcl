@@ -47,7 +47,7 @@ variable serverConfig [CreateConfig \
         "bool"      [list cheats "0" "Allow cheats on server." mappedto [list sv_cheats]]\
         "int"       [list gravity "800" "World Gravity" mappedto [list sv_gravity]]\
         "bool"      [list autoteambalance "0" "Balance teams automatically (please find better help text...)." mappedto [list mp_autoteambalance]]\
-        "bool"      [list autokick "0" "Kick idle/team-killing players." mappedto [list mp_autokick]]\
+        "bool"      [list autokick "0" "Kick idle/team-killing players."]\
         "bool"      [list tkpunish "0" "Punish team killers on next round?" mappedto [list mp_tkpunish]]\
 ] \
 ]

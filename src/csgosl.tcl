@@ -273,10 +273,6 @@ proc SaveConfigFileServer {} {
     if { $autoteambalanceEnableSetting == "1" } {
         SetConfigItem $gameModeAllConfig mp_autoteambalance [GetConfigItem $serverConfig autoteambalance]
     }   
-    set autokickEnableSetting [GetConfigItem $serverConfig ${DisableParmPrefix}autokick]
-    if { $autokickEnableSetting == "1" } {
-        SetConfigItem $gameModeAllConfig mp_autokick [GetConfigItem $serverConfig autokick]
-    }
     set tkpunishEnableSetting [GetConfigItem $serverConfig ${DisableParmPrefix}tkpunish]
     if { $tkpunishEnableSetting == "1" } {
         SetConfigItem $gameModeAllConfig mp_tkpunish [GetConfigItem $serverConfig tkpunish]
@@ -338,6 +334,7 @@ variable serverOrigConfig [CreateConfig \
         "int"       [list tv_delaymapchange "" ""]\
         "int"       [list tv_maxclients "" ""]\
         "int"       [list tv_advertise_watchable "" ""]\
+        "bool"      [list mp_autokick "" ""]\
     ] \
 ]
 
@@ -445,6 +442,8 @@ proc SaveConfigFileOrigServer {} {
         SetConfigItem $serverOrigConfig tv_maxclients $ValueToSkip
         SetConfigItem $serverOrigConfig tv_advertise_watchable $ValueToSkip
     }
+    
+    SetConfigItem $serverOrigConfig mp_autokick [GetConfigItem $serverConfig autokick]
     
     SaveConfigFile serverOrigConfig
 }
@@ -815,7 +814,6 @@ set gameModeCustomPage [CreateConfigPageFromLayout $cp.gameModeCustom $gameModeC
 CreateConfigPageTabFromLayout $cp.gameModeCooperative $gameModeCooperativeLayout [expr $fullConfig && $serverPresent]
 set gameModeCooperativePage [CreateConfigPageFromLayout $cp.gameModeCooperative $gameModeCooperativeLayout]    
 
-puts "PerformOnChangeOnLayout"
 PerformOnChangeOnLayout $serverPage $serverLayout
 PerformOnChangeOnLayout $gotvPage $gotvLayout
 PerformOnChangeOnLayout $steamPage $steamLayout
