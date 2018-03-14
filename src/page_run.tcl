@@ -30,8 +30,8 @@ variable runConfig [CreateConfig \
         "int"  [list startmoney "800" "Amount of money each player gets when they reset.\n<800-16000>" mappedto [list mp_startmoney]]\
         "int"  [list c4timer "45" "The amount of time in seconds before bomb explodes after planted.\n<10-90>" mappedto [list mp_c4timer]]\
         "int"  [list fraglimit "0" "Amount of frags a player can exceed before changing maps." mappedto [list mp_fraglimit]]\
-        "int"  [list maxrounds "0" "Amount of rounds to play before server changes maps." mappedto [list mp_maxrounds]]\
-        "int"  [list winlimit "0" "Max number of rounds one team can win before server changes maps." mappedto [list mp_winlimit]]\
+        "int"  [list maxrounds "30" "Amount of rounds to play before server changes maps." mappedto [list mp_maxrounds]]\
+        "int"  [list winlimit "30" "Max number of rounds one team can win before server changes maps." mappedto [list mp_winlimit]]\
         "bool" [list enablebunnyhopping "0" "Disables the air-velocity clamping to 110% of maximum running speed." mappedto [list sv_enablebunnyhopping]]\
         "bool" [list autobunnyhopping "0" "Holding +jump causes players to automatically re-jump at the exact landing tick." mappedto [list sv_autobunnyhopping]]\
         "int"  [list airaccelerate "10" "Makes you accelerate faster or slower when in the air." mappedto [list sv_airaccelerate]]\

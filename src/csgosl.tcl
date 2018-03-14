@@ -611,7 +611,13 @@ proc SaveConfigFileRun {} {
     }
     set maxroundsEnableSetting [GetConfigItem $runConfig ${DisableParmPrefix}maxrounds]
     if { $maxroundsEnableSetting == "1" } {
-        SetConfigItem $gameModeAllConfig mp_maxrounds [GetConfigItem $runConfig maxrounds]
+        set maxRounds [GetConfigItem $runConfig maxrounds]
+        if { $maxRounds == "0" } {
+            Trace "Detected maxrounds==0, resetting from old default value 0 to new default value 30 (or server will directly enter map vote)"
+            set maxRounds 30
+            SetConfigItem $runConfig maxrounds $maxRounds
+        }
+        SetConfigItem $gameModeAllConfig mp_maxrounds $maxRounds
     }
     set winlimitEnableSetting [GetConfigItem $runConfig ${DisableParmPrefix}winlimit]
     if { $winlimitEnableSetting == "1" } {
