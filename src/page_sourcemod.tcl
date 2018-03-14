@@ -16,7 +16,7 @@ variable sourcemodPlugins [list \
     multi1v1_kniferounds [list false sm_multi1v1_kniferounds_enable sm_multi1v1_kniferounds_lanonly multi1v1_kniferounds.smx] \
     multi1v1_online_stats_viewer [list false sm_multi1v1_online_stats_viewer_enable sm_multi1v1_online_stats_viewer_lanonly multi1v1_online_stats_viewer.smx] \
     gunmenu [list false sm_gunmenu_enable sm_gunmenu_lanonly csgo_gunmenu.smx] \
-    cksurf [list false sm_cksurf_enable sm_cksurf_lanonly cksurf.smx] \
+    cksurf [list false sm_cksurf_enable sm_cksurf_lanonly ckSurf.smx] \
     retakes [list false sm_retakes_enable sm_retakes_lanonly retakes.smx] \
     retakes_sitepicker [list false sm_retakes_sitepicker_enable sm_retakes_sitepicker_lanonly retakes_sitepicker.smx] \
     retakes_standardallocator [list false sm_retakes_standardallocator_enable sm_retakes_standardallocator_lanonly retakes_standardallocator.smx] \
