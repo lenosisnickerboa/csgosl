@@ -552,6 +552,10 @@ proc SaveGameModesServer {filename} {
         puts $fileid "\t\t\t\"name\" \"$mapGroup\""
         puts $fileid "\t\t\t\"maps\""
         puts $fileid "\t\t\t{"
+        if { $mapGroup == "<allmaps>" } {
+            global allMaps
+            set maps $allMaps
+        }
         foreach map $maps {
             if { $includeworkshopmappath == "1" } {
                 set path [GetWorkshopMapPath $map]
