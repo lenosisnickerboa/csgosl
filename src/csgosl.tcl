@@ -335,6 +335,9 @@ variable serverOrigConfig [CreateConfig \
         "int"       [list tv_maxclients "" ""]\
         "int"       [list tv_advertise_watchable "" ""]\
         "bool"      [list mp_autokick "" ""]\
+        "string"    [list sv_downloadurl "" ""]\
+        "string"    [list sv_allowdownload "" ""]\
+        "string"    [list sv_allowupload "" ""]\
     ] \
 ]
 
@@ -343,6 +346,7 @@ if { $serverPresent } {
     LoadConfigFile serverOrigConfig
 }
 proc SaveConfigFileOrigServer {} {
+    global ValueToSkip
     global serverOrigConfig
     global serverConfig
     global gotvConfig
@@ -377,9 +381,19 @@ proc SaveConfigFileOrigServer {} {
     set serverTags [GetConfigItem $serverConfig tags]
     SetConfigItem $serverOrigConfig sv_tags "$serverTags"
     
+    set fastdlEnable [GetConfigItem $serverConfig fastdl]
+    if { $fastdlEnable == "1" } {
+        SetConfigItem $serverOrigConfig sv_downloadurl [GetConfigItem $serverConfig fastdlurl]
+        SetConfigItem $serverOrigConfig sv_allowdownload "1"
+        SetConfigItem $serverOrigConfig sv_allowupload "1"
+    } else {
+        SetConfigItem $serverOrigConfig sv_downloadurl $ValueToSkip
+        SetConfigItem $serverOrigConfig sv_allowdownload $ValueToSkip
+        SetConfigItem $serverOrigConfig sv_allowupload $ValueToSkip
+    }
+    
     global sourcemodConfig
     global runConfig
-    global ValueToSkip
     set maps [GetActiveMaps [GetConfigValue $runConfig mapgroup]]
     if { [IsSourcemodPluginEnabled [GetConfigItem $sourcemodConfig sm_mapchooser_enable] [GetConfigItem $sourcemodConfig sm_mapchooser_lanonly]] } {
         SetConfigItem $serverOrigConfig sm_mapvote_endvote [GetConfigItem $sourcemodConfig sm_mapchooser_mapvote_endvote]

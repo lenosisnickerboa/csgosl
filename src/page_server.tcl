@@ -49,6 +49,8 @@ variable serverConfig [CreateConfig \
         "bool"      [list autoteambalance "0" "Balance teams automatically (please find better help text...)." mappedto [list mp_autoteambalance]]\
         "bool"      [list autokick "0" "Kick idle/team-killing players."]\
         "bool"      [list tkpunish "0" "Punish team killers on next round?" mappedto [list mp_tkpunish]]\
+        "bool"      [list fastdl "0" "Enable fastDL support.\nFastDL allows the client to download custom server content\n(maps, materials, models, particles, sounds, fonts, images) from a web server." onchange "ServerSetFastDLOptions"]\
+        "string"    [list fastdlurl "http://some-url/" "URL used for fastDL"]\
 ] \
 ]
 
@@ -81,6 +83,12 @@ variable serverLayout [CreateLayout \
         parm    [list rconpassword] \
         parm    [list rconbanpenalty] \
         parm    [list rconmaxfailures] \
+        space   [list] \
+        h2      [list "FastDL"] \
+        line    [list] \
+        space   [list] \
+        parm    [list fastdl] \
+        parm    [list fastdlurl] \
         space   [list] \
         h2      [list "Logging"] \
         line    [list] \
@@ -137,6 +145,8 @@ proc ServerSetRconPasswordState { value } {
     set cp [GetCp]
     set enabled [expr $value == 1]
     SetConfigItemState $cp.server $serverLayout rconpassword $enabled
+    SetConfigItemState $cp.server $serverLayout rconbanpenalty $enabled
+    SetConfigItemState $cp.server $serverLayout rconmaxfailures $enabled
     return $value
 }
 
@@ -146,4 +156,12 @@ proc ServerSetUpdateServerOnRestartState { {value ""} } {
     set enabled [expr [llength $value] > 0]
     SetConfigItemState $cp.server $serverLayout updateserveronrestart $enabled
     return $value    
+}
+
+proc ServerSetFastDLOptions { value } {
+    global serverLayout
+    set cp [GetCp]
+    set enabled [expr $value == 1]
+    SetConfigItemState $cp.server $serverLayout fastdlurl $enabled
+    return $value
 }
