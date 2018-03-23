@@ -575,3 +575,20 @@ proc SaveGameModesServer {filename} {
     close $fileid        
 }
 
+proc AddCfgFileLine {fileName addLine} {
+    EnsureEmptyFile "$fileName"
+    set fp [open "$fileName" r]
+    set fileData [read $fp]
+    close $fp
+    #skip first header line
+    set data [lreplace [split $fileData "\n"] 0 0] 
+    foreach line $data {
+        if { $line == $addLine} {
+            Trace "Found line $line"
+            return
+        }
+    }
+    set fileId [open $fileName "a"]
+    puts $fileId $addLine
+    close $fileId
+}

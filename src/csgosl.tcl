@@ -31,6 +31,7 @@ source [file join $starkit::topdir wget.tcl]
 source [file join $starkit::topdir trace.tcl]
 source [file join $starkit::topdir sframe.tcl]
 source [file join $starkit::topdir browser.tcl]
+source [file join $starkit::topdir autoexec_support.tcl]
 
 proc RunAssync {command} {
     global executorCommand
@@ -67,6 +68,7 @@ proc SaveAll { {skipStandalone ""} } {
         SaveConfigFileRconCli
         SaveConfigFileMapGroups
         SaveConfigFileRun 
+        SaveConfigFileAutoexec
         SaveConfigFileSourcemod
         SaveConfigFileApplication
         SaveConfigFileGameModeAll
@@ -460,6 +462,10 @@ proc SaveConfigFileOrigServer {} {
     SetConfigItem $serverOrigConfig mp_autokick [GetConfigItem $serverConfig autokick]
     
     SaveConfigFile serverOrigConfig
+#    set config [set $serverOrigConfig]
+#    set fileName [dict get $config fileName]
+    autoexec::Save
+    autoexec::Activate
 }
 
 ## Steam config
@@ -651,6 +657,18 @@ proc SaveConfigFileRun {} {
     }   
 }
 
+
+source [file join $starkit::topdir page_autoexec.tcl]
+
+autoexec::InitializeDirs
+autoexec::BuildVars
+EnsureConfigFile autoexecConfig
+LoadConfigFile autoexecConfig 
+proc SaveConfigFileAutoexec {} {
+    global autoexecConfig
+    SaveConfigFile autoexecConfig
+}
+
 ## Console config
 source [file join $starkit::topdir page_console.tcl]
 
@@ -791,6 +809,9 @@ set mapsPage [CreateConfigPageFromLayout $cp.maps $mapsLayout]
 
 CreateConfigPageTabFromLayout $cp.mapGroups $mapGroupsLayout [expr $enableTab && $serverPresent]
 set mapGroupsPage [CreateConfigPageFromLayout $cp.mapGroups $mapGroupsLayout]
+
+CreateConfigPageTabFromLayout $cp.autoexec $autoexecLayout [expr $enableTab && $serverPresent]
+set autoexecPage [CreateConfigPageFromLayout $cp.autoexec $autoexecLayout]
 
 CreateConfigPageTabFromLayout $cp.run $runLayout [expr $enableTab && $serverPresent]
 set runPage [CreateConfigPageFromLayout $cp.run $runLayout]
