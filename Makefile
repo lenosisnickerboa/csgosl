@@ -16,7 +16,10 @@ install-mods:
 	$(MAKE) -C mods/linux
 	$(MAKE) -C mods/windows
 
-install: install-devtools install-mods
+install-cfgs:
+	$(MAKE) -C cfgs
+
+install: install-devtools install-mods install-cfgs
 
 clean-devtools:
 	$(MAKE) -C devtools/linux clean
@@ -26,7 +29,10 @@ clean-mods:
 	$(MAKE) -C mods/linux clean
 	$(MAKE) -C mods/windows clean
 
-install-clean: clean-devtools clean-mods
+clean-cfgs:
+	$(MAKE) -C cfgs clean
+
+install-clean: clean-devtools clean-mods clean-cfgs
 
 contribs:
 	$(MAKE) --silent contribs-doit > $(CONTRIBOUT)
@@ -37,6 +43,7 @@ contribs-doit:
 	$(MAKE) -C devtools/windows contribs
 	$(MAKE) -C mods/linux contribs
 	$(MAKE) -C mods/windows contribs
+	$(MAKE) -C cfgs contribs
 
 zip:
 	(cd .. ; tar czvpf csgosl-`date +"%Y%m%d-%H%M%S"`.tgz csgosl --exclude csgosl/.git)
