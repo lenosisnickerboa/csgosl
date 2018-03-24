@@ -26,8 +26,20 @@ proc Wget {url filename} {
 		global installFolder
 		exec "$installFolder/bin/wget" "$url" --quiet -O "$filename"
 	} else {
-		exec "wget" "$url" --quiet -O "$filename"		
+		exec "wget" "$url" --quiet -O "$filename"
 	}
  	Trace "Wget: $url -> $filename OK"
+}
+
+proc WgetPost {url post filename} {
+	Trace "WgetPost: $url $post -> $filename"
+	global currentOs
+	if { $currentOs == "windows" } {
+		global installFolder
+		exec "$installFolder/bin/wget" "$url" --post-data "$post" --quiet -O "$filename"
+	} else {
+		exec "wget" "$url" --post-data "$post" --quiet -O "$filename"
+	}
+ 	Trace "WgetPost: $url $post -> $filename OK"
 }
   

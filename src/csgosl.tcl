@@ -32,6 +32,7 @@ source [file join $starkit::topdir trace.tcl]
 source [file join $starkit::topdir sframe.tcl]
 source [file join $starkit::topdir browser.tcl]
 source [file join $starkit::topdir autoexec_support.tcl]
+source [file join $starkit::topdir net.tcl]
 
 proc RunAssync {command} {
     global executorCommand
@@ -992,8 +993,19 @@ proc UpgradeCheck {} {
     }
 }
 
+proc ShowNetInfo {} {
+    set localIpAddress [net::localIpAddress]
+    Trace "Local IP is $localIpAddress"
+    
+    set externalIpAddress [net::externalIpAddress]
+    Trace "External IP is $externalIpAddress"
+    
+#    set isPortOpen [net::isPortOpen "27015"]
+#    Trace "27015 reachable: $isPortOpen"
+}
+
 if {$serverPresent} {
-    after 5000 { UpgradeCheck ; StartStuffOnStart }
+    after 5000 { ShowNetInfo ; UpgradeCheck ; StartStuffOnStart }
 }
 
 if { $serverPresent && $needsUpgrade } {
