@@ -296,6 +296,10 @@ proc SaveConfigFileGoTv {} {
     SaveConfigFile gotvConfig
 }
 
+if { $serverPresent && $needsUpgrade } {
+    UpdateCfgs
+}
+
 variable serverOrigConfig [CreateConfig \
     [list \
         name     "serverOrigConfig" \

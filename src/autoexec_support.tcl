@@ -56,8 +56,12 @@ proc autoexec::BuildVars {} {
 	global autoexecLayoutList2
 	lappend autoexecLayoutList2 \
 		h1      [list "Autoexec settings"] \
+        line    [list] \
+		text    [list "Add .cfg files to the folders shown below to have them automatically executed when server"] \
+		text    [list "starts or when map change occurs."] \
         space   [list] \
         h2      [list "On server start execute these..."] \
+		text    [list "- folder $autoexecDir/onserverstart:"] \
         line    [list] \
         space   [list]
 	foreach cfg $onServerStartCfgs {
@@ -66,6 +70,7 @@ proc autoexec::BuildVars {} {
 	lappend autoexecLayoutList2 \
 		space   [list] \
         h2      [list "On map change execute these..."] \
+		text    [list "- folder $autoexecDir/onmapchange:"] \
         line    [list] \
         space   [list]
 	foreach cfg $onMapChangeCfgs {

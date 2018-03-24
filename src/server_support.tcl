@@ -682,6 +682,21 @@ proc UpdateMods {} {
     EnforceSourcemodConfig    
 }
 
+proc UpdateCfgs {} {
+    global installFolder
+    set cfgsArchive "$installFolder/cfgs/cfgs.zip"
+    Trace "Looking for cfgs $cfgsArchive..."
+    if { [file exists "$cfgsArchive"] == 1 } {
+        Trace "Installing cfgs..."
+    	global serverCfgPath
+    	set autoexecDir "$serverCfgPath/csgosl"
+    	if { ! [file isdirectory "$autoexecDir"]} {
+    		file mkdir "$autoexecDir"
+    	}
+        Unzip "$cfgsArchive" "$autoexecDir/"
+    }
+}
+
 proc SaveSimpleAdmins {admins} {
     global modsFolder
     set configFolder "$modsFolder/sourcemod/configs"

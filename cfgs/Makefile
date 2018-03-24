@@ -1,5 +1,6 @@
 #Linux
 include common.mk
+export
 
 all: cfgs
 

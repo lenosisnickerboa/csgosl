@@ -71,3 +71,6 @@ set windows_cksurf_url "https://forums.alliedmods.net/attachment.php?attachmenti
 set windows_retakes_version "0.3.3"
 set windows_retakes_home_url "https://github.com/splewis/csgo-retakes"
 set windows_retakes_url "https://github.com/splewis/csgo-retakes/releases/download/v0.3.3/retakes_0.3.3.zip"
+set all_esl_serverconfig_version "18/01/2016"
+set all_esl_serverconfig_home_url "https://play.eslgaming.com/download/26251762/"
+set all_esl_serverconfig_url "https://play.eslgaming.com/download/get/?file=26251762"

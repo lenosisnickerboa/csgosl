@@ -63,8 +63,9 @@ TCLKIT=$ROOT/devtools/linux/tclkit
 
 case $TARGET in 
     linux)
-	installdir $DEST/csgosl $DEST/bin $DEST/mods
+	installdir $DEST/csgosl $DEST/bin $DEST/mods $DEST/cfgs
 	install $DEST/mods "$ROOT"/mods/linux/mods.zip "$ROOT"/mods/linux/mods-risky.zip
+	install $DEST/cfgs "$ROOT"/cfgs/cfgs.zip
 	install $DEST/bin "$ROOT"/src/*.tcl "$ROOT"/src/pics/*.jpg "$ROOT"/src/pics/*.png
 	install $DEST "$ROOT"/src/linux/csgosl.sh
 	install $DEST/bin "$ROOT"/src/linux/server.sh
@@ -73,8 +74,9 @@ case $TARGET in
 	(cd "$DEST"/.. ;  mv csgosl.zip csgosl-linux.zip)
 	;;
     windows)
-	installdir $DEST/csgosl.vfs $DEST/csgosl.vfs/lib $DEST/bin $DEST/mods
+	installdir $DEST/csgosl.vfs $DEST/csgosl.vfs/lib $DEST/bin $DEST/mods $DEST/cfgs
 	install $DEST/mods "$ROOT"/mods/windows/mods.zip "$ROOT"/mods/windows/mods-risky.zip
+	install $DEST/cfgs "$ROOT"/cfgs/cfgs.zip
 	install $DEST/csgosl.vfs "$ROOT"/src/*.tcl "$ROOT"/src/pics/*.jpg "$ROOT"/src/pics/*.png
 	$TCLKIT $SDX unwrap "$ROOT"/devtools/windows/img.kit || error "Failed to unwrap img.kit"
 	install $DEST/csgosl.vfs/lib img.vfs/lib/Img/*

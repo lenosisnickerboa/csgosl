@@ -584,7 +584,6 @@ proc AddCfgFileLine {fileName addLine} {
     set data [lreplace [split $fileData "\n"] 0 0] 
     foreach line $data {
         if { $line == $addLine} {
-            Trace "Found line $line"
             return
         }
     }
