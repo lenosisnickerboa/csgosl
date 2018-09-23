@@ -769,7 +769,7 @@ proc EnforceSourcemodConfig {} {
     SetFollowCSGOServerGuidelines
 }
 
-proc EnforceSourcemodPluginConfig {pluginFileName pluginEnabled} {
+proc EnforceSourcemodPluginConfigPerFile {pluginFileName pluginEnabled} {
     global modsFolder
     set sourcemodPluginFolder "$modsFolder/sourcemod/plugins"
     if { $pluginEnabled } {
@@ -792,5 +792,21 @@ proc EnforceSourcemodPluginConfig {pluginFileName pluginEnabled} {
                 file rename -force "$sourcemodPluginFolder/$pluginFileName" "$sourcemodPluginFolder/disabled/$pluginFileName"                
             }
         }
+    }
+}
+
+proc EnforceSourcemodPluginConfig {pluginFileName pluginEnabled} {
+    global modsFolder
+    set sourcemodPluginFolder "$modsFolder/sourcemod/plugins"
+    set plugins [list $pluginFileName]
+    if {[string first "*" $pluginFileName] != -1} {
+        Trace "Found wildcard in $pluginFileName, expanding it..."
+        set enabledPlugins [glob -nocomplain -tails -type f -path "$sourcemodPluginFolder/" $pluginFileName]
+        set disabledPlugins [glob -nocomplain -tails -type f -path "$sourcemodPluginFolder/disabled/" $pluginFileName]
+        set plugins [lsort -unique [concat $enabledPlugins $disabledPlugins]]
+        Trace "Expanded $pluginFileName to $plugins"
+    }
+    foreach plugin $plugins {
+        EnforceSourcemodPluginConfigPerFile $plugin $pluginEnabled
     }
 }

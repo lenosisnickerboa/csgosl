@@ -21,6 +21,7 @@ variable sourcemodPlugins [list \
     retakes_sitepicker [list false sm_retakes_sitepicker_enable sm_retakes_sitepicker_lanonly retakes_sitepicker.smx] \
     retakes_standardallocator [list false sm_retakes_standardallocator_enable sm_retakes_standardallocator_lanonly retakes_standardallocator.smx] \
     retakes_pistolallocator [list false sm_retakes_pistolallocator_enable sm_retakes_pistolallocator_lanonly retakes_pistolallocator.smx] \
+    influx [list false sm_influx_enable sm_influx_lanonly "influx_*.smx"] \
     franug_weaponpaints [list true sm_franug_weaponpaints_enable sm_franug_weaponpaints_lanonly franug_weaponpaints_public.smx] \
     franug_knifes [list true sm_franug_knifes_enable sm_franug_knifes_lanonly sm_franugknife.smx]
 ]
@@ -71,6 +72,8 @@ variable sourcemodConfig [CreateConfig \
         "bool"      [list sm_retakes_standardallocator_lanonly "1" "Only enable this sourcemod plugin in lanonly mode"]\
         "bool"      [list sm_retakes_pistolallocator_enable "0" "Controls if this sourcemod plugin is enabled."]\
         "bool"      [list sm_retakes_pistolallocator_lanonly "1" "Only enable this sourcemod plugin in lanonly mode"]\
+        "bool"      [list sm_influx_enable "0" "Controls if this sourcemod plugin is enabled." onchange "SetSourcemodInfluxState"]\
+        "bool"      [list sm_influx_lanonly "1" "Only enable this sourcemod plugin in lanonly mode"]\
         "bool"      [list sm_franug_weaponpaints_enable "0" "Controls if this sourcemod plugin is enabled.\nType !ws in chat to use." onchange "SetSourcemodFranugWeaponPaintsState"]\
         "bool"      [list sm_franug_weaponpaints_lanonly "1" "Only enable this sourcemod plugin in lanonly mode"]\
         "bool"      [list sm_franug_weaponpaints_onlyadmin "1" "This feature is only for admins. 1 = enabled, 0 = disabled.\n(Use the value 1 and try to keep this plugin secret for the normal users because they can report it)"]\
@@ -165,6 +168,10 @@ variable sourcemodLayout [CreateLayout \
         parm    [list sm_retakes_pistolallocator_enable] \
         parm    [list sm_retakes_pistolallocator_lanonly] \
         space   [list] \
+        h2      [list "Plugin: influx"] \
+        parm    [list sm_influx_enable] \
+        parm    [list sm_influx_lanonly] \
+        space   [list] \
         warning [list "All plugins below this line require the banprotection to be disabled. Read the help page carefully before"] \
         warning [list "disabling banprotection. Running misbehaving sourcemod plugins may cause your server to be banned by Valve."] \
         warning [list "*** I take no responsibility for if your server gets banned ***"] \
@@ -205,6 +212,7 @@ proc SetSourcemodState { value } {
                   sm_gunmenu_enable sm_gunmenu_lanonly sm_cksurf_enable sm_cksurf_lanonly\
                   sm_retakes_enable sm_retakes_lanonly sm_retakes_sitepicker_enable sm_retakes_sitepicker_lanonly\
                   sm_retakes_standardallocator_enable sm_retakes_standardallocator_lanonly sm_retakes_pistolallocator_enable sm_retakes_pistolallocator_lanonly\
+                  sm_influx_enable sm_influx_lanonly\
                   sm_franug_weaponpaints_enable sm_franug_weaponpaints_lanonly sm_franug_weaponpaints_onlyadmin\
                   sm_franug_weaponpaints_c4 sm_franug_weaponpaints_saytimer sm_franug_weaponpaints_roundtimer sm_franug_weaponpaints_rmenu\
                   sm_franug_weaponpaints_zombiesv sm_franug_knifes_enable sm_franug_knifes_lanonly] {
@@ -221,6 +229,7 @@ proc SetSourcemodState { value } {
     SetSourcemodGunMenuState [expr $enabled && [GetConfigItem $sourcemodConfig sm_gunmenu_enable]]
     SetSourcemodCkSurfState [expr $enabled && [GetConfigItem $sourcemodConfig sm_cksurf_enable]]
     SetSourcemodRetakesState [expr $enabled && [GetConfigItem $sourcemodConfig sm_retakes_enable]]
+    SetSourcemodInfluxState [expr $enabled && [GetConfigItem $sourcemodConfig sm_influx_enable]]
     SetSourcemodFranugWeaponPaintsState [expr $enabled && [GetConfigItem $sourcemodConfig sm_franug_weaponpaints_enable]]
     SetSourcemodFranugKnifesState [expr $enabled && [GetConfigItem $sourcemodConfig sm_franug_knifes_enable]]
     return $value        
@@ -320,6 +329,15 @@ proc SetSourcemodRetakesState { value } {
     foreach parm [list sm_retakes_lanonly sm_retakes_sitepicker_enable\
                   sm_retakes_sitepicker_lanonly sm_retakes_standardallocator_enable sm_retakes_standardallocator_lanonly\
                   sm_retakes_pistolallocator_enable sm_retakes_pistolallocator_lan_only] {
+        SetConfigItemState $cp.sourcemod $sourcemodLayout $parm $enabled
+    }
+    return $value        
+}
+proc SetSourcemodInfluxState { value } {
+    global sourcemodLayout
+    set cp [GetCp]
+    set enabled $value
+    foreach parm [list sm_influx_lanonly] {
         SetConfigItemState $cp.sourcemod $sourcemodLayout $parm $enabled
     }
     return $value        
