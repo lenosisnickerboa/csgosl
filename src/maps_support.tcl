@@ -90,18 +90,17 @@ proc ImportMapPicture {map from to} {
 }
 
 #<link rel="image_src" href="http://images.akamai.steamusercontent.com/ugc/884098384874424133/13068CB677948EC551F775C8603445E2CDD14BCC/?interpolation=lanczos-none&output-format=jpeg&output-quality=95&fit=inside|512:*">
-proc GetMapImageUrl {htmlfile} {
+#<link rel="image_src" href="https://steamuserimages-a.akamaihd.net/ugc/3281180873728311819/394154653C6BD4B8410C781B94898BDFC01002D2/?interpolation=lanczos-none&output-format=jpeg&output-quality=95&fit=inside%7C512%3A*">
+proc GetMapImageUrl {htmlfile protocol matcherBegin matcherEnd} {
     set fp [open "$htmlfile" r]
     set fileData [read $fp]
     close $fp
     set data [split $fileData "\n"]
-    set matcherBegin "<link rel=\"image_src\" href=\"http://images.akamai.steamusercontent.com/"
-    set matcherEnd "|512:*\">"
     set n 0
     foreach line $data {
         set line [string trimleft $line]
         if { [string first "$matcherBegin" $line] == 0 && [string last "$matcherEnd" $line] > 0} {
-            set start [string first "http://" $line ]
+            set start [string first $protocol $line ]
             set stop [expr [string last $matcherEnd $line] - 1]
             return [string range $line $start $stop]
         }
@@ -112,6 +111,8 @@ proc GetMapImageUrl {htmlfile} {
     return ""
 }
 
+#<link rel="image_src" href="http://images.akamai.steamusercontent.com/ugc/884098384874424133/13068CB677948EC551F775C8603445E2CDD14BCC/?interpolation=lanczos-none&output-format=jpeg&output-quality=95&fit=inside|512:*">
+#<link rel="image_src" href="https://steamuserimages-a.akamaihd.net/ugc/3281180873728311819/394154653C6BD4B8410C781B94898BDFC01002D2/?interpolation=lanczos-none&output-format=jpeg&output-quality=95&fit=inside%7C512%3A*">
 proc LoadMapImageFromWorkshop {url workshopDir id map} {
     set mapDir "$workshopDir/$id"
     set htmlFile "$mapDir/temp.html"
@@ -120,9 +121,20 @@ proc LoadMapImageFromWorkshop {url workshopDir id map} {
         Trace "Failed to download $url"
         return 0
     }
-    set imageUrl [GetMapImageUrl $htmlFile]
+    # First try newer URL
+    set matcherBegin "<link rel=\"image_src\" href=\"https://steamuserimages-a.akamaihd.net/"
+    set matcherEnd "fit=inside%7C512%3A*\">"
+    set imageUrl [GetMapImageUrl $htmlFile "https://" $matcherBegin $matcherEnd]
     if {$imageUrl != ""} {        
         Wget $imageUrl "$mapDir/$map.jpg"
+    } else {
+        # Fallback to older version, still in use?
+        set matcherBegin "<link rel=\"image_src\" href=\"http://images.akamai.steamusercontent.com/"
+        set matcherEnd "|512:*\">"
+        set imageUrl [GetMapImageUrl $htmlFile "http://" $matcherBegin $matcherEnd]
+        if {$imageUrl != ""} {        
+            Wget $imageUrl "$mapDir/$map.jpg"
+        }        
     }
     file delete $htmlFile
 }

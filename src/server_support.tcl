@@ -804,7 +804,6 @@ proc EnforceSourcemodPluginConfig {pluginFileName pluginEnabled} {
         set enabledPlugins [glob -nocomplain -tails -type f -path "$sourcemodPluginFolder/" $pluginFileName]
         set disabledPlugins [glob -nocomplain -tails -type f -path "$sourcemodPluginFolder/disabled/" $pluginFileName]
         set plugins [lsort -unique [concat $enabledPlugins $disabledPlugins]]
-        Trace "Expanded $pluginFileName to $plugins"
     }
     foreach plugin $plugins {
         EnforceSourcemodPluginConfigPerFile $plugin $pluginEnabled
