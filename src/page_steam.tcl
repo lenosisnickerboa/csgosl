@@ -23,6 +23,7 @@ variable steamConfig [CreateConfig \
         "string"    [list apiauthkey "" "Required to download maps from the workshop, see help page for more information."]\
         "bool"      [list validateinstall "0" "Perform install validation when updating, i.e the downloaded server update is checked for validity."]\
         "url"       [list steamcmdurl "$steamCmdUrl" "URL to steamcmd. Leave as is if you don't have a very good reason to change this."]\
+        "bool"      [list validateworkshopmaps "0" "On csgosl startup always check that installed workshop maps are still present at Steam.\nNo longer existing maps will be moved to a folder named workshop-DISABLED next to the workshop folder."]\
     ] \
 ]
 
@@ -49,5 +50,6 @@ variable steamLayout [CreateLayout \
         space   [list] \
         parm    [list validateinstall] \
         parm    [list steamcmdurl] \
+        parm    [list validateworkshopmaps] \
     ] \
 ]

@@ -3,9 +3,34 @@
 # The next line is executed by /bin/sh, but not tcl \
 exec wish "$0" ${1+"$@"}
 
+proc WorkshopMapStillExistsAtSteam {id tmpPath} {
+    set htmlFile "$tmpPath/temp.html"
+    Trace "Checking if workshop map with $id is still available at Steam..."
+    set url "http://steamcommunity.com/sharedfiles/filedetails/?id=$id"
+    Wget $url $htmlFile
+    if { ! [file exists $htmlFile] } {
+        Trace "Failed to download $url"
+        return 0
+    }
+    set fp [open "$htmlFile" r]
+    set fileData [read $fp]
+    close $fp
+    file delete $htmlFile
+    set data [split $fileData "\n"]
+    foreach line $data {
+        if { [string match "*That item does not exist*" $line] } {
+            return 0
+        }
+    }
+    return 1
+}
+
 proc GetMaps {path allMapsName allMapsMetaName} {
     set maps [list]
     set mapsMeta [dict create]
+    global steamConfig
+    set validateWorkshopMaps [GetConfigValue $steamConfig validateworkshopmaps]
+    Trace "Workshop map validation status : $validateWorkshopMaps"
     if {[file isdirectory "$path/workshop"]} {
         set workshopdirs [glob -nocomplain -tails -type d -path "$path/workshop/" *]
         #workshop maps takes precedence over internal maps
@@ -13,9 +38,15 @@ proc GetMaps {path allMapsName allMapsMetaName} {
             if {[file isdirectory "$path/workshop/$d"]} {
                 set m [glob -nocomplain -tails -type f -path "$path/workshop/$d/" *.bsp]
                 set m [file rootname $m]
-                if {$m ni $maps} {
-                    lappend maps $m
-                    set mapsMeta [dict set mapsMeta $m [dict create type workshop id $d]]
+                if { $validateWorkshopMaps && ! [WorkshopMapStillExistsAtSteam "$d" "$path/workshop/$d"] } {
+                    Trace "Workshop map $m (with id $d) no longer exists in Steam, disabled by being moved to $path/workshop-DISABLED"
+                    if { ! [file isdirectory "$path/workshop-DISABLED" ] } {
+                        file mkdir "$path/workshop-DISABLED"
+                    }
+                    file rename -force "$path/workshop/$d" "$path/workshop-DISABLED/$d"                    
+                } elseif {$m ni $maps} {
+                        lappend maps $m
+                        set mapsMeta [dict set mapsMeta $m [dict create type workshop id $d]]
                 }
             }
         }
@@ -89,8 +120,6 @@ proc ImportMapPicture {map from to} {
     }
 }
 
-#<link rel="image_src" href="http://images.akamai.steamusercontent.com/ugc/884098384874424133/13068CB677948EC551F775C8603445E2CDD14BCC/?interpolation=lanczos-none&output-format=jpeg&output-quality=95&fit=inside|512:*">
-#<link rel="image_src" href="https://steamuserimages-a.akamaihd.net/ugc/3281180873728311819/394154653C6BD4B8410C781B94898BDFC01002D2/?interpolation=lanczos-none&output-format=jpeg&output-quality=95&fit=inside%7C512%3A*">
 proc GetMapImageUrl {htmlfile protocol matcherBegin matcherEnd} {
     set fp [open "$htmlfile" r]
     set fileData [read $fp]
