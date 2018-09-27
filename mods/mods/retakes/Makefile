@@ -1,6 +1,6 @@
 RETAKES_HOME_URL="https://github.com/splewis/csgo-retakes"
-RETAKES_URL="https://github.com/splewis/csgo-retakes/releases/download/v0.3.3/retakes_0.3.3.zip"
-RETAKES_VERSION="0.3.3"
+RETAKES_URL="https://github.com/splewis/csgo-retakes/releases/download/v0.3.4/retakes_0.3.4.zip"
+RETAKES_VERSION="0.3.4"
 
 all: build
 
