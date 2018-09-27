@@ -109,9 +109,15 @@ proc PeriodicWindowUpdate {} {
     global name
     global version
     set currentServerName [GetConfigValue $serverConfig name]
-    if { $lastServerName != $currentServerName } {
+    global localIpAddress
+    global externalIpAddress
+    global displayedLocalIpAddress
+    global displayedExternalIpAddress
+    if { $lastServerName != $currentServerName || $localIpAddress != $displayedLocalIpAddress || $externalIpAddress != $displayedExternalIpAddress } {
         set lastServerName "$currentServerName"
-        SetTitle "$name $version -- $lastServerName"
+        SetTitle "$name $version -- $lastServerName \[local IP:$localIpAddress external IP: $externalIpAddress\]"
+        set displayedLocalIpAddress $localIpAddress
+        set displayedExternalIpAddress $externalIpAddress
     }
 }
 
@@ -148,6 +154,9 @@ if { !$serverPresent } {
     "No installed server was detected. csgosl will start in minimal mode to allow a server to be installed. When install is finished restart csgosl to get access to the full application." \
     "" 0 "I understand"
 }
+
+set localIpAddress "???"
+set externalIpAddress "???"
 
 set configFolder "cfg"
 file mkdir $configFolder
@@ -994,9 +1003,11 @@ proc UpgradeCheck {} {
 }
 
 proc ShowNetInfo {} {
+    global localIpAddress
     set localIpAddress [net::localIpAddress]
     Trace "Local IP is $localIpAddress"
     
+    global externalIpAddress
     set externalIpAddress [net::externalIpAddress]
     Trace "External IP is $externalIpAddress"
     
