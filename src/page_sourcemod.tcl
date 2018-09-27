@@ -68,9 +68,9 @@ variable sourcemodConfig [CreateConfig \
         "bool"      [list sm_retakes_lanonly "1" "Only enable this sourcemod plugin in lanonly mode"]\
         "bool"      [list sm_retakes_sitepicker_enable "0" "Controls if this sourcemod plugin is enabled."]\
         "bool"      [list sm_retakes_sitepicker_lanonly "1" "Only enable this sourcemod plugin in lanonly mode"]\
-        "bool"      [list sm_retakes_standardallocator_enable "0" "Controls if this sourcemod plugin is enabled."]\
+        "bool"      [list sm_retakes_standardallocator_enable "0" "Controls if this sourcemod plugin is enabled.\nExcludes sm_retakes_pistolallocator" onchange "SetSourcemodRetakesPistolAllocatorValue"]\
         "bool"      [list sm_retakes_standardallocator_lanonly "1" "Only enable this sourcemod plugin in lanonly mode"]\
-        "bool"      [list sm_retakes_pistolallocator_enable "0" "Controls if this sourcemod plugin is enabled."]\
+        "bool"      [list sm_retakes_pistolallocator_enable "0" "Controls if this sourcemod plugin is enabled.\nExcludes sm_retakes_standardallocator" onchange "SetSourcemodRetakesStandardAllocatorValue"]\
         "bool"      [list sm_retakes_pistolallocator_lanonly "1" "Only enable this sourcemod plugin in lanonly mode"]\
         "bool"      [list sm_influx_enable "0" "Controls if this sourcemod plugin is enabled." onchange "SetSourcemodInfluxState"]\
         "bool"      [list sm_influx_lanonly "1" "Only enable this sourcemod plugin in lanonly mode"]\
@@ -330,6 +330,28 @@ proc SetSourcemodRetakesState { value } {
                   sm_retakes_sitepicker_lanonly sm_retakes_standardallocator_enable sm_retakes_standardallocator_lanonly\
                   sm_retakes_pistolallocator_enable sm_retakes_pistolallocator_lan_only] {
         SetConfigItemState $cp.sourcemod $sourcemodLayout $parm $enabled
+    }
+    return $value        
+}
+proc SetSourcemodRetakesPistolAllocatorValue { value } {
+    global sourcemodConfig
+    if { $value == "0" } {
+        return $value
+    }
+    set otherValue [GetConfigItem $sourcemodConfig sm_retakes_pistolallocator_enable]
+    if { $otherValue == "1"} {
+        SetConfigItem $sourcemodConfig sm_retakes_pistolallocator_enable "0"
+    }
+    return $value        
+}
+proc SetSourcemodRetakesStandardAllocatorValue { value } {
+    global sourcemodConfig
+    if { $value == "0" } {
+        return $value
+    }
+    set otherValue [GetConfigItem $sourcemodConfig sm_retakes_standardallocator_enable]
+    if { $otherValue == "1"} {
+        SetConfigItem $sourcemodConfig sm_retakes_standardallocator_enable "0"
     }
     return $value        
 }
