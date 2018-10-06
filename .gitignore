@@ -12,3 +12,4 @@ src/csvars.tcl
 .sync
 **/*.smx
 **/*.ini
+**/cfgs/wargames_theswemaster/wargames_theswemaster.cfg

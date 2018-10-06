@@ -52,7 +52,8 @@ proc GetContributors {} {
             windows_gunmenu_version windows_gunmenu_home_url windows_gunmenu_url \
             windows_cksurf_version windows_cksurf_home_url windows_cksurf_url \
             windows_retakes_version windows_retakes_home_url windows_retakes_url\
-            all_esl_serverconfig_version all_esl_serverconfig_home_url all_esl_serverconfig_url
+            all_esl_serverconfig_version all_esl_serverconfig_home_url all_esl_serverconfig_url\
+            all_wargames_theswemaster_version all_wargames_theswemaster_home_url all_wargames_theswemaster_url
         
         set contribs \
         [list \
@@ -101,6 +102,11 @@ proc GetContributors {} {
                 url     [list "Homepage" "$all_esl_serverconfig_home_url"] \
                 url     [list "Download $all_esl_serverconfig_version" "$all_esl_serverconfig_url"] \
                 space   [list] \
+                h2      [list "Config files: wargames_theswemaster $all_wargames_theswemaster_version"] \
+                line    [list] \
+                url     [list "Homepage" "$all_wargames_theswemaster_home_url"] \
+                url     [list "Download $all_wargames_theswemaster_version" "$all_wargames_theswemaster_url"] \
+                space   [list] \
                 h2      [list "Metamod $windows_metamod_version"] \
                 line    [list] \
                 url     [list "Homepage" "$windows_metamod_home_url"] \
@@ -137,7 +143,8 @@ proc GetContributors {} {
             linux_gunmenu_version linux_gunmenu_home_url linux_gunmenu_url \
             linux_cksurf_version linux_cksurf_home_url linux_cksurf_url \
             linux_retakes_version linux_retakes_home_url linux_retakes_url\
-            all_esl_serverconfig_version all_esl_serverconfig_home_url all_esl_serverconfig_url
+            all_esl_serverconfig_version all_esl_serverconfig_home_url all_esl_serverconfig_url\
+            all_wargames_theswemaster_version all_wargames_theswemaster_home_url all_wargames_theswemaster_url
         
         set contribs \
         [list \
@@ -185,6 +192,11 @@ proc GetContributors {} {
                 line    [list] \
                 url     [list "Homepage" "$all_esl_serverconfig_home_url"] \
                 url     [list "Download $all_esl_serverconfig_version" "$all_esl_serverconfig_url"] \
+                space   [list] \
+                h2      [list "Config files: wargames_theswemaster $all_wargames_theswemaster_version"] \
+                line    [list] \
+                url     [list "Homepage" "$all_wargames_theswemaster_home_url"] \
+                url     [list "Download $all_wargames_theswemaster_version" "$all_wargames_theswemaster_url"] \
                 space   [list] \
                 h2      [list "Metamod $linux_metamod_version"] \
                 line    [list] \
