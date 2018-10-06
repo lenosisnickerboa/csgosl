@@ -1,6 +1,6 @@
 # csgosl
 
-Quickie: [Get started](https://github.com/lenosisnickerboa/csgosl/wiki). Download **2.6** : [Linux](https://github.com/lenosisnickerboa/csgosl/releases/download/v2.6/csgosl-linux.zip) [Windows](https://github.com/lenosisnickerboa/csgosl/releases/download/v2.6/csgosl-windows.zip) 
+Quickie: [Get started](https://github.com/lenosisnickerboa/csgosl/wiki). Download **2.6.1** : [Linux](https://github.com/lenosisnickerboa/csgosl/releases/download/v2.6.1/csgosl-linux.zip) [Windows](https://github.com/lenosisnickerboa/csgosl/releases/download/v2.6.1/csgosl-windows.zip) 
 <br>Download stats [here](http://www.somsubhra.com/github-release-stats/?username=lenosisnickerboa&repository=csgosl)
 
 csgosl is a graphical user interface (GUI) for a [Counter Striker Global Offensive server](https://developer.valvesoftware.com/wiki/Counter-Strike:_Global_Offensive_Dedicated_Servers) (CSGO server from now on).  csgosl supports one-click install, update, start and stop server on windows and linux platforms ([supported platforms](https://github.com/lenosisnickerboa/csgosl/wiki/Platform-support)). If you just want your own CSGO server up and running in no time this is the place for you. csgosl provides a graphical user interface supporting most mainstream server options. For the control freak there is also an advanced mode providing support for nearly any imaginable setting and on top of that GUI support for adding custom cvars to the advanced mode tabs.
@@ -49,6 +49,7 @@ The following free software is part of csgosl:
  - [CkSurf](https://forums.alliedmods.net/showthread.php?t=264498) (Sourcemod plugin)
  - [Retakes](https://github.com/splewis/csgo-retakes) (Sourcemod plugin)
  - [Esl serverconfig](https://play.eslgaming.com/download/26251762/) (Config files)
+ - [Wargames by TheSweMaster](https://gamebanana.com/scripts/9907) (Config files)
  - [Metamod](https://www.metamodsource.net/) (Linux/Windows: installed automatically when server is installed)
  - [Unzip](http://www.info-zip.org/UnZip.html) (Windows: for unzipping stuff)
  - [Img](http://www.tcl.tk/starkits/) (Windows: image handling)
