@@ -553,7 +553,8 @@ variable gameModeMapper [dict create \
                          "Deathmatch"          [dict create type 1 mode 2] \
                          "Training"            [dict create type 2 mode 0] \
                          "Custom"              [dict create type 3 mode 0] \
-                         "Cooperative"         [dict create type 4 mode 0]]
+                         "Cooperative"         [dict create type 4 mode 0] \
+                         "Wingman"             [dict create type 0 mode 2]]
 
 variable botSkillMapper [dict create \
                          "Easy" 0 \
