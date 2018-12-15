@@ -81,6 +81,7 @@ proc SaveAll { {skipStandalone ""} } {
         SaveConfigFileGameModeTraining
         SaveConfigFileGameModeCustom
         SaveConfigFileGameModeCooperative
+        SaveConfigFileGameModeDangerZone
         if { $skipStandalone != "skipStandalone" } {
             CreateStandalone
             global serverConfig installFolder
@@ -702,6 +703,7 @@ if {$serverPresent} {
     LoadSplitConfigFile gameModeTrainingConfig
     LoadSplitConfigFile gameModeCustomConfig
     LoadSplitConfigFile gameModeCooperativeConfig
+    LoadSplitConfigFile gameModeDangerZoneConfig
 }
 
 proc SaveConfigFileGameModeArmsrace {} {
@@ -728,6 +730,9 @@ proc SaveConfigFileGameModeCooperative {} {
 proc SaveConfigFileGameModeTraining {} {
     SaveSplitConfigFile gameModeTrainingConfig
 }
+proc SaveConfigFileGameModeDangerZone {} {
+    SaveSplitConfigFile gameModeDangerZoneConfig
+}
 
 source [file join $starkit::topdir page_advanced_all.tcl]
 
@@ -745,6 +750,7 @@ variable gameModeTrainingLayout             [CreateDefaultLayoutFromConfig $game
 variable gameModeCustomLayout               [CreateDefaultLayoutFromConfig $gameModeCustomConfig]
 variable gameModeCooperativeLayout          [CreateDefaultLayoutFromConfig $gameModeCooperativeConfig]
 variable gameModeAllLayout                  [CreateDefaultLayoutFromConfig $gameModeAllConfig]
+variable gameModeDangerZoneLayout           [CreateDefaultLayoutFromConfig $gameModeDangerZoneConfig]
 
 proc AddNewCustomCvarGameModeAll {name default help} {
     global gameModeConfigs
@@ -859,7 +865,10 @@ CreateConfigPageTabFromLayout $cp.gameModeCustom $gameModeCustomLayout [expr $fu
 set gameModeCustomPage [CreateConfigPageFromLayout $cp.gameModeCustom $gameModeCustomLayout]
 
 CreateConfigPageTabFromLayout $cp.gameModeCooperative $gameModeCooperativeLayout [expr $fullConfig && $serverPresent]
-set gameModeCooperativePage [CreateConfigPageFromLayout $cp.gameModeCooperative $gameModeCooperativeLayout]    
+set gameModeCooperativePage [CreateConfigPageFromLayout $cp.gameModeCooperative $gameModeCooperativeLayout]
+
+CreateConfigPageTabFromLayout $cp.gameModeDangerZone $gameModeDangerZoneLayout [expr $fullConfig && $serverPresent]
+set gameModeDangerZonePage [CreateConfigPageFromLayout $cp.gameModeDangerZone $gameModeDangerZoneLayout]
 
 PerformOnChangeOnLayout $serverPage $serverLayout
 PerformOnChangeOnLayout $gotvPage $gotvLayout

@@ -101,3 +101,14 @@ variable gameModeCooperativeConfig [CreateSplitConfig \
     $gameModeConfigcsvars \
 ]
 
+variable gameModeDangerZoneConfig [CreateSplitConfig \
+    [list \
+        name             "gameModeDangerZoneConfig" \
+        prefix           "DangerZone" \
+        fileNameDefaults "$serverCfgPath/gamemode_survival.cfg" \
+        fileName         "$serverCfgPath/gamemode_survival_server.cfg" \
+        saveProc         "SaveConfigFileGameModeDangerZone" \
+        addCVar          "yes" \
+    ] \
+    $gameModeConfigcsvars \
+]

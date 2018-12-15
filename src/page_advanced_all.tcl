@@ -26,7 +26,7 @@ set gameModeConfigs [list \
                      $gameModeArmsraceConfig $gameModeClassicCasualConfig \
                      $gameModeClassicCompetitiveConfig $gameModeDemolitionConfig \
                      $gameModeDeathmatchConfig $gameModeTrainingConfig $gameModeCustomConfig \
-                     $gameModeCooperativeConfig]
+                     $gameModeCooperativeConfig $gameModeDangerZoneConfig]
 
 variable gameModeAllConfig [CreateConfig \
     [list \
