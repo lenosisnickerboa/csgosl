@@ -554,7 +554,8 @@ variable gameModeMapper [dict create \
                          "Training"            [dict create type 2 mode 0] \
                          "Custom"              [dict create type 3 mode 0] \
                          "Cooperative"         [dict create type 4 mode 0] \
-                         "Wingman"             [dict create type 0 mode 2]]
+                         "Wingman"             [dict create type 0 mode 2] \
+                         "Danger Zone"         [dict create type 6 mode 0]]
 
 variable botSkillMapper [dict create \
                          "Easy" 0 \
@@ -689,16 +690,6 @@ source [file join $starkit::topdir page_console.tcl]
 
 ## About config
 source [file join $starkit::topdir page_about.tcl]
-
-# gameModeArmsrace config
-# gameModeClassicCasual config
-# gameModeClassicCompetitive config
-# gameModeDemolition config
-# gameModeDeathmatch config
-# gameModeTraining config
-# gameModeCustom config
-# gameModeCooperative config
-# allModes config
 
 source [file join $starkit::topdir page_advanced.tcl]
 
