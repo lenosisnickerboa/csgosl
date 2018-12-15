@@ -101,6 +101,10 @@ variable gameModeCooperativeConfig [CreateSplitConfig \
     $gameModeConfigcsvars \
 ]
 
+#Just to be able to upgrade csgosl before upgrading csgo server, will
+#create an empty file if the survival file is not present yet.
+EnsureEmptyFile "$serverCfgPath/gamemode_survival.cfg"
+
 variable gameModeDangerZoneConfig [CreateSplitConfig \
     [list \
         name             "gameModeDangerZoneConfig" \
