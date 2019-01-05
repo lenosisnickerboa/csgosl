@@ -19,17 +19,17 @@ fullcommand="$1" ; shift
 fulldir="`dirname \"$fullcommand\"`"
 lastdir="`basename \"$fulldir\"`"
 command="`basename \"$fullcommand\"`"
-usecommand="$lastdir/$command"
 
 cd "$fulldir/.."
 
 case "$action" in 
     start)
-	sh "$usecommand" "$@" &
+	cd "./server"
+	sh "$command" "$@" &
 	;;
     autorestart)
 	while : ; do
-            sh "$usecommand" "$@" &
+            sh "$command" "$@" &
 	    echo Server was stopped or crashed, restarting...
 	done
 	;;
