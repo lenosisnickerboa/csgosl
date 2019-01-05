@@ -17,7 +17,6 @@ action="$1" ; shift
 #handle spaces in install directory.
 fullcommand="$1" ; shift
 fulldir="`dirname \"$fullcommand\"`"
-lastdir="`basename \"$fulldir\"`"
 command="`basename \"$fullcommand\"`"
 
 cd "$fulldir/.."
