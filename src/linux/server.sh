@@ -25,11 +25,11 @@ cd "$fulldir/.."
 
 case "$action" in 
     start)
-	sh "$usecommand" "$@" &
+	"$usecommand" "$@" &
 	;;
     autorestart)
 	while : ; do
-            sh "$usecommand" "$@" &
+            "$usecommand" "$@" &
 	    echo Server was stopped or crashed, restarting...
 	done
 	;;
