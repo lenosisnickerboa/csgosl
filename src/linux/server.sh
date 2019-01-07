@@ -4,7 +4,7 @@ full_path=`dirname "$(readlink -f "$0")"`
 full_path_srcds=`dirname "$full_path"`/server
 
 function status_ext() {
-    local pids=`pgrep $1`
+    local pids=`pgrep -f "$1"`
     [ -z "$pids" ] && return 1
     local pidline=`pwdx $pids | grep "$full_path_srcds"`
     [ -z "$pidline" ] && return 1
@@ -19,22 +19,24 @@ fullcommand="$1" ; shift
 fulldir="`dirname \"$fullcommand\"`"
 lastdir="`basename \"$fulldir\"`"
 command="`basename \"$fullcommand\"`"
-usecommand="$lastdir/$command"
+#usecommand="$lastdir/$command"
+usecommand="./$command"
 
-cd "$fulldir/.."
+#cd "$fulldir/.."
+cd "$fulldir"
 
 case "$action" in 
     start)
-	"$usecommand" "$@" &
+	sh "$usecommand" "$@" &
 	;;
     autorestart)
 	while : ; do
-            "$usecommand" "$@" &
+            sh "$usecommand" "$@" &
 	    echo Server was stopped or crashed, restarting...
 	done
 	;;
     stop)
-	pid1=`status_ext srcds_run`
+	pid1=`status_ext "sh ./srcds_run"`
 	pid2=`status_ext srcds_linux`
 	[ ! -z "$pid1$pid2" ] && kill -s SIGHUP $pid1 $pid2
 	;;
