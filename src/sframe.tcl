@@ -4,6 +4,8 @@
 exec wish "$0" ${1+"$@"}
 
 #source: http://wiki.tcl.tk/9223
+#scroll wheel inspiration from http://code.activestate.com/recipes/68394-supporting-mouse-wheel-on-vertical-scrollbars/
+#  -- really stupid hard coded 3 step scroll wheel implementation working on both windows/linux.
 
 # sframe.tcl
     # Paul Walton
@@ -84,10 +86,21 @@ exec wish "$0" ${1+"$@"}
             # Mousewheel bindings for scrolling.
             if { $scrolly } {
                 bind [winfo toplevel $path] <MouseWheel>       [list +[namespace current] scroll $path yview %W %D]
+                # Add linux support
+                if {[Os] == "linux"} {
+                    bind [winfo toplevel $path] <4> [list +[namespace current] scroll $path yview %W 3]
+                    bind [winfo toplevel $path] <5> [list +[namespace current] scroll $path yview %W -3]
+                }
             }
             if { $scrollx } {
                 bind [winfo toplevel $path] <Shift-MouseWheel> [list +[namespace current] scroll $path xview %W %D]
+                # Add linux support
+                if {[Os] == "linux"} {
+                    bind [winfo toplevel $path] <4> [list +[namespace current] scroll $path xview %W 3]
+                    bind [winfo toplevel $path] <5> [list +[namespace current] scroll $path xview %W -3]
+                }
             }
+
             
             return $path
         }
@@ -144,6 +157,11 @@ exec wish "$0" ${1+"$@"}
     
         # Handle mousewheel scrolling.    
         proc scroll {path view W D} {
+            if { $D > 0 } {
+                set D 3
+            } else {
+                set D -3                
+            }
             if { [winfo exists $path.canvas]  &&  [string match $path.canvas* $W] } {
                 $path.canvas $view scroll [expr {-$D}] units
             }

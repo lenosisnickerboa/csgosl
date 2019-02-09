@@ -269,6 +269,7 @@ proc rcon::ExecutorCreate {at} {
 	
 	label $at.top.l -text Command: -padx 0
 	entry $at.top.cmd -width 80 -relief sunken -textvariable ::rcon::executorCommand
+	SetupScroll $at.top.cmd
 	pack $at.top.l -side left
 	pack $at.top.cmd -side left -fill x -expand true
 	
@@ -327,3 +328,26 @@ proc rcon::ExecutorRun {} {
 		set ::rcon::executorCommand ""		
 	}
 }
+
+proc rcon::DoScroll {path view W D} {
+	if { $D > 0 } {
+		set D 3
+	} else {
+		set D -3                
+	}
+	if { [winfo exists $path]  &&  [string match $path* $W] } {
+		$path $view scroll [expr {-$D}] units
+	}
+	return
+}
+
+proc rcon::SetupScroll {w} {
+	# Mousewheel bindings for scrolling.
+	bind $w <MouseWheel> "+rcon::DoScroll $w yview %W %D"
+	# Add linux support
+	if {[Os] == "linux"} {
+		bind $w <4> "+rcon::DoScroll $w yview %W 3"
+		bind $w <5> "+rcon::DoScroll $w yview %W -3"
+	}
+}
+
