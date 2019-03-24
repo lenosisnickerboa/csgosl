@@ -8,6 +8,7 @@ all: cfgs
 contribs:
 	$(MAKE) -C ../cfgs/wargames_theswemaster contrib
 	$(MAKE) -C ../cfgs/esl_serverconfig contrib
+	$(MAKE) -C ../cfgs/misc contrib
 
 .PHONY: cfgs
 cfgs: 
@@ -15,10 +16,12 @@ cfgs:
 	mkdir -p $(CFGS_ROOT)
 	$(MAKE) -C ../cfgs/wargames_theswemaster
 	$(MAKE) -C ../cfgs/esl_serverconfig
+	$(MAKE) -C ../cfgs/misc
 	(cd $(CFGS_ROOT) ; zip -r ../cfgs.zip *)
 	\rm -rf $(CFGS_ROOT) >/dev/null 2>&1
 
 clean:
 	$(MAKE) -C ../cfgs/esl_serverconfig clean
 	$(MAKE) -C ../cfgs/wargames_theswemaster clean
+	$(MAKE) -C ../cfgs/misc clean
 	\rm -f cfgs.zip

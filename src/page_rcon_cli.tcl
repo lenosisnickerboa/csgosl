@@ -84,6 +84,9 @@ variable rconCliLayout [CreateLayout \
                       [list push debugon debugon {rcon::ExecuteCommand "tv_debug 1"} "Enables additional debugging messages."] \
                       [list push debugoff debugoff {rcon::ExecuteCommand "tv_debug 0"} "Disables additional debugging messages."] \
                 ] \
+        buttons [list [list text tmisc "MISC"] \
+                      [list push restart_game restart_game {rcon::ExecuteCommand "exec misc/restart_game.cfg"} "Restarts game..."] \
+                ] \
         space   [list] \
         h2      [list "Console"] \
         line    [list] \
