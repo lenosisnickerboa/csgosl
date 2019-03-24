@@ -335,6 +335,7 @@ saveProc "SaveConfigFileDummy" \
 "string"  [list "mp_c4_cannot_be_defused" "0" "If set, the planted c4 cannot be defused."] \
 "string"  [list "mp_c4timer" "40" "how long from when the C4 is armed until it blows"] \
 "string"  [list "mp_competitive_endofmatch_extra_time" "15" "After a competitive match finishes rematch voting extra time is given for rankings."] \
+"string"  [list "mp_consecutive_loss_aversion" "1" "How loss streak is affected with round win"] \
 "string"  [list "mp_coop_force_join_ct" "0" "If set, real players will auto join CT on join."] \
 "string"  [list "mp_coopmission_bot_difficulty_offset" "0" "The difficulty offset modifier for bots during coop missions."] \
 "string"  [list "mp_coopmission_mission_number" "0" "Which mission the map should run after it loads."] \
@@ -1043,7 +1044,7 @@ saveProc "SaveConfigFileDummy" \
 "string"  [list "weapon_recoil_decay2_lin" "18" "CHEAT:Decay factor (linear term) for weapon recoil"] \
 "string"  [list "weapon_recoil_scale" "2" "CHEAT:Overall scale factor for recoil. Used to reduce recoil on specific platforms"] \
 "string"  [list "weapon_recoil_scale_motion_controller" "1" "CHEAT:Overall scale factor for recoil. Used to reduce recoil. Only for motion controllers"] \
-"string"  [list "weapon_recoil_suppression_factor" "0" "CHEAT:Initial recoil suppression factor (first suppressed shot will use this factor contribs.txt devtools LICENSE Makefile mods out README.md sources.txt src standard recoil, lerping to 1 for later shots"] \
+"string"  [list "weapon_recoil_suppression_factor" "0" "CHEAT:Initial recoil suppression factor (first suppressed shot will use this factor cfgs contribs.txt devtools env.sh INSTALL LICENSE Makefile mods README.md sources.txt src standard recoil, lerping to 1 for later shots"] \
 "string"  [list "weapon_recoil_suppression_shots" "4" "CHEAT:Number of shots before weapon uses full recoil"] \
 "string"  [list "weapon_recoil_variance" "0" "CHEAT:Amount of variance per recoil impulse"] \
 "string"  [list "weapon_recoil_vel_decay" "4" "CHEAT:Decay factor for weapon recoil velocity"] \

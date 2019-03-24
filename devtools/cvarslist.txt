@@ -823,6 +823,7 @@ Creates a cubemap and a file indicating the local lighting in a subdirectory cal
 "mp_spec_swapplayersides","0       ",,,"GAMEDLL",,,,,,,,"REPLICATED",,,,,,,,,,"Toggle set the player names and team names to the opposite side in which they are are on the spectator panel."
 "mp_spectators_max","2       ",,,"GAMEDLL",,,,,,,,"REPLICATED",,,,,,,,,,"How many spectators are allowed in a match."
 "mp_startmoney","1000    ",,,"GAMEDLL",,,,,,,,"REPLICATED",,,,,,,,,,"amount of money each player gets when they reset"
+"mp_consecutive_loss_aversion","1",,,"GAMEDLL",,,,,,,,"REPLICATED",,,,,,,,,,"How loss streak is affected with round win"
 "mp_swapteams","cmd",,,,,,,,,,,,,,,,,,,,,"Swap the teams and restart the game"
 "mp_switchteams","cmd",,,,,,,,,,,,,,,,,,,,,"Switch teams and restart the game"
 "mp_t_default_grenades","0       ",,,"GAMEDLL",,,,,,,,"REPLICATED",,,,,,,,,,"The default grenades that the Ts will spawn with.  To give multiple grenades, separate each weapon class with a space like this"

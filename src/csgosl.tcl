@@ -355,6 +355,9 @@ variable serverOrigConfig [CreateConfig \
         "string"    [list sv_downloadurl "" ""]\
         "string"    [list sv_allowdownload "" ""]\
         "string"    [list sv_allowupload "" ""]\
+        "bool"      [list mp_consecutive_loss_aversion "" ""]\
+        "int"       [list mp_consecutive_loss_max "" ""]\
+        "int"       [list cash_team_winner_bonus_consecutive_rounds "" ""]\
     ] \
 ]
 
@@ -367,6 +370,7 @@ proc SaveConfigFileOrigServer {} {
     global serverOrigConfig
     global serverConfig
     global gotvConfig
+    
     set minRate [GetConfigItem $serverConfig minrate]
     if { $minRate == "" } {
         set minRate "100000"
@@ -476,6 +480,11 @@ proc SaveConfigFileOrigServer {} {
     
     SetConfigItem $serverOrigConfig mp_autokick [GetConfigItem $serverConfig autokick]
     
+    SetConfigItem $serverOrigConfig mp_consecutive_loss_aversion [GetConfigItem $runConfig mp_consecutive_loss_aversion]
+    SetConfigItem $serverOrigConfig mp_consecutive_loss_max [GetConfigItem $runConfig mp_consecutive_loss_max]
+    SetConfigItem $serverOrigConfig cash_team_winner_bonus_consecutive_rounds [GetConfigItem $runConfig cash_team_winner_bonus_consecutive_rounds]
+
+
     SaveConfigFile serverOrigConfig
 #    set config [set $serverOrigConfig]
 #    set fileName [dict get $config fileName]
