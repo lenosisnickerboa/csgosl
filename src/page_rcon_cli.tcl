@@ -19,6 +19,26 @@ variable rconCliConfig [CreateConfig \
     ] \
 ]
 
+proc CreateRconAutoButtons {} {
+    global serverCfgPath
+    set path "$serverCfgPath/csgosl/rcon_buttons"
+    if { ! [file isdirectory "$path"]} {
+		file mkdir "$path"
+	}    
+    if {[file isdirectory "$path"]} {
+        set buttons [lsort [glob -nocomplain -tails -type f -path "$path/" *.cfg]]
+    }
+    set buttonsList [list]
+    lappend buttonsList [list text trconbuttons "Auto buttons"]
+    foreach bwext $buttons {
+        set b  [file rootname "$bwext" ]
+        set bdisplay  [string map {. _ " " -} $b]
+        set buttonList [list push $bdisplay $bdisplay "rcon::ExecuteCommand \"exec csgosl/rcon_buttons/$b.cfg\"" "Put .cfg files in folder \"$serverCfgPath/csgosl/rcon_buttons\" to have\nthem appear hear as buttons executing that cfg .file" ]
+        lappend buttonsList $buttonList
+    }
+    return $buttonsList
+}
+
 variable rconCliLayout [CreateLayout \
     [list \
         configName  "rconCliConfig" \
@@ -84,9 +104,7 @@ variable rconCliLayout [CreateLayout \
                       [list push debugon debugon {rcon::ExecuteCommand "tv_debug 1"} "Enables additional debugging messages."] \
                       [list push debugoff debugoff {rcon::ExecuteCommand "tv_debug 0"} "Disables additional debugging messages."] \
                 ] \
-        buttons [list [list text tmisc "MISC"] \
-                      [list push restart_game restart_game {rcon::ExecuteCommand "exec misc/restart_game.cfg"} "Restarts game..."] \
-                ] \
+        buttons [CreateRconAutoButtons] \
         space   [list] \
         h2      [list "Console"] \
         line    [list] \
