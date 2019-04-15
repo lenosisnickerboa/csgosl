@@ -24,7 +24,7 @@ proc CreateRconAutoButtons {} {
     set path "$serverCfgPath/csgosl/rcon_buttons"
     if { ! [file isdirectory "$path"]} {
 		file mkdir "$path"
-	}    
+	}
     if {[file isdirectory "$path"]} {
         set buttons [lsort [glob -nocomplain -tails -type f -path "$path/" *.cfg]]
     }
@@ -33,7 +33,7 @@ proc CreateRconAutoButtons {} {
     foreach bwext $buttons {
         set b  [file rootname "$bwext" ]
         set bdisplay  [string map {. _ " " -} $b]
-        set buttonList [list push $bdisplay $bdisplay "rcon::ExecuteCommand \"exec csgosl/rcon_buttons/$b.cfg\"" "Put .cfg files in folder \"$serverCfgPath/csgosl/rcon_buttons\" to have\nthem appear hear as buttons executing that cfg .file" ]
+        set buttonList [list push $bdisplay $bdisplay "rcon::ExecuteCommand \"exec csgosl/rcon_buttons/$b.cfg\"" "Put .cfg files in folder \"$serverCfgPath/csgosl/rcon_buttons\" to have\nthem appear here as buttons executing that .cfg file" ]
         lappend buttonsList $buttonList
     }
     return $buttonsList
@@ -79,8 +79,8 @@ variable rconCliLayout [CreateLayout \
                       [list push autokickoff autokickoff {rcon::ExecuteCommand "mp_autokick 0"} "Don't kick idle/team-killing players."] \
                       [list push autoteambalanceon autoteambalanceon {rcon::ExecuteCommand "mp_autoteambalance 1"} "Force clients to auto-join the opposite team if they are not balanced."] \
                       [list push autoteambalanceoff autoteambalanceoff {rcon::ExecuteCommand "mp_autoteambalance 0"} "Don't force clients to auto-join the opposite team if they are not balanced."] \
-                      [list push tkpunishon tkpunishon {rcon::ExecuteCommand "mp_tkpunish 1"} "Punish team killers on next round."] \
-                      [list push tkpunishoff tkpunishoff {rcon::ExecuteCommand "mp_tkpunish 0"} "Don't punish team killers on next round."] \
+                      [list push tkpunishon tkpunishon {rcon::ExecuteCommand "mp_tkpunish 1"} "Prevent team killers from playing the next round."] \
+                      [list push tkpunishoff tkpunishoff {rcon::ExecuteCommand "mp_tkpunish 0"} "Don't prevent team killers from playing the next round."] \
                 ] \
         buttons [list [list text tgameplay "Gameplay"] \
                       [list push friendlyfireon friendlyfireon {rcon::ExecuteCommand "mp_friendlyfire 1"} "Turn on friendlyfire."] \
