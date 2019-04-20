@@ -27,10 +27,10 @@ variable runConfig [CreateConfig \
         "int"  [list buytime "30" "Seconds you are allowed to buy stuff when the match begins." mappedto [list mp_buytime]]\
         "int"  [list warmuptime "0" "Seconds to warm up before the match begins." mappedto [list mp_warmuptime]]\
         "int"  [list freezetime "0" "How many seconds to keep players frozen when the round starts." mappedto [list mp_freezetime]]\
-        "int"  [list startmoney "800" "Amount of money each player gets when they reset.\n<800-16000>" mappedto [list mp_startmoney]]\
+        "int"  [list startmoney "800" "Amount of money each player gets when they reset." mappedto [list mp_startmoney]]\
         "bool"  [list mp_consecutive_loss_aversion "1" "How loss streak is affected with round win: disable = win fully resets loss bonus,\nenable = win reduces the loss counter by one" mappedto [list mp_consecutive_loss_aversion]]\
-        "int"  [list mp_consecutive_loss_max "4" "?" mappedto [list mp_consecutive_loss_max]]\
-        "int"  [list cash_team_winner_bonus_consecutive_rounds "0" "?" mappedto [list cash_team_winner_bonus_consecutive_rounds]]\
+        "int"  [list mp_consecutive_loss_max "4" "This is the limit to how many times the loss bonus will increase, but does not limit the loss counter itself." mappedto [list mp_consecutive_loss_max]]\
+        "int"  [list cash_team_winner_bonus_consecutive_rounds "500" "Amount the loss bonus increases by per loss" mappedto [list cash_team_winner_bonus_consecutive_rounds]]\
         "int"  [list c4timer "45" "The amount of time in seconds before bomb explodes after planted.\n<10-90>" mappedto [list mp_c4timer]]\
         "int"  [list fraglimit "0" "Amount of frags a player can exceed before changing maps." mappedto [list mp_fraglimit]]\
         "int"  [list maxrounds "30" "Amount of rounds to play before server changes maps." mappedto [list mp_maxrounds]]\
@@ -123,5 +123,5 @@ proc RunRandomStartMapChanged { value } {
     set cp [GetCp]
     set enabled [expr $value == 0]
     SetConfigItemState $cp.run $runLayout startmap $enabled
-    return $value    
+    return $value
 }

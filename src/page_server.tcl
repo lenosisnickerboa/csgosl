@@ -46,9 +46,9 @@ variable serverConfig [CreateConfig \
         "bool"      [list alltalk "0" "Players can hear all other players, no team restrictions." mappedto [list sv_alltalk]]\
         "bool"      [list cheats "0" "Allow cheats on server." mappedto [list sv_cheats]]\
         "int"       [list gravity "800" "World Gravity" mappedto [list sv_gravity]]\
-        "bool"      [list autoteambalance "0" "Balance teams automatically (please find better help text...)." mappedto [list mp_autoteambalance]]\
+        "bool"      [list autoteambalance "0" "Enable to force clients to auto-join the opposite team if they are not balanced." mappedto [list mp_autoteambalance]]\
         "bool"      [list autokick "0" "Kick idle/team-killing players."]\
-        "bool"      [list tkpunish "0" "Punish team killers on next round?" mappedto [list mp_tkpunish]]\
+        "bool"      [list tkpunish "0" "Enable to prevent team killers from playing the next round." mappedto [list mp_tkpunish]]\
         "bool"      [list fastdl "0" "Enable fastDL support.\nFastDL allows the client to download custom server content\n(maps, materials, models, particles, sounds, fonts, images) from a web server." onchange "ServerSetFastDLOptions"]\
         "string"    [list fastdlurl "http://some-url/" "URL used for fastDL"]\
 ] \
@@ -136,7 +136,7 @@ variable serverLayout [CreateLayout \
         parm    [list pausable] \
         parm    [list bindip] \
         parm    [list autorestart] \
-        parm    [list netmaxfilesize] \        
+        parm    [list netmaxfilesize] \
     ] \
 ]
 
@@ -155,7 +155,7 @@ proc ServerSetUpdateServerOnRestartState { {value ""} } {
     set cp [GetCp]
     set enabled [expr [llength $value] > 0]
     SetConfigItemState $cp.server $serverLayout updateserveronrestart $enabled
-    return $value    
+    return $value
 }
 
 proc ServerSetFastDLOptions { value } {
