@@ -5,8 +5,8 @@ METAMOD_HOME_URL="http://www.metamodsource.net/"
 METAMOD_URL="https://mms.alliedmods.net/mmsdrop/1.10/mmsource-1.10.7-git970-linux.tar.gz"
 METAMOD_VERSION="1.10.7-git970"
 SOURCEMOD_HOME_URL="http://www.sourcemod.net/"
-SOURCEMOD_URL="https://sm.alliedmods.net/smdrop/1.9/sourcemod-1.9.0-git6276-linux.tar.gz"
-SOURCEMOD_VERSION="1.9.0-git6276"
+SOURCEMOD_URL="https://sm.alliedmods.net/smdrop/1.9/sourcemod-1.9.0-git6281-linux.tar.gz"
+SOURCEMOD_VERSION="1.9.0-git6281"
 export
 
 all: mods
@@ -32,7 +32,7 @@ dl-sourcemod:
 mods: dl-metamod dl-sourcemod
 	\rm -rf $(MODS_ROOT) mods*.zip >/dev/null 2>&1
 	mkdir -p $(MODS_ROOT)
-	(cd $(MODS_ROOT) ; tar xzvpf ../metamod.tar.gz)	
+	(cd $(MODS_ROOT) ; tar xzvpf ../metamod.tar.gz)
 	(cd $(MODS_ROOT) ; tar xzvpf ../sourcemod.tar.gz)
 	$(MAKE) -C ../mods/warmod
 	$(MAKE) -C ../mods/multi1v1
@@ -59,4 +59,3 @@ clean:
 	$(MAKE) -C ../mods/retakes clean
 	$(MAKE) -C ../mods/influx clean
 	\rm -f metamod.tar.gz sourcemod.tar.gz mods*.zip
-
