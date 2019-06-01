@@ -9,7 +9,7 @@ package require Img
 #Handle case when not running in a starkit
 namespace eval starkit {
 if {! [info exists topdir] } {
-    set topdir "bin"    
+    set topdir "bin"
 }
 }
 
@@ -68,7 +68,7 @@ proc SaveAll { {skipStandalone ""} } {
     if { $serverPresent } {
         SaveConfigFileRconCli
         SaveConfigFileMapGroups
-        SaveConfigFileRun 
+        SaveConfigFileRun
         SaveConfigFileAutoexec
         SaveConfigFileSourcemod
         SaveConfigFileApplication
@@ -103,7 +103,7 @@ proc PeriodicWindowUpdate {} {
     if { $status == "running" } {
         .title.startstop configure -text "Stop server" -command StopServer
     } else {
-        .title.startstop configure -text "Start server" -command StartServer        
+        .title.startstop configure -text "Start server" -command StartServer
     }
     global lastServerName
     global serverConfig
@@ -116,9 +116,13 @@ proc PeriodicWindowUpdate {} {
     global displayedExternalIpAddress
     if { $lastServerName != $currentServerName || $localIpAddress != $displayedLocalIpAddress || $externalIpAddress != $displayedExternalIpAddress } {
         set lastServerName "$currentServerName"
-        SetTitle "$name $version -- $lastServerName \[local IP:$localIpAddress external IP: $externalIpAddress\]"
         set displayedLocalIpAddress $localIpAddress
         set displayedExternalIpAddress $externalIpAddress
+        if { $localIpAddress == "hide" || $localIpAddress == "???" } {
+            SetTitle "$name $version -- $lastServerName"
+        } else {
+            SetTitle "$name $version -- $lastServerName \[local IP:$localIpAddress external IP: $externalIpAddress\]"
+        }
     }
 }
 
@@ -168,7 +172,7 @@ set steamUpdateFilename "$installFolder/$binFolder/steamcmd.txt"
 
 set steamCmdExe "steamcmd.sh"
 if {$currentOs == "windows"} {
-    set steamCmdExe "steamcmd.exe"        
+    set steamCmdExe "steamcmd.exe"
 }
 
 set name "csgosl"
@@ -185,7 +189,7 @@ set fullConfigEnabled "0"
 source [file join $starkit::topdir page_application.tcl]
 
 EnsureConfigFile applicationConfig
-LoadConfigFile applicationConfig 
+LoadConfigFile applicationConfig
 SetConfigItem $applicationConfig mainwingeometry [GetConfigValue $applicationConfig mainwingeometry]
 
 proc SaveConfigFileApplication {} {
@@ -220,12 +224,12 @@ source [file join $starkit::topdir page_server.tcl]
 EnsureConfigFile serverConfig
 LoadConfigFile serverConfig
 proc SaveConfigFileServer {} {
-    SaveConfigFile serverConfig   
-    
+    SaveConfigFile serverConfig
+
     global serverConfig
     global gameModeAllConfig
-    global DisableParmPrefix    
-    
+    global DisableParmPrefix
+
     set pausableEnableSetting [GetConfigItem $serverConfig ${DisableParmPrefix}pausable]
     if { $pausableEnableSetting == "1" } {
         SetConfigItem $gameModeAllConfig sv_pausable [GetConfigItem $serverConfig pausable]
@@ -281,11 +285,11 @@ proc SaveConfigFileServer {} {
     set gravityEnableSetting [GetConfigItem $serverConfig ${DisableParmPrefix}gravity]
     if { $gravityEnableSetting == "1" } {
         SetConfigItem $gameModeAllConfig sv_gravity [GetConfigItem $serverConfig gravity]
-    }   
+    }
     set autoteambalanceEnableSetting [GetConfigItem $serverConfig ${DisableParmPrefix}autoteambalance]
     if { $autoteambalanceEnableSetting == "1" } {
         SetConfigItem $gameModeAllConfig mp_autoteambalance [GetConfigItem $serverConfig autoteambalance]
-    }   
+    }
     set tkpunishEnableSetting [GetConfigItem $serverConfig ${DisableParmPrefix}tkpunish]
     if { $tkpunishEnableSetting == "1" } {
         SetConfigItem $gameModeAllConfig mp_tkpunish [GetConfigItem $serverConfig tkpunish]
@@ -296,7 +300,7 @@ source [file join $starkit::topdir page_rcon_cli.tcl]
 EnsureConfigFile rconCliConfig
 LoadConfigFile rconCliConfig
 proc SaveConfigFileRconCli {} {
-    SaveConfigFile rconCliConfig    
+    SaveConfigFile rconCliConfig
 }
 
 source [file join $starkit::topdir page_gotv.tcl]
@@ -370,7 +374,7 @@ proc SaveConfigFileOrigServer {} {
     global serverOrigConfig
     global serverConfig
     global gotvConfig
-    
+
     set minRate [GetConfigItem $serverConfig minrate]
     if { $minRate == "" } {
         set minRate "100000"
@@ -390,9 +394,9 @@ proc SaveConfigFileOrigServer {} {
     set rconEnable [GetConfigItem $serverConfig rcon]
     if { $rconEnable == "1" } {
         set rconPassword [GetConfigItem $serverConfig rconpassword]
-        SetConfigItem $serverOrigConfig rcon_password $rconPassword        
+        SetConfigItem $serverOrigConfig rcon_password $rconPassword
     } else {
-        SetConfigItem $serverOrigConfig rcon_password "Do not care, disabled"        
+        SetConfigItem $serverOrigConfig rcon_password "Do not care, disabled"
     }
     set netmaxfilesize [GetConfigItem $serverConfig netmaxfilesize]
     set netmaxfilesizeName [GetGlobalConfigVariableName ServerOrig netmaxfilesize]
@@ -401,7 +405,7 @@ proc SaveConfigFileOrigServer {} {
 
     set serverTags [GetConfigItem $serverConfig tags]
     SetConfigItem $serverOrigConfig sv_tags "$serverTags"
-    
+
     set fastdlEnable [GetConfigItem $serverConfig fastdl]
     if { $fastdlEnable == "1" } {
         SetConfigItem $serverOrigConfig sv_downloadurl [GetConfigItem $serverConfig fastdlurl]
@@ -412,7 +416,7 @@ proc SaveConfigFileOrigServer {} {
         SetConfigItem $serverOrigConfig sv_allowdownload $ValueToSkip
         SetConfigItem $serverOrigConfig sv_allowupload $ValueToSkip
     }
-    
+
     global sourcemodConfig
     global runConfig
     set maps [GetActiveMaps [GetConfigValue $runConfig mapgroup]]
@@ -434,7 +438,7 @@ proc SaveConfigFileOrigServer {} {
         SetConfigItem $serverOrigConfig sm_weaponpaints_roundtimer [GetConfigItem $sourcemodConfig sm_franug_weaponpaints_roundtimer]
         SetConfigItem $serverOrigConfig sm_weaponpaints_rmenu [GetConfigItem $sourcemodConfig sm_franug_weaponpaints_rmenu]
         SetConfigItem $serverOrigConfig sm_weaponpaints_onlyadmin [GetConfigItem $sourcemodConfig sm_franug_weaponpaints_onlyadmin]
-        SetConfigItem $serverOrigConfig sm_weaponpaints_zombiesv [GetConfigItem $sourcemodConfig sm_franug_weaponpaints_zombiesv]        
+        SetConfigItem $serverOrigConfig sm_weaponpaints_zombiesv [GetConfigItem $sourcemodConfig sm_franug_weaponpaints_zombiesv]
     } else {
         SetConfigItem $serverOrigConfig sm_weaponpaints_c4 $ValueToSkip
         SetConfigItem $serverOrigConfig sm_weaponpaints_saytimer $ValueToSkip
@@ -443,7 +447,7 @@ proc SaveConfigFileOrigServer {} {
         SetConfigItem $serverOrigConfig sm_weaponpaints_onlyadmin $ValueToSkip
         SetConfigItem $serverOrigConfig sm_weaponpaints_zombiesv $ValueToSkip
     }
-    
+
     set gotvEnable [GetConfigItem $gotvConfig gotvenable]
     SetConfigItem $serverOrigConfig tv_enable $gotvEnable
     if {$gotvEnable == 1} {
@@ -477,9 +481,9 @@ proc SaveConfigFileOrigServer {} {
         SetConfigItem $serverOrigConfig tv_maxclients $ValueToSkip
         SetConfigItem $serverOrigConfig tv_advertise_watchable $ValueToSkip
     }
-    
+
     SetConfigItem $serverOrigConfig mp_autokick [GetConfigItem $serverConfig autokick]
-    
+
     SetConfigItem $serverOrigConfig mp_consecutive_loss_aversion [GetConfigItem $runConfig mp_consecutive_loss_aversion]
     SetConfigItem $serverOrigConfig mp_consecutive_loss_max [GetConfigItem $runConfig mp_consecutive_loss_max]
     SetConfigItem $serverOrigConfig cash_team_winner_bonus_consecutive_rounds [GetConfigItem $runConfig cash_team_winner_bonus_consecutive_rounds]
@@ -496,7 +500,7 @@ proc SaveConfigFileOrigServer {} {
 source [file join $starkit::topdir page_steam.tcl]
 
 EnsureConfigFile steamConfig
-LoadConfigFile steamConfig 
+LoadConfigFile steamConfig
 proc SaveConfigFileSteam {} {
     SaveConfigFile steamConfig
     SaveSourceModAdmins steamConfig
@@ -506,7 +510,7 @@ proc SaveConfigFileSteam {} {
 source [file join $starkit::topdir page_sourcemod.tcl]
 
 EnsureConfigFile sourcemodConfig
-LoadConfigFile sourcemodConfig 
+LoadConfigFile sourcemodConfig
 proc SaveConfigFileSourcemod {} {
 
     #Disable all risky plugins if banprotection is enabled
@@ -517,13 +521,13 @@ proc SaveConfigFileSourcemod {} {
             set pluginRisky [lindex $pluginParms 0]
             if { $pluginRisky } {
                 set pluginEnabledName [lindex $pluginParms 1]
-                SetConfigItem $sourcemodConfig $pluginEnabledName 0                
+                SetConfigItem $sourcemodConfig $pluginEnabledName 0
             }
         }
     }
-    
+
     SaveConfigFile sourcemodConfig
-    EnforceSourcemodConfig    
+    EnforceSourcemodConfig
     SaveSimpleAdmins [GetConfigItem $sourcemodConfig admins]
 }
 
@@ -532,7 +536,7 @@ SetTitle "$name $version - loading maps..."
 variable allMaps
 variable allMapsMeta
 GetMaps "$serverFolder/csgo/maps/" allMaps allMapsMeta
-CacheMaps $allMaps $allMapsMeta    
+CacheMaps $allMaps $allMapsMeta
 source [file join $starkit::topdir page_maps.tcl]
 
 SetTitle "$name $version - loading configuration..."
@@ -576,14 +580,14 @@ variable botSkillMapper [dict create \
 source [file join $starkit::topdir page_run.tcl]
 
 EnsureConfigFile runConfig
-LoadConfigFile runConfig 
+LoadConfigFile runConfig
 proc SaveConfigFileRun {} {
     global botSkillMapper
     global runConfig
     global gameModeAllConfig
     SaveConfigFile runConfig
 
-    global DisableParmPrefix    
+    global DisableParmPrefix
     set playersEnableSetting [GetConfigItem $runConfig ${DisableParmPrefix}players]
     set botsEnableSetting [GetConfigItem $runConfig ${DisableParmPrefix}bots]
     set fillWithBots [GetConfigItem $runConfig fillwithbots]
@@ -592,7 +596,7 @@ proc SaveConfigFileRun {} {
         if {$fillWithBots == "1"} {
             SetConfigItem $gameModeAllConfig bot_quota_mode fill
             if { $playersEnableSetting == "1" } {
-                SetConfigItem $gameModeAllConfig bot_quota [GetConfigItem $runConfig players] 
+                SetConfigItem $gameModeAllConfig bot_quota [GetConfigItem $runConfig players]
             }
         } else {
             SetConfigItem $gameModeAllConfig bot_quota_mode normal
@@ -601,44 +605,44 @@ proc SaveConfigFileRun {} {
             }
         }
     }
-    
+
     set botSkillEnableSetting [GetConfigItem $runConfig ${DisableParmPrefix}botskill]
     if { $botSkillEnableSetting == "1" } {
         SetConfigItem $gameModeAllConfig bot_difficulty [dict get $botSkillMapper [GetConfigItem $runConfig botskill]]
     }
-    
+
     set roundTimeEnableSetting [GetConfigItem $runConfig ${DisableParmPrefix}roundtime]
     if { $roundTimeEnableSetting == "1" } {
         SetConfigItem $gameModeAllConfig mp_roundtime [GetConfigItem $runConfig roundtime]
     }
-    
+
     set warmUpTimeEnableSetting [GetConfigItem $runConfig ${DisableParmPrefix}warmuptime]
     if { $warmUpTimeEnableSetting == "1" } {
         SetConfigItem $gameModeAllConfig mp_warmuptime [GetConfigItem $runConfig warmuptime]
     }
-    
+
     set buyTimeEnableSetting [GetConfigItem $runConfig ${DisableParmPrefix}buytime]
     if { $buyTimeEnableSetting == "1" } {
         SetConfigItem $gameModeAllConfig mp_buytime [GetConfigItem $runConfig buytime]
     }
-    
+
     set freezeTimeEnableSetting [GetConfigItem $runConfig ${DisableParmPrefix}freezetime]
     if { $freezeTimeEnableSetting == "1" } {
         SetConfigItem $gameModeAllConfig mp_freezetime [GetConfigItem $runConfig freezetime]
     }
-    
+
     set friendlyFireEnableSetting [GetConfigItem $runConfig ${DisableParmPrefix}friendlyfire]
     if { $friendlyFireEnableSetting == "1" } {
         SetConfigItem $gameModeAllConfig mp_friendlyfire [GetConfigItem $runConfig friendlyfire]
     }
-    
+
     set killCam [GetConfigItem $runConfig killcam]
     set killCamEnableSetting [GetConfigItem $runConfig ${DisableParmPrefix}killcam]
     if { $killCamEnableSetting == "1" } {
         if {$killCam == "1"} {
             SetConfigItem $gameModeAllConfig mp_forcecamera 0
         } else {
-            SetConfigItem $gameModeAllConfig mp_forcecamera 1       
+            SetConfigItem $gameModeAllConfig mp_forcecamera 1
         }
     }
 
@@ -672,15 +676,15 @@ proc SaveConfigFileRun {} {
     set enablebunnyhoppingEnableSetting [GetConfigItem $runConfig ${DisableParmPrefix}enablebunnyhopping]
     if { $enablebunnyhoppingEnableSetting == "1" } {
         SetConfigItem $gameModeAllConfig sv_enablebunnyhopping [GetConfigItem $runConfig enablebunnyhopping]
-    }   
+    }
     set autobunnyhoppingEnableSetting [GetConfigItem $runConfig ${DisableParmPrefix}autobunnyhopping]
     if { $autobunnyhoppingEnableSetting == "1" } {
         SetConfigItem $gameModeAllConfig sv_autobunnyhopping [GetConfigItem $runConfig autobunnyhopping]
-    }   
+    }
     set airaccelerateEnableSetting [GetConfigItem $runConfig ${DisableParmPrefix}airaccelerate]
     if { $airaccelerateEnableSetting == "1" } {
         SetConfigItem $gameModeAllConfig sv_airaccelerate [GetConfigItem $runConfig airaccelerate]
-    }   
+    }
 }
 
 
@@ -689,7 +693,7 @@ source [file join $starkit::topdir page_autoexec.tcl]
 autoexec::InitializeDirs
 autoexec::BuildVars
 EnsureConfigFile autoexecConfig
-LoadConfigFile autoexecConfig 
+LoadConfigFile autoexecConfig
 proc SaveConfigFileAutoexec {} {
     global autoexecConfig
     SaveConfigFile autoexecConfig
@@ -705,8 +709,8 @@ source [file join $starkit::topdir page_advanced.tcl]
 
 if {$serverPresent} {
     LoadSplitConfigFile gameModeArmsraceConfig
-    LoadSplitConfigFile gameModeClassicCasualConfig 
-    LoadSplitConfigFile gameModeClassicCompetitiveConfig 
+    LoadSplitConfigFile gameModeClassicCasualConfig
+    LoadSplitConfigFile gameModeClassicCompetitiveConfig
     LoadSplitConfigFile gameModeDemolitionConfig
     LoadSplitConfigFile gameModeDeathmatchConfig
     LoadSplitConfigFile gameModeTrainingConfig
@@ -772,7 +776,7 @@ proc RemoveCustomCvarAll { name } {
     global gameModeConfigs
     foreach {config} $gameModeConfigs {
         RemoveCustomCvar [dict get $config name] $name
-    }    
+    }
     RemoveCustomCvar gameModeAllConfig $name
 }
 
@@ -780,7 +784,7 @@ proc SaveConfigFileGameModeAll {} {
     global gameModeAllConfig
     global gameModeConfigs
     SaveConfigFile gameModeAllConfig
-    foreach {key value} [dict get $gameModeAllConfig values] {        
+    foreach {key value} [dict get $gameModeAllConfig values] {
         if {$value != ""} {
             foreach {config} $gameModeConfigs {
                 set prefix [dict get $config prefix]
@@ -795,10 +799,10 @@ proc SaveConfigFileGameModeAll {} {
 
 SetTitle "$name $version - initializing GUI components..."
 
-frame .title -borderwidth 10 
+frame .title -borderwidth 10
 pack [CreateTitle .title $serverPresent] -side top
 #pack [Separator .topSep] -side left -fill x -expand true
-frame .config -borderwidth 10 
+frame .config -borderwidth 10
 pack [set cp [CreateConfigPages .config $windowWidth $windowHeigth]] -side left -fill both -expand true
 
 proc GetCp {} {
@@ -906,7 +910,7 @@ proc RestartAt {time} {
     if { $updateServerOnRestart == 1 } {
         Trace "Updating and starting server again, hold on, may take a while..."
     } else {
-        Trace "Starting server again, hold on, may take a while..."        
+        Trace "Starting server again, hold on, may take a while..."
     }
 
     global installFolder
@@ -934,18 +938,18 @@ proc StartStuffOnStart {} {
     global serverConfig installFolder
     set restartServerAtRestart 0
     if {[GetConfigValue $serverConfig restartserverat] != ""} {
-        set restartServerAtRestart 1        
+        set restartServerAtRestart 1
     }
     CreateAssyncUpdateAndStart "$installFolder/bin/onrestart" [GetConfigValue $serverConfig updateserveronrestart] $restartServerAtRestart
     if { $restartServerAtRestart != 0 } {
         Every 30000 CheckRestartAt
-    }        
+    }
 }
 
 if {$serverPresent} {
     SetTitle "$name $version"
 } else {
-    SetTitle "$name $version -- install server by clicking on \"Install Server\" button! Then restart csgosl!"    
+    SetTitle "$name $version -- install server by clicking on \"Install Server\" button! Then restart csgosl!"
 }
 
 if {$serverPresent} {
@@ -1000,27 +1004,33 @@ proc UpgradeCheck {} {
                         InstallRelease $latestRelease
                     } elseif { $reply == 2 } {
                         Browser "https://github.com/lenosisnickerboa/csgosl/releases"
-                        Browser "https://github.com/lenosisnickerboa/csgosl/wiki/Upgrade%20a%20server"                    
-                    }                    
+                        Browser "https://github.com/lenosisnickerboa/csgosl/wiki/Upgrade%20a%20server"
+                    }
                 }
             } else {
-                Trace "Running latest release."                    
+                Trace "Running latest release."
             }
         } else {
-            Trace "Failed to get latest release!"        
+            Trace "Failed to get latest release!"
         }
     }
 }
 
 proc ShowNetInfo {} {
     global localIpAddress
-    set localIpAddress [net::localIpAddress]
-    Trace "Local IP is $localIpAddress"
-    
     global externalIpAddress
-    set externalIpAddress [net::externalIpAddress]
-    Trace "External IP is $externalIpAddress"
-    
+    global applicationConfig
+    if { [GetConfigItem $applicationConfig getips] } {
+        set localIpAddress [net::localIpAddress]
+        Trace "Local IP is $localIpAddress"
+        set externalIpAddress [net::externalIpAddress]
+        Trace "External IP is $externalIpAddress"
+    } else {
+        Trace "Skipped local and external IP address detection"
+        set localIpAddress "hide"
+        set externalIpAddress "hide"
+    }
+
 #    set isPortOpen [net::isPortOpen "27015"]
 #    Trace "27015 reachable: $isPortOpen"
 }
@@ -1038,4 +1048,3 @@ if { $serverPresent && $needsUpgrade } {
 
 #bind . <KeyPress> {puts "You pressed the key named: %K "}
 #bind . <ButtonPress> {puts "You pressed button: %b at %x %y"}
-

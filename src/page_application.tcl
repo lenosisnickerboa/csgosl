@@ -17,6 +17,7 @@ variable applicationConfig [CreateConfig \
         "bool"      [list trace "1" "Control tracing. Traces are printed to the terminal (linux) and in the console tab (Windows)."]\
         "bool"      [list dryrun "0" "Performs everything except actually starting the server.\nSometimes convenient when troubleshooting or testing.\nCommand line is traced."]\
         "bool"      [list updatecheck "1" "Checks for csgosl updates after program has started."]\
+        "bool"      [list getips "1" "Gets local and external IP addresses after program has started."]\
         "bool"      [list showdonation "1" "Disable to stop showing donation button. Please consider donating first though :)"]\
         "bool"      [list generategamemodeservers "1" "Disable automatic regeneration of gamemode_servers.txt."]\
         "bool"      [list includeworkshopmappath "0" "Add relative workshop map directory to map names in gamemode_servers.txt.\nDon't enable if you don't have problems with workshop maps!"]\
@@ -43,6 +44,7 @@ variable applicationLayout [CreateLayout \
         space   [list] \
         parm    [list dryrun] \
         parm    [list updatecheck] \
+        parm    [list getips] \
         parm    [list tclconsole] \
         parm    [list trace] \
         parm    [list showdonation] \
