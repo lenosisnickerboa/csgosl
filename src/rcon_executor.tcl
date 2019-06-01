@@ -45,7 +45,7 @@ proc rcon::AddCmd {cmd} {
 }
 
 proc rcon::PrevCmd {} {
-	global ::rcon::cmds 
+	global ::rcon::cmds
 	if {[llength $::rcon::cmds] == 0} {
 		#No commands
 		bell
@@ -110,7 +110,7 @@ proc rcon::GetCurrentRconAddress {} {
 proc rcon::TraceConsole {line} {
 	global ::rcon::executorLog
 	$::rcon::executorLog insert end $line
-	$::rcon::executorLog see end    
+	$::rcon::executorLog see end
 }
 
 proc rcon::ClearLog {} {
@@ -119,9 +119,9 @@ proc rcon::ClearLog {} {
 }
 
 proc rcon::MyIp {} {
-	set me [socket -server temporaryipserver -myaddr [info hostname] 0] 
-	set ip [lindex [fconfigure $me -sockname] 0] 
-	close $me 
+	set me [socket -server temporaryipserver -myaddr [info hostname] 0]
+	set ip [lindex [fconfigure $me -sockname] 0]
+	close $me
 	return $ip
 }
 
@@ -133,7 +133,7 @@ proc rcon::Connect {} {
 	}
 	if {[DetectServerRunning] != "running"} {
 		error "CSGO server is not started, start it before trying to send rcon commands to it."
-	}	
+	}
     global rconCliConfig
     set overrideIp [GetConfigValue $rconCliConfig overrideip]
 	if {$overrideIp == ""} {
@@ -173,7 +173,7 @@ proc rcon::Recv_HEADER {chan requiredId requiredType} {
 		error "Expected ID $requiredId but got ID $id"
 	}
 	if {$type != $requiredType} {
-		error "Expected type $requiredType but got type $type"		
+		error "Expected type $requiredType but got type $type"
 	}
 	#Return body size
 	return [expr $size - 10]
@@ -195,10 +195,10 @@ proc rcon::DoAuthenticate {chan} {
 	global rconCliConfig
 	set overridePassword [GetConfigItem $rconCliConfig overridepassword]
 	if {$overridePassword != ""} {
-		set rconPassword $overridePassword		
+		set rconPassword $overridePassword
 	} else {
 		global serverConfig
-		set rconPassword [GetConfigItem $serverConfig rconpassword]		
+		set rconPassword [GetConfigItem $serverConfig rconpassword]
 	}
 	if {$rconPassword == ""} {
 		error "No RCON password set, set it first in the server tab, restart server and try again."
@@ -261,28 +261,28 @@ proc rcon::ConnectToServer {} {
 
 proc rcon::ExecutorCreate {at} {
 	# Create a frame for buttons and entry.
-	
+
 	frame $at.top -borderwidth 10
 	pack $at.top -side top -fill x
-	
+
 	# Create a labeled entry for the command
-	
+
 	label $at.top.l -text Command: -padx 0
 	entry $at.top.cmd -width 80 -relief sunken -textvariable ::rcon::executorCommand
-	SetupScroll $at.top.cmd
+#	SetupScroll $at.top.cmd
 	pack $at.top.l -side left
 	pack $at.top.cmd -side left -fill x -expand true
-	
+
 	# Set up key binding equivalents to the buttons
-	
+
 	bind $at.top.cmd <Return> ::rcon::ExecutorRun
 	bind $at.top.cmd <Key-Up> ::rcon::PrevCmd
 	bind $at.top.cmd <Key-Down> ::rcon::NextCmd
 #bind $at.top.cmd <Control-c> ExecutorStop
 	focus $at.top.cmd
-	
+
 	# Create a text widget to log the output
-	
+
 	frame $at.t
 	variable ::rcon::executorTLog $at.t.log
 	#when -setgrid true is used the main window is huge in windows, disabled for now
@@ -292,10 +292,11 @@ proc rcon::ExecutorCreate {at} {
 	variable ::rcon::executorLog [text $at.t.log -width 80 -height 15 \
 		-borderwidth 2 -relief raised \
 		-yscrollcommand [subst {$at.t.scroll set}]]
+	SetupScroll $at.t.log
 	scrollbar $at.t.scroll -command {$::rcon::executorTLog yview}
 	pack $at.t.scroll -side right -fill y
 	pack $at.t.log -side left -fill both -expand true
-	pack $at.t -side top -fill both -expand true    
+	pack $at.t -side top -fill both -expand true
 }
 
 proc rcon::ExecuteCommand {cmd1 args} {
@@ -325,7 +326,7 @@ proc rcon::ExecuteCommand {cmd1 args} {
 proc rcon::ExecutorRun {} {
 	global ::rcon::executorCommand
 	if {[::rcon::ExecuteCommand $::rcon::executorCommand] == 0} {
-		set ::rcon::executorCommand ""		
+		set ::rcon::executorCommand ""
 	}
 }
 
@@ -333,7 +334,7 @@ proc rcon::DoScroll {path view W D} {
 	if { $D > 0 } {
 		set D 3
 	} else {
-		set D -3                
+		set D -3
 	}
 	if { [winfo exists $path]  &&  [string match $path* $W] } {
 		$path $view scroll [expr {-$D}] units
@@ -350,4 +351,3 @@ proc rcon::SetupScroll {w} {
 		bind $w <5> "+rcon::DoScroll $w yview %W -3"
 	}
 }
-
