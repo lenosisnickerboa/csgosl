@@ -1,6 +1,6 @@
 INFLUX_HOME_URL="https://influxtimer.com/"
-INFLUX_URL="https://influxtimer.com/dl/influx_12_full.zip"
-INFLUX_VERSION="1.2_2018-12-09"
+INFLUX_URL="https://influxtimer.com/dl/influx_42_full.zip"
+INFLUX_VERSION="42_2019-08-01"
 
 all: build
 
