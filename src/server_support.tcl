@@ -32,7 +32,7 @@ proc RunScript {fileName} {
     } else {
         chan configure stdout -buffering none
         chan configure stderr -buffering none
-        exec >@stdout 2>@stderr $fileName        
+        exec >@stdout 2>@stderr $fileName
     }
 }
 
@@ -61,7 +61,7 @@ proc GetServerControlScriptString {} {
     global serverConfig
     if { [GetConfigValue $serverConfig autorestart] == "1" } {
         set control "autorestart"
-    }    
+    }
     global serverControlScript
     set controlScript "\"$serverControlScript\" $control"
     global currentOs
@@ -81,7 +81,7 @@ proc StartServer {} {
         Trace "====================================================================="
     }
     global installFolder
-    
+
     global currentOs
     set controlScript [GetServerControlScriptString]
     if { $currentOs == "windows" } {
@@ -101,7 +101,7 @@ proc GetStartServerCommand {} {
     global installFolder
     global serverFolder
     set serverName [GetConfigValue $serverConfig name]
-    
+
     global sourcemodConfig
     set banProtection [GetConfigValue $sourcemodConfig banprotection]
     set steamAccountOption ""
@@ -120,22 +120,22 @@ proc GetStartServerCommand {} {
         set apiAuthKeyOption ""
         if {$apiAuthKey != ""} {
             set apiAuthKeyOption "-authkey $apiAuthKey"
-        }            
+        }
     }
-    
+
     set serverPort [GetConfigValue $serverConfig port]
     set serverPortOption "-port 27015"
     if { "$serverPort" != "" } {
         set serverPortOption "-port $serverPort"
     }
-        
+
     global runConfig
     set gameModeTypeString [GetConfigValue $runConfig gamemodetype]
     global gameModeMapper
     set gameModeType [dict get $gameModeMapper "$gameModeTypeString"]
     set gameType [dict get $gameModeType type]
     set gameMode [dict get $gameModeType mode]
-    
+
     set players [GetConfigValue $runConfig players]
 
     set tickRate [GetConfigValue $serverConfig tickrate]
@@ -145,28 +145,28 @@ proc GetStartServerCommand {} {
     set randomStartMap [GetConfigValue $runConfig randomstartmap]
     if { $randomStartMap == "1" } {
         global mapGroupsMapper
-        if { $mapGroup == "<allmaps>" } {
+        if { $mapGroup == "<allmaps>" || [string is wideinteger $mapGroup] } {
             global allMaps
-            set startMap [lrandom $allMaps]                        
+            set startMap [lrandom $allMaps]
         } else {
-            set startMap [lrandom [dict get $mapGroupsMapper $mapGroup]]            
+            set startMap [lrandom [dict get $mapGroupsMapper $mapGroup]]
         }
         Trace "Selected start map $startMap"
-    } 
+    }
 
     set mapGroupOption "+mapgroup \"$mapGroup\""
     set mapOption "+map $startMap"
-    
+
     if { [string is wideinteger $mapGroup] } {
         set mapGroupOption "+host_workshop_collection $mapGroup"
         if { [string is wideinteger $startMap]} {
-            set mapOption "+host_workshop_startmap $startMap"            
+            set mapOption "+host_workshop_startmap $startMap"
         } else {
-            set mapOption ""            
+            set mapOption ""
         }
     } elseif { [string is wideinteger $startMap]} {
         set mapGroupOption ""
-        set mapOption "+host_workshop_map $startMap"            
+        set mapOption "+host_workshop_map $startMap"
     }
 
     set passwordOption ""
@@ -176,7 +176,7 @@ proc GetStartServerCommand {} {
     }
 
     global currentOs
-    
+
     set bindIp [GetConfigValue $serverConfig bindip]
     set rconEnable [GetConfigValue $serverConfig rcon]
     set rconCommand ""
@@ -190,16 +190,16 @@ proc GetStartServerCommand {} {
 
     set consoleCommand ""
     if { $currentOs == "windows" } {
-        set consoleCommand "-console"        
+        set consoleCommand "-console"
     }
 
     set options [GetConfigValue $runConfig options]
-    
+
     set ipOption ""
     if { $bindIp != "" } {
-        set ipOption "-ip $bindIp"        
+        set ipOption "-ip $bindIp"
     }
-    
+
     global srcdsName
     if { $currentOs == "windows" } {
         return "\"[file nativename $serverFolder/$srcdsName]\" \
@@ -266,7 +266,7 @@ proc GetUpdateServerCommand {} {
     global currentOs
     global steamUpdateFilename
     global steamCmdExe
-    
+
     if {$currentOs == "windows"} {
         return "\"[file nativename $steamcmdFolder/$steamCmdExe]\" +runscript \"[file nativename $steamUpdateFilename]\""
     } else {
@@ -281,14 +281,14 @@ proc UpdateServer {} {
     global installFolder
     global steamUpdateFilename
     global steamCmdExe
-        
+
     set status [DetectServerRunning]
     if { $status == "running" } {
         Trace "Server is running! Stop server first and retry update!"
         return 1
     }
     SaveAll skipStandalone
-    
+
     global serverFolder
     if { ! [file isdirectory $serverFolder] } {
         Trace "Creating a new server directory $serverFolder \[Server->directory is left empty\]"
@@ -315,7 +315,7 @@ proc UpdateServer {} {
             if {"$steamcmdUrl" == ""} {
                 Trace "steamcmdUrl is empty, can't download $steamCmdArchive"
                 FlashConfigItem $steamPage steamcmdurl
-                return             
+                return
             }
             Trace "Downloading $steamCmdArchive..."
             Wget "$steamcmdUrl" "$steamcmdFolder/$steamCmdArchive"
@@ -333,15 +333,15 @@ proc UpdateServer {} {
        Trace "No $steamCmdExe found in $steamcmdFolder, giving up, can't install or update."
        #TODO: Fix error dialog
        Help "Failed to get a working steamcmd!" "Failed to get a working steamcmd!"
-       return 
+       return
     }
-    
+
     set validateInstall [GetConfigValue $steamConfig validateinstall]
     set fileId [open "$steamUpdateFilename" "w"]
     puts $fileId "login anonymous"
     puts $fileId "force_install_dir \"$serverFolder\""
     if { $validateInstall == "1"} {
-        puts $fileId "app_update 740 validate"        
+        puts $fileId "app_update 740 validate"
     } else {
         puts $fileId "app_update 740"
     }
@@ -356,18 +356,18 @@ proc UpdateServer {} {
     Trace "the update will resume from where it failed."
     Trace "Message to look out for: Success! App '740' fully installed."
     Trace "--------------------------------------------------------------------------------"
-    
+
     global installFolder
     if { $currentOs == "windows" } {
         global serverControlScript
         set controlScript "$serverControlScript-start.bat"
         RunCommand [MakeScriptFileName "$installFolder/bin/cmd-update"] "start \"Launcher\" [GetUpdateServerCommand]"
     } else {
-        RunCommand [MakeScriptFileName "$installFolder/bin/cmd-update"] [GetUpdateServerCommand]        
+        RunCommand [MakeScriptFileName "$installFolder/bin/cmd-update"] [GetUpdateServerCommand]
     }
-    
+
     UpdateMods
-    
+
     Trace "----------------"
     Trace "UPDATE FINISHED!"
     Trace "----------------"
@@ -398,7 +398,7 @@ proc MakeExecutable {fileName} {
         set x 1
     } else {
         file attributes $fileName -permissions "+x"
-    }    
+    }
 }
 
 proc DoCreateCommandFile {fileName command} {
@@ -412,7 +412,7 @@ proc CreateCommandFile {fileName command} {
     Trace "Creating command script $fileName containing command $command"
     if {[catch {DoCreateCommandFile $fileName $command} errMsg]} {
         Trace "Failed creating assync command script $fileName ($errMsg)"
-    }        
+    }
 }
 
 proc DoCreateStandalone {filename} {
@@ -437,8 +437,8 @@ proc DoCreateStandalone {filename} {
             puts $fileId "[GetUpdateServerCommand]"
         }
     }
-    
-    
+
+
     if {$standaloneStart == 1} {
         if {$currentOs == "windows"} {
             puts $fileId "start \"Server Launcher window\" [GetStartServerCommand]"
@@ -448,14 +448,14 @@ proc DoCreateStandalone {filename} {
         }
     }
     close $fileId
-    
+
     MakeExecutable $fileName
 
 #No support for closing down server on windows yet, just skip it
     if { $currentOs == "windows" } {
         return 0
     }
-    
+
     set fileName [MakeScriptFileName "$filename-stop"]
     Trace "Creating standalone script $fileName..."
     set fileId [open $fileName "w"]
@@ -464,7 +464,7 @@ proc DoCreateStandalone {filename} {
         puts $fileId "[GetStopServerCommand]"
     }
     close $fileId
-    
+
     MakeExecutable $fileName
 }
 
@@ -492,7 +492,7 @@ proc DoCreateAssyncUpdateAndStart {fileName includeUpdate includeStart} {
         }
     }
     close $fileId
-    
+
     MakeExecutable $fileName
 }
 
@@ -501,7 +501,7 @@ proc CreateStandalone {} {
     set filename "$installFolder/standalone-server"
     if {[catch {DoCreateStandalone $filename} errMsg]} {
         Trace "Failed creating standalone scripts $filename ($errMsg)"
-    }    
+    }
 }
 
 proc CreateAssyncUpdateAndStart {filename includeUpdate includeStart} {
@@ -509,7 +509,7 @@ proc CreateAssyncUpdateAndStart {filename includeUpdate includeStart} {
     Trace "Creating assync update and start script $fileName"
     if {[catch {DoCreateAssyncUpdateAndStart $fileName $includeUpdate $includeStart} errMsg]} {
         Trace "Failed creating assync script $fileName ($errMsg)"
-    }        
+    }
 }
 
 proc UpdateAndStartServerAssync {} {
@@ -520,12 +520,12 @@ proc UpdateAndStartServerAssync {} {
     set updateServerOnStart [GetConfigValue $serverConfig updateserveronstart]
     set startServerOnStart [GetConfigValue $serverConfig startserveronstart]
 
-    CreateAssyncUpdateAndStart "$installFolder/bin/onstart" $updateServerOnStart $startServerOnStart    
+    CreateAssyncUpdateAndStart "$installFolder/bin/onstart" $updateServerOnStart $startServerOnStart
 
     if { ($updateServerOnStart == 0) && ($startServerOnStart == 0) } {
         return 0
     }
-        
+
     if { $updateServerOnStart == 1 } {
         set status [DetectServerRunning]
         if { $status == "running" } {
@@ -547,7 +547,7 @@ proc UpdateAndStartServerAssync {} {
             Trace "Starting server..."
         }
     }
-    
+
     RunScriptAssync [MakeScriptFileName "$installFolder/bin/onstart"]
 }
 
@@ -581,7 +581,7 @@ proc SetSourcemodInstallStatus {sourcemodEnabled} {
         }
         if { [file exists "$modsFolder/metamod.DISABLED"] } {
             file rename -force "$modsFolder/metamod.DISABLED" "$modsFolder/metamod"
-        }        
+        }
     }
 }
 
@@ -632,7 +632,7 @@ proc StoreUsersConfigs { dir } {
     }
 }
 
-proc RestoreUsersConfigs { dir } {    
+proc RestoreUsersConfigs { dir } {
     global PreserveMarker
     set configs [glob -nocomplain -tails -type f -path "$dir/" *.cfg]
     foreach config $configs {
@@ -648,8 +648,8 @@ proc UpdateMods {} {
     #Make sure sourcemod is enabled to be able to update it
     SetSourcemodInstallStatus true
 
-    UpdateModsFixForMetamodSourcemodInstallBug   
-    
+    UpdateModsFixForMetamodSourcemodInstallBug
+
     StoreUsersConfigs "$serverFolder/csgo/addons/sourcemod/configs"
     StoreUsersConfigs "$serverFolder/csgo/addons/sourcemod/configs/multi1v1"
     StoreUsersConfigs "$serverFolder/csgo/cfg/sourcemod"
@@ -661,7 +661,7 @@ proc UpdateMods {} {
         Trace "Installing mods..."
         Unzip "$modsArchive" "$serverFolder/csgo/"
     }
-    
+
     global sourcemodConfig
     if { [GetConfigValue $sourcemodConfig banprotection] == 0 } {
         set modsArchive "$installFolder/mods/mods-risky.zip"
@@ -676,10 +676,10 @@ proc UpdateMods {} {
     RestoreUsersConfigs "$serverFolder/csgo/addons/sourcemod/configs/multi1v1"
     RestoreUsersConfigs "$serverFolder/csgo/cfg/sourcemod"
     RestoreUsersConfigs "$serverFolder/csgo/cfg/sourcemod/multi1v1"
-    
+
     SaveAll skipStandalone
-    #Restore sourcemod conf after update 
-    EnforceSourcemodConfig    
+    #Restore sourcemod conf after update
+    EnforceSourcemodConfig
 }
 
 proc UpdateCfgs {} {
@@ -739,7 +739,7 @@ proc SetFollowCSGOServerGuidelines {} {
     set FollowCSGOServerGuidelines "yes"
     set sourcemodBanProtectionEnabled [GetConfigValue $sourcemodConfig banprotection]
     if { $sourcemodBanProtectionEnabled == 0 } {
-        set FollowCSGOServerGuidelines "no"        
+        set FollowCSGOServerGuidelines "no"
     }
     set configFolder "$modsFolder/sourcemod/configs"
     if { ! [file exists $configFolder] } {
@@ -756,16 +756,16 @@ proc EnforceSourcemodConfig {} {
         Trace "Server is running! Stop server first and retry!"
         return 1
     }
-    
+
     set sourcemodEnabled [IsSourcemodEnabled]
     SetSourcemodInstallStatus $sourcemodEnabled
-    
+
     if { ! $sourcemodEnabled } {
         return 0
     }
-    
+
     SetSourcemodPluginsInstallStatus
-    
+
     SetFollowCSGOServerGuidelines
 }
 
@@ -789,7 +789,7 @@ proc EnforceSourcemodPluginConfigPerFile {pluginFileName pluginEnabled} {
             if { [file exists "$sourcemodPluginFolder/disabled/$pluginFileName"] } {
                 file delete -force "$sourcemodPluginFolder/$pluginFileName"
             } else {
-                file rename -force "$sourcemodPluginFolder/$pluginFileName" "$sourcemodPluginFolder/disabled/$pluginFileName"                
+                file rename -force "$sourcemodPluginFolder/$pluginFileName" "$sourcemodPluginFolder/disabled/$pluginFileName"
             }
         }
     }

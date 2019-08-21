@@ -30,7 +30,8 @@ variable runConfig [CreateConfig \
         "int"  [list startmoney "800" "Amount of money each player gets when they reset." mappedto [list mp_startmoney]]\
         "bool"  [list mp_consecutive_loss_aversion "1" "How loss streak is affected with round win: disable = win fully resets loss bonus,\nenable = win reduces the loss counter by one" mappedto [list mp_consecutive_loss_aversion]]\
         "int"  [list mp_consecutive_loss_max "4" "This is the limit to how many times the loss bonus will increase, but does not limit the loss counter itself." mappedto [list mp_consecutive_loss_max]]\
-        "int"  [list cash_team_winner_bonus_consecutive_rounds "500" "Amount the loss bonus increases by per loss" mappedto [list cash_team_winner_bonus_consecutive_rounds]]\
+        "int"  [list cash_team_winner_bonus_consecutive_rounds "0" "Amount the winner bonus increases by per win" mappedto [list cash_team_winner_bonus_consecutive_rounds]]\
+        "int"  [list cash_team_loser_bonus_consecutive_rounds "500" "Amount the loss bonus increases by per loss" mappedto [list cash_team_loser_bonus_consecutive_rounds]]\
         "int"  [list c4timer "45" "The amount of time in seconds before bomb explodes after planted.\n<10-90>" mappedto [list mp_c4timer]]\
         "int"  [list fraglimit "0" "Amount of frags a player can exceed before changing maps." mappedto [list mp_fraglimit]]\
         "int"  [list maxrounds "30" "Amount of rounds to play before server changes maps." mappedto [list mp_maxrounds]]\
@@ -97,6 +98,7 @@ variable runLayout [CreateLayout \
     	parm    [list mp_consecutive_loss_aversion] \
         parm    [list mp_consecutive_loss_max] \
         parm    [list cash_team_winner_bonus_consecutive_rounds] \
+        parm    [list cash_team_loser_bonus_consecutive_rounds] \
         space   [list] \
         h2      [list "Misc"] \
         line    [list] \

@@ -362,6 +362,7 @@ variable serverOrigConfig [CreateConfig \
         "bool"      [list mp_consecutive_loss_aversion "" ""]\
         "int"       [list mp_consecutive_loss_max "" ""]\
         "int"       [list cash_team_winner_bonus_consecutive_rounds "" ""]\
+        "int"       [list cash_team_loser_bonus_consecutive_rounds "" ""]\
     ] \
 ]
 
@@ -487,6 +488,7 @@ proc SaveConfigFileOrigServer {} {
     SetConfigItem $serverOrigConfig mp_consecutive_loss_aversion [GetConfigItem $runConfig mp_consecutive_loss_aversion]
     SetConfigItem $serverOrigConfig mp_consecutive_loss_max [GetConfigItem $runConfig mp_consecutive_loss_max]
     SetConfigItem $serverOrigConfig cash_team_winner_bonus_consecutive_rounds [GetConfigItem $runConfig cash_team_winner_bonus_consecutive_rounds]
+    SetConfigItem $serverOrigConfig cash_team_loser_bonus_consecutive_rounds [GetConfigItem $runConfig cash_team_loser_bonus_consecutive_rounds]
 
 
     SaveConfigFile serverOrigConfig
