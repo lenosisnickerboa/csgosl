@@ -18,7 +18,7 @@ variable aboutConfig [CreateConfig \
 ]
 
 proc GetContributors {} {
-    
+
     set heading \
     [list \
             space   [list] \
@@ -35,7 +35,7 @@ proc GetContributors {} {
     ]
 
     variable contribs
-    
+
     global currentOs
     if {$currentOs == "windows"} {
         global \
@@ -52,9 +52,12 @@ proc GetContributors {} {
             windows_gunmenu_version windows_gunmenu_home_url windows_gunmenu_url \
             windows_cksurf_version windows_cksurf_home_url windows_cksurf_url \
             windows_retakes_version windows_retakes_home_url windows_retakes_url\
+            windows_influx_version windows_influx_home_url windows_influx_url\
+            windows_splewis_get5_version windows_splewis_get5_home_url windows_splewis_get5_url\
+            windows_shanapu_myweaponallocator_version windows_shanapu_myweaponallocator_home_url windows_shanapu_myweaponallocator_url\
             all_esl_serverconfig_version all_esl_serverconfig_home_url all_esl_serverconfig_url\
             all_wargames_theswemaster_version all_wargames_theswemaster_home_url all_wargames_theswemaster_url
-        
+
         set contribs \
         [list \
                 h2      [list "Sourcemod $windows_sourcemod_version"] \
@@ -97,6 +100,21 @@ proc GetContributors {} {
                 url     [list "Homepage" "$windows_retakes_home_url"] \
                 url     [list "Download $windows_retakes_version" "$windows_retakes_url"] \
                 space   [list] \
+                h2      [list "Sourcemod plugin: influx $windows_influx_version"] \
+                line    [list] \
+                url     [list "Homepage" "$windows_influx_home_url"] \
+                url     [list "Download $windows_influx_version" "$windows_influx_url"] \
+                space   [list] \
+                h2      [list "Sourcemod plugin: splewis_get5 $windows_splewis_get5_version"] \
+                line    [list] \
+                url     [list "Homepage" "$windows_splewis_get5_home_url"] \
+                url     [list "Download $windows_splewis_get5_version" "$windows_splewis_get5_url"] \
+                space   [list] \
+                h2      [list "Sourcemod plugin: shanapu_myweaponallocator $windows_shanapu_myweaponallocator_version"] \
+                line    [list] \
+                url     [list "Homepage" "$windows_shanapu_myweaponallocator_home_url"] \
+                url     [list "Download $windows_shanapu_myweaponallocator_version" "$windows_shanapu_myweaponallocator_url"] \
+                space   [list] \
                 h2      [list "Config files: esl_serverconfig $all_esl_serverconfig_version"] \
                 line    [list] \
                 url     [list "Homepage" "$all_esl_serverconfig_home_url"] \
@@ -131,7 +149,7 @@ proc GetContributors {} {
                 line    [list] \
                 url     [list "Homepage" "$windows_sdx_home_url"] \
                 url     [list "Download $windows_sdx_version" "url $windows_sdx_url"] \
-        ] 
+        ]
     } else {
         global \
             linux_sourcemod_version linux_sourcemod_home_url linux_sourcemod_url \
@@ -143,9 +161,12 @@ proc GetContributors {} {
             linux_gunmenu_version linux_gunmenu_home_url linux_gunmenu_url \
             linux_cksurf_version linux_cksurf_home_url linux_cksurf_url \
             linux_retakes_version linux_retakes_home_url linux_retakes_url\
+            linux_influx_version linux_influx_home_url linux_influx_url\
+            linux_splewis_get5_version linux_splewis_get5_home_url linux_splewis_get5_url\
+            linux_shanapu_myweaponallocator_version linux_shanapu_myweaponallocator_home_url linux_shanapu_myweaponallocator_url\
             all_esl_serverconfig_version all_esl_serverconfig_home_url all_esl_serverconfig_url\
             all_wargames_theswemaster_version all_wargames_theswemaster_home_url all_wargames_theswemaster_url
-        
+
         set contribs \
         [list \
                 h2      [list "Sourcemod $linux_sourcemod_version"] \
@@ -187,6 +208,21 @@ proc GetContributors {} {
                 line    [list] \
                 url     [list "Homepage" "$linux_retakes_home_url"] \
                 url     [list "Download $linux_retakes_version" "$linux_retakes_url"] \
+                space   [list] \
+                h2      [list "Sourcemod plugin: influx $linux_influx_version"] \
+                line    [list] \
+                url     [list "Homepage" "$linux_influx_home_url"] \
+                url     [list "Download $linux_influx_version" "$linux_influx_url"] \
+                space   [list] \
+                h2      [list "Sourcemod plugin: splewis_get5 $linux_splewis_get5_version"] \
+                line    [list] \
+                url     [list "Homepage" "$linux_splewis_get5_home_url"] \
+                url     [list "Download $linux_splewis_get5_version" "$linux_splewis_get5_url"] \
+                space   [list] \
+                h2      [list "Sourcemod plugin: shanapu_myweaponallocator $linux_shanapu_myweaponallocator_version"] \
+                line    [list] \
+                url     [list "Homepage" "$linux_shanapu_myweaponallocator_home_url"] \
+                url     [list "Download $linux_shanapu_myweaponallocator_version" "$linux_shanapu_myweaponallocator_url"] \
                 space   [list] \
                 h2      [list "Config files: esl_serverconfig $all_esl_serverconfig_version"] \
                 line    [list] \

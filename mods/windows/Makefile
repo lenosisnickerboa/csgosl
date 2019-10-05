@@ -22,6 +22,8 @@ contribs:
 	$(MAKE) -C ../mods/cksurf contrib
 	$(MAKE) -C ../mods/retakes contrib
 	$(MAKE) -C ../mods/influx contrib
+	$(MAKE) -C ../mods/splewis-get5 contrib
+	$(MAKE) -C ../mods/shanapu-myweaponallocator contrib
 
 dl-metamod:
 	wget $(METAMOD_URL) -O metamod.zip
@@ -40,6 +42,8 @@ mods: dl-metamod dl-sourcemod
 	$(MAKE) -C ../mods/cksurf
 	$(MAKE) -C ../mods/retakes
 	$(MAKE) -C ../mods/influx
+	$(MAKE) -C ../mods/splewis-get5
+	$(MAKE) -C ../mods/shanapu-myweaponallocator
 	$(DEVTOOLS_ROOT)/merge_databases_cfg.sh $(CSGOSL_ROOT)/mods/databases.cfg $(shell find $(CSGOSL_ROOT)/mods/*/ -name databases.cfg) > $(MODS_CONFIGS)/databases.cfg
 	(cd $(MODS_ROOT) ; zip -r ../mods.zip *)
 	\rm -rf $(MODS_ROOT) >/dev/null 2>&1
@@ -58,4 +62,6 @@ clean:
 	$(MAKE) -C ../mods/cksurf clean
 	$(MAKE) -C ../mods/retakes clean
 	$(MAKE) -C ../mods/influx clean
+	$(MAKE) -C ../mods/splewis-get5 clean
+	$(MAKE) -C ../mods/shanapu-myweaponallocator clean
 	\rm -f metamod.zip sourcemod.zip mods*.zip

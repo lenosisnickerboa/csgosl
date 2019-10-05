@@ -22,6 +22,8 @@ variable sourcemodPlugins [list \
     retakes_standardallocator [list false sm_retakes_standardallocator_enable sm_retakes_standardallocator_lanonly retakes_standardallocator.smx] \
     retakes_pistolallocator [list false sm_retakes_pistolallocator_enable sm_retakes_pistolallocator_lanonly retakes_pistolallocator.smx] \
     influx [list false sm_influx_enable sm_influx_lanonly "influx_*.smx"] \
+    splewis_get5 [list false sm_splewis_get5_enable sm_splewis_get5_lanonly get5.smx] \
+    shanapu_myweaponallocator [list false sm_shanapu_myweaponallocator_enable sm_shanapu_myweaponallocator_lanonly MyWeaponAllocator.smx] \
     franug_weaponpaints [list true sm_franug_weaponpaints_enable sm_franug_weaponpaints_lanonly franug_weaponpaints_public.smx] \
     franug_knifes [list true sm_franug_knifes_enable sm_franug_knifes_lanonly sm_franugknife.smx]
 ]
@@ -74,6 +76,10 @@ variable sourcemodConfig [CreateConfig \
         "bool"      [list sm_retakes_pistolallocator_lanonly "1" "Only enable this sourcemod plugin in lanonly mode"]\
         "bool"      [list sm_influx_enable "0" "Controls if this sourcemod plugin is enabled." onchange "SetSourcemodInfluxState"]\
         "bool"      [list sm_influx_lanonly "1" "Only enable this sourcemod plugin in lanonly mode"]\
+        "bool"      [list sm_splewis_get5_enable "0" "Controls if this sourcemod plugin is enabled." onchange "SetSourcemodSplewisGet5State"]\
+        "bool"      [list sm_splewis_get5_lanonly "1" "Only enable this sourcemod plugin in lanonly mode"]\
+        "bool"      [list sm_shanapu_myweaponallocator_enable "0" "Controls if this sourcemod plugin is enabled." onchange "SetSourcemodShanapuMyWeaponAllocatorState"]\
+        "bool"      [list sm_shanapu_myweaponallocator_lanonly "1" "Only enable this sourcemod plugin in lanonly mode"]\
         "bool"      [list sm_franug_weaponpaints_enable "0" "Controls if this sourcemod plugin is enabled.\nType !ws in chat to use." onchange "SetSourcemodFranugWeaponPaintsState"]\
         "bool"      [list sm_franug_weaponpaints_lanonly "1" "Only enable this sourcemod plugin in lanonly mode"]\
         "bool"      [list sm_franug_weaponpaints_onlyadmin "1" "This feature is only for admins. 1 = enabled, 0 = disabled.\n(Use the value 1 and try to keep this plugin secret for the normal users because they can report it)"]\
@@ -172,6 +178,14 @@ variable sourcemodLayout [CreateLayout \
         parm    [list sm_influx_enable] \
         parm    [list sm_influx_lanonly] \
         space   [list] \
+        h2      [list "Plugin: splewis_get5"] \
+        parm    [list sm_splewis_get5_enable] \
+        parm    [list sm_splewis_get5_lanonly] \
+        space   [list] \
+        h2      [list "Plugin: shanapu_myweaponallocator"] \
+        parm    [list sm_shanapu_myweaponallocator_enable] \
+        parm    [list sm_shanapu_myweaponallocator_lanonly] \
+        space   [list] \
         warning [list "All plugins below this line require the banprotection to be disabled. Read the help page carefully before"] \
         warning [list "disabling banprotection. Running misbehaving sourcemod plugins may cause your server to be banned by Valve."] \
         warning [list "*** I take no responsibility for if your server gets banned ***"] \
@@ -213,10 +227,12 @@ proc SetSourcemodState { value } {
                   sm_retakes_enable sm_retakes_lanonly sm_retakes_sitepicker_enable sm_retakes_sitepicker_lanonly\
                   sm_retakes_standardallocator_enable sm_retakes_standardallocator_lanonly sm_retakes_pistolallocator_enable sm_retakes_pistolallocator_lanonly\
                   sm_influx_enable sm_influx_lanonly\
+                  sm_splewis_get5_enable sm_splewis_get5_lanonly\
+                  sm_shanapu_myweaponallocator_enable sm_shanapu_myweaponallocator_lanonly\
                   sm_franug_weaponpaints_enable sm_franug_weaponpaints_lanonly sm_franug_weaponpaints_onlyadmin\
                   sm_franug_weaponpaints_c4 sm_franug_weaponpaints_saytimer sm_franug_weaponpaints_roundtimer sm_franug_weaponpaints_rmenu\
                   sm_franug_weaponpaints_zombiesv sm_franug_knifes_enable sm_franug_knifes_lanonly] {
-        SetConfigItemState $cp.sourcemod $sourcemodLayout $parm $enabled        
+        SetConfigItemState $cp.sourcemod $sourcemodLayout $parm $enabled
     }
     global sourcemodConfig
     SetSourcemodMapChooserState [expr $enabled && [GetConfigItem $sourcemodConfig sm_mapchooser_enable]]
@@ -230,9 +246,11 @@ proc SetSourcemodState { value } {
     SetSourcemodCkSurfState [expr $enabled && [GetConfigItem $sourcemodConfig sm_cksurf_enable]]
     SetSourcemodRetakesState [expr $enabled && [GetConfigItem $sourcemodConfig sm_retakes_enable]]
     SetSourcemodInfluxState [expr $enabled && [GetConfigItem $sourcemodConfig sm_influx_enable]]
+    SetSourcemodSplewisGet5State [expr $enabled && [GetConfigItem $sourcemodConfig sm_splewis_get5_enable]]
+    SetSourcemodShanapuMyWeaponAllocatorState [expr $enabled && [GetConfigItem $sourcemodConfig sm_shanapu_myweaponallocator_enable]]
     SetSourcemodFranugWeaponPaintsState [expr $enabled && [GetConfigItem $sourcemodConfig sm_franug_weaponpaints_enable]]
     SetSourcemodFranugKnifesState [expr $enabled && [GetConfigItem $sourcemodConfig sm_franug_knifes_enable]]
-    return $value        
+    return $value
 }
 
 
@@ -241,9 +259,9 @@ proc SetSourcemodMapChooserState { value } {
     set cp [GetCp]
     set enabled $value
     foreach parm [list sm_mapchooser_lanonly sm_mapchooser_mapvote_endvote] {
-        SetConfigItemState $cp.sourcemod $sourcemodLayout $parm $enabled        
+        SetConfigItemState $cp.sourcemod $sourcemodLayout $parm $enabled
     }
-    return $value        
+    return $value
 }
 
 proc SetSourcemodNominationsState { value } {
@@ -251,9 +269,9 @@ proc SetSourcemodNominationsState { value } {
     set cp [GetCp]
     set enabled $value
     foreach parm [list sm_nominations_lanonly] {
-        SetConfigItemState $cp.sourcemod $sourcemodLayout $parm $enabled        
+        SetConfigItemState $cp.sourcemod $sourcemodLayout $parm $enabled
     }
-    return $value        
+    return $value
 }
 
 proc SetSourcemodRockTheVoteState { value } {
@@ -261,9 +279,9 @@ proc SetSourcemodRockTheVoteState { value } {
     set cp [GetCp]
     set enabled $value
     foreach parm [list sm_rockthevote_lanonly] {
-        SetConfigItemState $cp.sourcemod $sourcemodLayout $parm $enabled        
+        SetConfigItemState $cp.sourcemod $sourcemodLayout $parm $enabled
     }
-    return $value        
+    return $value
 }
 
 proc SetSourcemodNextMapState { value } {
@@ -271,27 +289,27 @@ proc SetSourcemodNextMapState { value } {
     set cp [GetCp]
     set enabled $value
     foreach parm [list sm_nextmap_lanonly] {
-        SetConfigItemState $cp.sourcemod $sourcemodLayout $parm $enabled        
+        SetConfigItemState $cp.sourcemod $sourcemodLayout $parm $enabled
     }
-    return $value        
+    return $value
 }
 proc SetSourcemodRandomCycleState { value } {
     global sourcemodLayout
     set cp [GetCp]
     set enabled $value
     foreach parm [list sm_randomcycle_lanonly] {
-        SetConfigItemState $cp.sourcemod $sourcemodLayout $parm $enabled        
+        SetConfigItemState $cp.sourcemod $sourcemodLayout $parm $enabled
     }
-    return $value        
+    return $value
 }
 proc SetSourcemodWarmodState { value } {
     global sourcemodLayout
     set cp [GetCp]
     set enabled $value
     foreach parm [list sm_warmod_lanonly] {
-        SetConfigItemState $cp.sourcemod $sourcemodLayout $parm $enabled        
+        SetConfigItemState $cp.sourcemod $sourcemodLayout $parm $enabled
     }
-    return $value        
+    return $value
 }
 proc SetSourcemodMulti1v1State { value } {
     global sourcemodLayout
@@ -302,7 +320,7 @@ proc SetSourcemodMulti1v1State { value } {
                   sm_multi1v1_online_stats_viewer_enable sm_multi1v1_online_stats_viewer_lanonly] {
         SetConfigItemState $cp.sourcemod $sourcemodLayout $parm $enabled
     }
-    return $value        
+    return $value
 }
 proc SetSourcemodGunMenuState { value } {
     global sourcemodLayout
@@ -311,7 +329,7 @@ proc SetSourcemodGunMenuState { value } {
     foreach parm [list sm_gunmenu_lanonly] {
         SetConfigItemState $cp.sourcemod $sourcemodLayout $parm $enabled
     }
-    return $value        
+    return $value
 }
 proc SetSourcemodCkSurfState { value } {
     global sourcemodLayout
@@ -320,7 +338,7 @@ proc SetSourcemodCkSurfState { value } {
     foreach parm [list sm_cksurf_lanonly] {
         SetConfigItemState $cp.sourcemod $sourcemodLayout $parm $enabled
     }
-    return $value        
+    return $value
 }
 proc SetSourcemodRetakesState { value } {
     global sourcemodLayout
@@ -331,7 +349,7 @@ proc SetSourcemodRetakesState { value } {
                   sm_retakes_pistolallocator_enable sm_retakes_pistolallocator_lan_only] {
         SetConfigItemState $cp.sourcemod $sourcemodLayout $parm $enabled
     }
-    return $value        
+    return $value
 }
 proc SetSourcemodRetakesPistolAllocatorValue { value } {
     global sourcemodConfig
@@ -342,7 +360,7 @@ proc SetSourcemodRetakesPistolAllocatorValue { value } {
     if { $otherValue == "1"} {
         SetConfigItem $sourcemodConfig sm_retakes_pistolallocator_enable "0"
     }
-    return $value        
+    return $value
 }
 proc SetSourcemodRetakesStandardAllocatorValue { value } {
     global sourcemodConfig
@@ -353,7 +371,7 @@ proc SetSourcemodRetakesStandardAllocatorValue { value } {
     if { $otherValue == "1"} {
         SetConfigItem $sourcemodConfig sm_retakes_standardallocator_enable "0"
     }
-    return $value        
+    return $value
 }
 proc SetSourcemodInfluxState { value } {
     global sourcemodLayout
@@ -362,7 +380,25 @@ proc SetSourcemodInfluxState { value } {
     foreach parm [list sm_influx_lanonly] {
         SetConfigItemState $cp.sourcemod $sourcemodLayout $parm $enabled
     }
-    return $value        
+    return $value
+}
+proc SetSourcemodSplewisGet5State { value } {
+    global sourcemodLayout
+    set cp [GetCp]
+    set enabled $value
+    foreach parm [list sm_splewis_get5_lanonly] {
+        SetConfigItemState $cp.sourcemod $sourcemodLayout $parm $enabled
+    }
+    return $value
+}
+proc SetSourcemodShanapuMyWeaponAllocatorState { value } {
+    global sourcemodLayout
+    set cp [GetCp]
+    set enabled $value
+    foreach parm [list sm_shanapu_myweaponallocator_lanonly] {
+        SetConfigItemState $cp.sourcemod $sourcemodLayout $parm $enabled
+    }
+    return $value
 }
 
 proc SetSourcemodFranugWeaponPaintsState { value } {
@@ -372,9 +408,9 @@ proc SetSourcemodFranugWeaponPaintsState { value } {
     foreach parm [list sm_franug_weaponpaints_lanonly sm_franug_weaponpaints_onlyadmin\
                   sm_franug_weaponpaints_c4 sm_franug_weaponpaints_saytimer sm_franug_weaponpaints_roundtimer sm_franug_weaponpaints_rmenu\
                   sm_franug_weaponpaints_zombiesv] {
-        SetConfigItemState $cp.sourcemod $sourcemodLayout $parm $enabled        
+        SetConfigItemState $cp.sourcemod $sourcemodLayout $parm $enabled
     }
-    return $value        
+    return $value
 }
 
 proc SetSourcemodFranugKnifesState { value } {
@@ -382,9 +418,7 @@ proc SetSourcemodFranugKnifesState { value } {
     set cp [GetCp]
     set enabled $value
     foreach parm [list sm_franug_knifes_lanonly] {
-        SetConfigItemState $cp.sourcemod $sourcemodLayout $parm $enabled        
+        SetConfigItemState $cp.sourcemod $sourcemodLayout $parm $enabled
     }
-    return $value        
+    return $value
 }
-
-
