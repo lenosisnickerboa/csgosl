@@ -3,4 +3,4 @@
 # The next line is executed by /bin/sh, but not tcl \
 exec wish "$0" ${1+"$@"}
 
-set version "2.7.4"
+set version "2.7.5"

@@ -25,10 +25,10 @@ proc GetConfigPageSelectorWidget {page key} {
 proc CreateConfigPageTabFromLayout {at layout enabled} {
     set pageOptions [dict get $layout options]
     set tabName [dict get $pageOptions tabName]
-    frame $at -borderwidth 10 
+    frame $at -borderwidth 10
     [winfo parent $at] add $at -text "$tabName"
     if {$enabled == 0} {
-        [winfo parent $at] hide $at        
+        [winfo parent $at] hide $at
     }
     return $at
 }
@@ -102,7 +102,7 @@ proc CreateConfigPageUrl {at parms} {
 
 proc CreateConfigPageItem {at lead name value type default help selections custom disableParmsArgs onChangeCmd} {
     if {$type == "directory"} {
-        pack [CreateDirEntry $at $lead $name $default $help $disableParmsArgs $onChangeCmd] -side top -fill x -expand true            
+        pack [CreateDirEntry $at $lead $name $default $help $disableParmsArgs $onChangeCmd] -side top -fill x -expand true
     } elseif {$type == "url"} {
         pack [CreateEntry $at $lead $name $default $help $custom $disableParmsArgs $onChangeCmd] -side top -fill x -expand true
     } elseif {$type == "int"} {
@@ -143,7 +143,7 @@ proc NewCvar {configName} {
     grid $w.ldefault $w.default - -sticky news
     grid $w.lhelp $w.help       - -sticky news
     label $w.ldummy
-    grid $w.ldummy $w.ok $w.cancel -sticky news    
+    grid $w.ldummy $w.ok $w.cancel -sticky news
     set x [expr {([winfo width  .] - [winfo reqwidth  $w]) / 2 + [winfo rootx .]}]
     set y [expr {([winfo height .] - [winfo reqheight $w]) / 2 + [winfo rooty .]}]
     wm geometry $w +$x+$y
@@ -230,7 +230,7 @@ proc CreateConfigPageItemFromLayout {layout page type args widgetIx} {
         CreateConfigPageLine $page.line$widgetIx $args
     } elseif {$type == "space"} {
         CreateConfigPageSpace $page.space$widgetIx $args
-    }    
+    }
 }
 
 proc PerformOnChangeOnConfigPageParm {layout page type args widgetIx} {
@@ -266,7 +266,7 @@ proc CreateConfigPageFromLayout {at layout} {
     set configName [dict get $pageOptions configName]
     global $configName
     set config [set $configName]
-    
+
     sframe new $at.scrollableitems -anchor n -scrolly yes -scrollx no
     set page [sframe content $at.scrollableitems]
 
@@ -275,24 +275,24 @@ proc CreateConfigPageFromLayout {at layout} {
 
     frame $page.buttons
     if { [dict exists $config addCVar] } {
-        pack [button $page.buttons.newoption -text "New cvar..." -anchor e -font {-size -8} -command [subst "NewCvar $configName"]] -side left
-        SetTooltip $page.buttons.newoption "Create a custom cvar entry on this page.\nA csgosl restart is required for changes to take effect." 
+        pack [button $page.buttons.newoption -text "New cvar..." -anchor e -font {-size -10} -command [subst "NewCvar $configName"]] -side left
+        SetTooltip $page.buttons.newoption "Create a custom cvar entry on this page.\nA csgosl restart is required for changes to take effect."
     }
-    pack [button $page.buttons.setdefault -text "Set defaults" -anchor e -font {-size -8} -command [subst "SetDefaults $configName"]] -side left
-    SetTooltip $page.buttons.setdefault "Sets all options on this tab to default values.\ncsgosl will be automatically restarted." 
-    pack [button $page.buttons.helphint -text "Help on $help (F1)" -anchor e -font {-size -8} -command [subst "Help $help"]] -side left
-    SetTooltip $page.buttons.helphint "Opens up the wiki help page for this tab" 
+    pack [button $page.buttons.setdefault -text "Set defaults" -anchor e -font {-size -10} -command [subst "SetDefaults $configName"]] -side left
+    SetTooltip $page.buttons.setdefault "Sets all options on this tab to default values.\ncsgosl will be automatically restarted."
+    pack [button $page.buttons.helphint -text "Help on $help (F1)" -anchor e -font {-size -10} -command [subst "Help $help"]] -side left
+    SetTooltip $page.buttons.helphint "Opens up the wiki help page for this tab"
 
     global applicationConfig
     set showDonation [GetConfigValue $applicationConfig showdonation]
     if {$showDonation} {
         image create photo donateImg -file [file join $starkit::topdir "donate.png"]
         pack [button $page.buttons.donate -image donateImg -anchor e -command Donate] -side left
-        SetTooltip $page.buttons.donate "If you feel this software served you well and saved you a lot of time you could spend enjoying yourself instead of reading\nendless forum threads on how to setup your own server just right, why not show your appreciation and donate whatever\namount you feel appropriate. Your appreciation is much appreciated :)\nWill open Paypal in your default web browser.\This donation button can be disabled in application settings."        
+        SetTooltip $page.buttons.donate "If you feel this software served you well and saved you a lot of time you could spend enjoying yourself instead of reading\nendless forum threads on how to setup your own server just right, why not show your appreciation and donate whatever\namount you feel appropriate. Your appreciation is much appreciated :)\nWill open Paypal in your default web browser.\This donation button can be disabled in application settings."
     }
 
     pack $page.buttons -side top -anchor e
-    
+
     set widgetIx 0
     foreach {type args} $components {
         CreateConfigPageItemFromLayout $layout $page $type $args $widgetIx
@@ -304,7 +304,7 @@ proc CreateConfigPageFromLayout {at layout} {
 
 proc PerformOnChangeOnLayout {at layout} {
     set components [dict get $layout components]
-    set page [sframe content $at.scrollableitems]    
+    set page [sframe content $at.scrollableitems]
     set widgetIx 0
     foreach {type args} $components {
         if {$type == "parm"} {
@@ -334,7 +334,7 @@ proc CreateMapsSelector {at maps selector} {
     set width 320
     set height 256
     global installFolder
-    
+
     foreach map $maps {
         set cachedFile "$installFolder/maps/cached/$map.jpg"
         if { ! [file exists "$cachedFile" ] } {
@@ -346,7 +346,7 @@ proc CreateMapsSelector {at maps selector} {
         } else {
             label $at.m_$map -text "$map" -image mapButtonImg$map -compound bottom -width $width -height $height
         }
-        pack $at.m_$map -side top 
+        pack $at.m_$map -side top
     }
     return $at
 }
@@ -368,24 +368,24 @@ proc CreateMapsSelectorWindow {lead maps selector} {
     global installFolder
 
     set at .mapSelectorWindow
-    
+
     sframe new $at -toplevel true -anchor w -scrolly yes -scrollx no
-    set top [sframe content $at]    
+    set top [sframe content $at]
 
     wm title $at $lead
     wm geometry $at 800x600
- 
-    #fix to ensure the window is visible before grabbed   
+
+    #fix to ensure the window is visible before grabbed
     bind $at <Visibility> [list set waiting($at) gotit]
     vwait waiting($at)
     bind $at <Visibility> {}    ;# remove the binding again!
     grab set $at
-    
+
     #TODO: add OK, cancel buttons
 
     pack [CreateMapsSelector $top $maps $selector] -side top
     tkwait window $at
-    
+
     return $at
 }
 
@@ -409,7 +409,7 @@ proc UpdateRunPage {} {
         global allMaps
         set maps $allMaps
     } else {
-        set maps [lsort [dict get $mapGroupsMapper $mapGroup]]        
+        set maps [lsort [dict get $mapGroupsMapper $mapGroup]]
     }
     set mapStartMapSel [GetConfigPageSelectorWidget $runPage startmap]
     $mapStartMapSel configure -values $maps
@@ -507,14 +507,14 @@ proc LayoutFuncMapGroups {at help layout parms} {
     frame $at.e
     entry $at.e.sel -width 40 -relief sunken -textvariable addMapGroupName
     pack $at.e.sel -side left -anchor w -fill x
-    pack $at.e -side top 
+    pack $at.e -side top
     frame $at.mgedit
     button $at.mgedit.add -text "Add" -command "AddMapGroup $mapGroupListBox"
     button $at.mgedit.edit -text "Edit" -command "EditMapGroup $mapGroupListBox"
     button $at.mgedit.delete -text "Delete" -command "DeleteMapGroup $mapGroupListBox"
     pack $at.mgedit.add -side left -anchor w
     pack $at.mgedit.edit -side left
-    pack $at.mgedit.delete -side right 
+    pack $at.mgedit.delete -side right
     pack $at.mgedit -side top
     bind $mapGroupListBox <<ListboxSelect>> "SetSelectedMapGroup %W"
     bind $mapGroupListBox <Double-B1-ButtonRelease> [subst "EditMapGroup $mapGroupListBox"]
@@ -524,29 +524,29 @@ proc LayoutFuncMapGroups {at help layout parms} {
     return $at
 }
 
-proc LayoutFuncConsole {at help layout parms} {   
-    frame $at 
+proc LayoutFuncConsole {at help layout parms} {
+    frame $at
     frame $at.config -borderwidth 10
     frame $at.execf -borderwidth 10
     ExecutorCreate $at.execf
     pack $at.execf -side top -fill both -expand true
     pack $at
-    
-    return $at    
+
+    return $at
 }
 
-proc LayoutFuncRconCli {at help layout parms} {   
-    frame $at 
+proc LayoutFuncRconCli {at help layout parms} {
+    frame $at
     frame $at.rconcli -borderwidth 10
     frame $at.rconcliexecf -borderwidth 10
     ::rcon::ExecutorCreate $at.rconcliexecf
     pack $at.rconcliexecf -side top -fill both -expand true
     pack $at
-    return $at    
+    return $at
 }
 
 proc CreateConfigPages { at w h } {
-    ttk::notebook $at.n 
+    ttk::notebook $at.n
     ttk::notebook::enableTraversal $at.n
     $at.n configure
     return $at.n
