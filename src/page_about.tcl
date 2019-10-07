@@ -55,6 +55,7 @@ proc GetContributors {} {
             windows_influx_version windows_influx_home_url windows_influx_url\
             windows_splewis_get5_version windows_splewis_get5_home_url windows_splewis_get5_url\
             windows_shanapu_myweaponallocator_version windows_shanapu_myweaponallocator_home_url windows_shanapu_myweaponallocator_url\
+            windows_splewis_pugsetup_version windows_splewis_pugsetup_home_url windows_splewis_pugsetup_url\
             all_esl_serverconfig_version all_esl_serverconfig_home_url all_esl_serverconfig_url\
             all_wargames_theswemaster_version all_wargames_theswemaster_home_url all_wargames_theswemaster_url
 
@@ -115,6 +116,11 @@ proc GetContributors {} {
                 url     [list "Homepage" "$windows_shanapu_myweaponallocator_home_url"] \
                 url     [list "Download $windows_shanapu_myweaponallocator_version" "$windows_shanapu_myweaponallocator_url"] \
                 space   [list] \
+                h2      [list "Sourcemod plugin: splewis_pugsetup $windows_splewis_pugsetup_version"] \
+                line    [list] \
+                url     [list "Homepage" "$windows_splewis_pugsetup_home_url"] \
+                url     [list "Download $windows_splewis_pugsetup_version" "$windows_splewis_pugsetup_url"] \
+                space   [list] \
                 h2      [list "Config files: esl_serverconfig $all_esl_serverconfig_version"] \
                 line    [list] \
                 url     [list "Homepage" "$all_esl_serverconfig_home_url"] \
@@ -164,6 +170,7 @@ proc GetContributors {} {
             linux_influx_version linux_influx_home_url linux_influx_url\
             linux_splewis_get5_version linux_splewis_get5_home_url linux_splewis_get5_url\
             linux_shanapu_myweaponallocator_version linux_shanapu_myweaponallocator_home_url linux_shanapu_myweaponallocator_url\
+            linux_splewis_pugsetup_version linux_splewis_pugsetup_home_url linux_splewis_pugsetup_url\
             all_esl_serverconfig_version all_esl_serverconfig_home_url all_esl_serverconfig_url\
             all_wargames_theswemaster_version all_wargames_theswemaster_home_url all_wargames_theswemaster_url
 
@@ -223,6 +230,11 @@ proc GetContributors {} {
                 line    [list] \
                 url     [list "Homepage" "$linux_shanapu_myweaponallocator_home_url"] \
                 url     [list "Download $linux_shanapu_myweaponallocator_version" "$linux_shanapu_myweaponallocator_url"] \
+                space   [list] \
+                h2      [list "Sourcemod plugin: splewis_pugsetup $linux_splewis_pugsetup_version"] \
+                line    [list] \
+                url     [list "Homepage" "$linux_splewis_pugsetup_home_url"] \
+                url     [list "Download $linux_splewis_pugsetup_version" "$linux_splewis_pugsetup_url"] \
                 space   [list] \
                 h2      [list "Config files: esl_serverconfig $all_esl_serverconfig_version"] \
                 line    [list] \

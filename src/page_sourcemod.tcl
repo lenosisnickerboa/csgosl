@@ -24,6 +24,7 @@ variable sourcemodPlugins [list \
     influx [list false sm_influx_enable sm_influx_lanonly "influx_*.smx"] \
     splewis_get5 [list false sm_splewis_get5_enable sm_splewis_get5_lanonly get5.smx] \
     shanapu_myweaponallocator [list false sm_shanapu_myweaponallocator_enable sm_shanapu_myweaponallocator_lanonly MyWeaponAllocator.smx] \
+    splewis_pugsetup [list false sm_splewis_pugsetup_enable sm_splewis_pugsetup_lanonly pugsetup.smx] \
     franug_weaponpaints [list true sm_franug_weaponpaints_enable sm_franug_weaponpaints_lanonly franug_weaponpaints_public.smx] \
     franug_knifes [list true sm_franug_knifes_enable sm_franug_knifes_lanonly sm_franugknife.smx]
 ]
@@ -80,6 +81,8 @@ variable sourcemodConfig [CreateConfig \
         "bool"      [list sm_splewis_get5_lanonly "1" "Only enable this sourcemod plugin in lanonly mode"]\
         "bool"      [list sm_shanapu_myweaponallocator_enable "0" "Controls if this sourcemod plugin is enabled." onchange "SetSourcemodShanapuMyWeaponAllocatorState"]\
         "bool"      [list sm_shanapu_myweaponallocator_lanonly "1" "Only enable this sourcemod plugin in lanonly mode"]\
+        "bool"      [list sm_splewis_pugsetup_enable "0" "Controls if this sourcemod plugin is enabled." onchange "SetSourcemodSplewisPugSetupState"]\
+        "bool"      [list sm_splewis_pugsetup_lanonly "1" "Only enable this sourcemod plugin in lanonly mode"]\
         "bool"      [list sm_franug_weaponpaints_enable "0" "Controls if this sourcemod plugin is enabled.\nType !ws in chat to use." onchange "SetSourcemodFranugWeaponPaintsState"]\
         "bool"      [list sm_franug_weaponpaints_lanonly "1" "Only enable this sourcemod plugin in lanonly mode"]\
         "bool"      [list sm_franug_weaponpaints_onlyadmin "1" "This feature is only for admins. 1 = enabled, 0 = disabled.\n(Use the value 1 and try to keep this plugin secret for the normal users because they can report it)"]\
@@ -186,6 +189,10 @@ variable sourcemodLayout [CreateLayout \
         parm    [list sm_shanapu_myweaponallocator_enable] \
         parm    [list sm_shanapu_myweaponallocator_lanonly] \
         space   [list] \
+        h2      [list "Plugin: splewis_pugsetup"] \
+        parm    [list sm_splewis_pugsetup_enable] \
+        parm    [list sm_splewis_pugsetup_lanonly] \
+        space   [list] \
         warning [list "All plugins below this line require the banprotection to be disabled. Read the help page carefully before"] \
         warning [list "disabling banprotection. Running misbehaving sourcemod plugins may cause your server to be banned by Valve."] \
         warning [list "*** I take no responsibility for if your server gets banned ***"] \
@@ -229,6 +236,7 @@ proc SetSourcemodState { value } {
                   sm_influx_enable sm_influx_lanonly\
                   sm_splewis_get5_enable sm_splewis_get5_lanonly\
                   sm_shanapu_myweaponallocator_enable sm_shanapu_myweaponallocator_lanonly\
+                  sm_splewis_pugsetup_enable sm_splewis_pugsetup_lanonly\
                   sm_franug_weaponpaints_enable sm_franug_weaponpaints_lanonly sm_franug_weaponpaints_onlyadmin\
                   sm_franug_weaponpaints_c4 sm_franug_weaponpaints_saytimer sm_franug_weaponpaints_roundtimer sm_franug_weaponpaints_rmenu\
                   sm_franug_weaponpaints_zombiesv sm_franug_knifes_enable sm_franug_knifes_lanonly] {
@@ -248,6 +256,7 @@ proc SetSourcemodState { value } {
     SetSourcemodInfluxState [expr $enabled && [GetConfigItem $sourcemodConfig sm_influx_enable]]
     SetSourcemodSplewisGet5State [expr $enabled && [GetConfigItem $sourcemodConfig sm_splewis_get5_enable]]
     SetSourcemodShanapuMyWeaponAllocatorState [expr $enabled && [GetConfigItem $sourcemodConfig sm_shanapu_myweaponallocator_enable]]
+    SetSourcemodSplewisPugSetupState [expr $enabled && [GetConfigItem $sourcemodConfig sm_splewis_pugsetup_enable]]
     SetSourcemodFranugWeaponPaintsState [expr $enabled && [GetConfigItem $sourcemodConfig sm_franug_weaponpaints_enable]]
     SetSourcemodFranugKnifesState [expr $enabled && [GetConfigItem $sourcemodConfig sm_franug_knifes_enable]]
     return $value
@@ -396,6 +405,15 @@ proc SetSourcemodShanapuMyWeaponAllocatorState { value } {
     set cp [GetCp]
     set enabled $value
     foreach parm [list sm_shanapu_myweaponallocator_lanonly] {
+        SetConfigItemState $cp.sourcemod $sourcemodLayout $parm $enabled
+    }
+    return $value
+}
+proc SetSourcemodSplewisPugSetupState { value } {
+    global sourcemodLayout
+    set cp [GetCp]
+    set enabled $value
+    foreach parm [list sm_splewis_pugsetup_lanonly] {
         SetConfigItemState $cp.sourcemod $sourcemodLayout $parm $enabled
     }
     return $value
