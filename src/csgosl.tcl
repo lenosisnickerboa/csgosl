@@ -579,12 +579,18 @@ variable botSkillMapper [dict create \
                          "Hard" 2 \
                          "Expert" 3]
 
+variable solidTeamMatesMapper [dict create \
+                         "Transparent" 0 \
+                         "Fully" 1 \
+                         "StandOn" 2]
+
 source [file join $starkit::topdir page_run.tcl]
 
 EnsureConfigFile runConfig
 LoadConfigFile runConfig
 proc SaveConfigFileRun {} {
     global botSkillMapper
+    global solidTeamMatesMapper
     global runConfig
     global gameModeAllConfig
     SaveConfigFile runConfig
@@ -611,6 +617,11 @@ proc SaveConfigFileRun {} {
     set botSkillEnableSetting [GetConfigItem $runConfig ${DisableParmPrefix}botskill]
     if { $botSkillEnableSetting == "1" } {
         SetConfigItem $gameModeAllConfig bot_difficulty [dict get $botSkillMapper [GetConfigItem $runConfig botskill]]
+    }
+
+    set solidTeamMatesEnableSetting [GetConfigItem $runConfig ${DisableParmPrefix}solidteammates]
+    if { $solidTeamMatesEnableSetting == "1" } {
+        SetConfigItem $gameModeAllConfig mp_solid_teammates [dict get $solidTeamMatesMapper [GetConfigItem $runConfig solidteammates]]
     }
 
     set roundTimeEnableSetting [GetConfigItem $runConfig ${DisableParmPrefix}roundtime]

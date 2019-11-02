@@ -8,7 +8,9 @@ contrib:
 	@echo "$(TARGET) franug_weapon_paints $(FRANUG_WEAPON_PAINTS_VERSION) $(FRANUG_WEAPON_PAINTS_HOME_URL) $(FRANUG_WEAPON_PAINTS_URL)"
 
 dl:
-	wget $(FRANUG_WEAPON_PAINTS_URL) -O franug-weapon-paint.zip
+	#support discontinued, not downloading any more
+	#wget $(FRANUG_WEAPON_PAINTS_URL) -O franug-weapon-paint.zip
+	cp franug-weapon-paint.zip.downloaded franug-weapon-paint.zip
 
 build: dl
 	unzip -o franug-weapon-paint.zip

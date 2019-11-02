@@ -39,6 +39,7 @@ variable runConfig [CreateConfig \
         "bool" [list enablebunnyhopping "0" "Disables the air-velocity clamping to 110% of maximum running speed." mappedto [list sv_enablebunnyhopping]]\
         "bool" [list autobunnyhopping "0" "Holding +jump causes players to automatically re-jump at the exact landing tick." mappedto [list sv_autobunnyhopping]]\
         "int"  [list airaccelerate "10" "Makes you accelerate faster or slower when in the air." mappedto [list sv_airaccelerate]]\
+        "enum" [list solidteammates "Fully" "How solid are team mates? Controls collision." [dict keys $solidTeamMatesMapper] mappedto [list mp_solid_teammates]]\
     ] \
 ]
 
@@ -76,6 +77,7 @@ variable runLayout [CreateLayout \
         space   [list] \
     	parm    [list friendlyfire] \
         parm    [list killcam] \
+        parm    [list solidteammates] \
         parm    [list enablebunnyhopping] \
         parm    [list autobunnyhopping] \
         parm    [list airaccelerate] \

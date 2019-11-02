@@ -46,7 +46,7 @@ contribs-doit:
 	$(MAKE) -C cfgs contribs
 
 zip:
-	(cd .. ; tar czvpf csgosl-`date +"%Y%m%d-%H%M%S"`.tgz csgosl --exclude csgosl/.git)
+	(cd .. ; tar czvpf csgosl-`date +"%Y%m%d-%H%M%S"`.tgz --exclude csgosl/.git csgosl)
 
 windows: src/cvars.tcl
 	devtools/build.sh . windows $(OUT)/windows/csgosl

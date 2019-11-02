@@ -8,7 +8,9 @@ contrib:
 	@echo "$(TARGET) franug_knifes $(FRANUG_KNIFES_VERSION) $(FRANUG_KNIFES_HOME_URL) $(FRANUG_KNIFES_URL)"
 
 dl:
-	wget $(FRANUG_KNIFES_URL) -O franug-knifes.zip
+	#support discontinued, not downloading any more
+	#wget $(FRANUG_KNIFES_URL) -O franug-knifes.zip
+	cp franug-knifes.zip.downloaded franug-knifes.zip
 
 build: dl
 	unzip -o franug-knifes.zip
