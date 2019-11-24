@@ -927,7 +927,7 @@ proc RestartAt {time} {
     }
 
     global installFolder
-    RunScriptAssync "$installFolder/bin/onrestart"
+    RunScriptAssync [MakeScriptFileName "$installFolder/bin/onrestart"]
 }
 
 set lastTimeChecked [clock seconds]

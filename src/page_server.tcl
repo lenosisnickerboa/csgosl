@@ -17,7 +17,7 @@ variable serverConfig [CreateConfig \
         "string"    [list tags "" "Any server tags you want to add separated by commas, e.g. 128fps,nisse,some,stuff."]\
         "bool"      [list autorestart "0" "If enabled the server is auto restarted if it crashes (or is closed down, so you need to kill cmd.exe using ps/task manager prior to killing the server window)"]\
         "bool"      [list startserveronstart "0" "Launch the csgo server when csgosl is launched. If updateserveronstart is enabled it will be performed first.\nNote that it will take a while (10s+) before the server starts, specially if it is updated first."]\
-        "string"    [list restartserverat "" "Enter space separated times when your server should be restarted. if updateserveronrestart is enabled the server will be updated as well.\nEnter time in 24h format, e.g. 9:27 or 23:59:14.\nMultiple times can be entered, e.g. 6:00 12:00 18:00 00:00:10\nRequires csgosl restart to take effect." onchange "ServerSetUpdateServerOnRestartState"]\
+        "string"    [list restartserverat "" "Enter space separated times when your server should be restarted. if updateserveronrestart is enabled the server will be updated as well.\nEnter time in 24h format, e.g. 9:27 or 23:59:14.\nMultiple times can be entered, e.g. 6:00 12:00 18:00 00:00:10\nRequires csgosl restart to take effect."]\
         "bool"      [list updateserveronstart "0" "Automatically perform server update when csgosl is launched."]\
         "bool"      [list updateserveronrestart "1" "Perform server update prior to restarting the server"]\
         "string"    [list bindip "" "IP address which your server should bind to.\nLeave blank if you don't have a problem with connecting to the server.\nMay e.g. be used when running on a VLAN to force the server to bind to the VLAN."]\
@@ -147,14 +147,6 @@ proc ServerSetRconPasswordState { value } {
     SetConfigItemState $cp.server $serverLayout rconpassword $enabled
     SetConfigItemState $cp.server $serverLayout rconbanpenalty $enabled
     SetConfigItemState $cp.server $serverLayout rconmaxfailures $enabled
-    return $value
-}
-
-proc ServerSetUpdateServerOnRestartState { {value ""} } {
-    global serverLayout
-    set cp [GetCp]
-    set enabled [expr [llength $value] > 0]
-    SetConfigItemState $cp.server $serverLayout updateserveronrestart $enabled
     return $value
 }
 
