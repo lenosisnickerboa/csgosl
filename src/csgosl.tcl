@@ -177,8 +177,8 @@ if {$currentOs == "windows"} {
 
 set name "csgosl"
 set currentDir [pwd]
-set windowWidth 800
-set windowHeigth 600
+set windowWidth 1200
+set windowHeigth 800
 set defaultPadY 5
 set defaultPadX 5
 set hostName [info hostname]

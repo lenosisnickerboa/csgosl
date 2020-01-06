@@ -21,7 +21,7 @@ variable applicationConfig [CreateConfig \
         "bool"      [list showdonation "1" "Disable to stop showing donation button. Please consider donating first though :)"]\
         "bool"      [list generategamemodeservers "1" "Disable automatic regeneration of gamemode_servers.txt."]\
         "bool"      [list includeworkshopmappath "0" "Add relative workshop map directory to map names in gamemode_servers.txt.\nDon't enable if you don't have problems with workshop maps!"]\
-        "string"    [list mainwingeometry "800x600+100+100" "last saved windows size and location."]\
+        "string"    [list mainwingeometry "1200x800+100+100" "last saved windows size and location."]\
     ] \
 ]
 
