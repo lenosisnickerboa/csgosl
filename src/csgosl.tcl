@@ -1052,6 +1052,10 @@ if {$serverPresent} {
     after 5000 { ShowNetInfo ; UpgradeCheck ; StartStuffOnStart }
 }
 
+if { $serverPresent } {
+    Fix_srcds_run_bug
+}
+
 if { $serverPresent && $needsUpgrade } {
     UpdateMods
     if { [file exists "$NeedsUpgradeFileName"] } {

@@ -3,6 +3,8 @@
 # The next line is executed by /bin/sh, but not tcl \
 exec wish "$0" ${1+"$@"}
 
+source [file join $starkit::topdir os.tcl]
+
 ## Server config
 variable serverConfig [CreateConfig \
     [list \
@@ -20,6 +22,7 @@ variable serverConfig [CreateConfig \
         "string"    [list restartserverat "" "Enter space separated times when your server should be restarted. if updateserveronrestart is enabled the server will be updated as well.\nEnter time in 24h format, e.g. 9:27 or 23:59:14.\nMultiple times can be entered, e.g. 6:00 12:00 18:00 00:00:10\nRequires csgosl restart to take effect."]\
         "bool"      [list updateserveronstart "0" "Automatically perform server update when csgosl is launched."]\
         "bool"      [list updateserveronrestart "1" "Perform server update prior to restarting the server"]\
+        "bool"      [list autoserverupdate "0" "LINUX ONLY: The server automatically updates without having to be restarted.\nupdateserveronstart and updateserveronrestart are not needed if this option is enabled."]\
         "string"    [list bindip "" "IP address which your server should bind to.\nLeave blank if you don't have a problem with connecting to the server.\nMay e.g. be used when running on a VLAN to force the server to bind to the VLAN."]\
         "int"       [list port "27015" "Your server port."]\
         "bool"      [list lanonly "1" "If enabled server is only available on your LAN. Default enabled for security reasons, disable when you want to play with friends over the Internet."]\
@@ -121,6 +124,7 @@ variable serverLayout [CreateLayout \
         h2      [list "Misc"] \
         line    [list] \
         space   [list] \
+        parm    [list autoserverupdate] \
         parm    [list tickrate] \
         parm    [list minrate] \
         parm    [list maxrate] \

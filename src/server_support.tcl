@@ -200,6 +200,8 @@ proc GetStartServerCommand {} {
         set ipOption "-ip $bindIp"
     }
 
+    set autoServerUpdateOption [GetAutoUpdateServerCommand]
+
     global srcdsName
     if { $currentOs == "windows" } {
         return "\"[file nativename $serverFolder/$srcdsName]\" \
@@ -221,6 +223,7 @@ proc GetStartServerCommand {} {
             $mapGroupOption \
             $mapOption \
             $steamAccountOption $apiAuthKeyOption \
+            $autoServerUpdateOption \
             -maxplayers_override $players \
             -tickrate $tickRate \
             $passwordOption \
@@ -271,6 +274,38 @@ proc GetUpdateServerCommand {} {
         return "\"[file nativename $steamcmdFolder/$steamCmdExe]\" +runscript \"[file nativename $steamUpdateFilename]\""
     } else {
         return "\"$steamcmdFolder/$steamCmdExe\" +runscript \"$steamUpdateFilename\""
+    }
+}
+
+proc GetAutoUpdateServerCommand {} {
+    global steamcmdFolder
+    global currentOs
+    global steamUpdateFilename
+    global steamCmdExe
+    global serverConfig
+    set autoserverupdateEnable [GetConfigValue $serverConfig autoserverupdate]
+    if { $autoserverupdateEnable != "1" } {
+        return ""
+    }
+
+    if {$currentOs == "linux"} {
+        return "-autoupdate -steamdir \"$steamcmdFolder\" -steamcmd_script \"$steamUpdateFilename\""
+    } else {
+        return ""
+    }
+}
+
+proc Fix_srcds_run_bug {} {
+    global steamcmdFolder
+    global currentOs
+
+    if {$currentOs == "linux"} {
+        set link "$steamcmdFolder/steam.sh"
+        Trace "Applying srcds_run bugfix: symlink $link -> $steamcmdFolder/steamcmd.sh"
+        if { [file exists $link] } {
+            file delete -force $link
+        }
+        file link -symbolic $link $steamcmdFolder/steamcmd.sh
     }
 }
 
@@ -365,6 +400,8 @@ proc UpdateServer {} {
     } else {
         RunCommand [MakeScriptFileName "$installFolder/bin/cmd-update"] [GetUpdateServerCommand]
     }
+
+    Fix_srcds_run_bug
 
     UpdateMods
 
