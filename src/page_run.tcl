@@ -17,12 +17,12 @@ variable runConfig [CreateConfig \
         "enum" [list startmap "de_dust2" "The first maps the server starts hosting. If you enter a workshop map id here that map will be hosted." ""]\
         "bool" [list randomstartmap "0" "Select a random start map from the selected map group when the server is started" onchange "RunRandomStartMapChanged"]\
         "int"  [list players "16" "Defines max number of players including bots." mappedto [list bot_quota]]\
-        "int"  [list bots "0" "Only used when fillwithbots is disabled, ignored otherwhise. Defines exact number of bots." mappedto [list bot_quota]]\
+        "int"  [list bots "0" "Only used when fillwithbots is disabled, ignored otherwise. Defines exact number of bots." mappedto [list bot_quota]]\
         "bool" [list fillwithbots "1" "Add bots until max number of players are reached." mappedto [list bot_quota bot_quota_mode] onchange "RunSetBotsState"]\
         "enum" [list botskill "Normal" "How intelligent bots do you want?" [dict keys $botSkillMapper] mappedto [list bot_difficulty]]\
         "bool" [list friendlyfire "0" "Enable this option to be able to hurt your team mates." mappedto [list mp_friendlyfire]]\
         "int"  [list roundtime "10" "Limit match time to this many minutes." mappedto [list mp_roundtime]]\
-        "bool" [list killcam "1" "Enable this option to be able to see who killed you and where he was located." mappedto [list mp_forcecamera]]\
+        "bool" [list killcam "1" "Allow dead players to spectate the other team." mappedto [list mp_forcecamera]]\
         "string" [list options "" "Expert option, everything added here is appended to the command line when starting the server."]\
         "int"  [list buytime "30" "Seconds you are allowed to buy stuff when the match begins." mappedto [list mp_buytime]]\
         "int"  [list warmuptime "0" "Seconds to warm up before the match begins." mappedto [list mp_warmuptime]]\
@@ -32,7 +32,7 @@ variable runConfig [CreateConfig \
         "int"  [list mp_consecutive_loss_max "4" "This is the limit to how many times the loss bonus will increase, but does not limit the loss counter itself." mappedto [list mp_consecutive_loss_max]]\
         "int"  [list cash_team_winner_bonus_consecutive_rounds "0" "Amount the winner bonus increases by per win" mappedto [list cash_team_winner_bonus_consecutive_rounds]]\
         "int"  [list cash_team_loser_bonus_consecutive_rounds "500" "Amount the loss bonus increases by per loss" mappedto [list cash_team_loser_bonus_consecutive_rounds]]\
-        "int"  [list c4timer "45" "The amount of time in seconds before bomb explodes after planted.\n<10-90>" mappedto [list mp_c4timer]]\
+        "int"  [list c4timer "40" "The amount of time in seconds before bomb explodes after planted.\n<10-90>" mappedto [list mp_c4timer]]\
         "int"  [list fraglimit "0" "Amount of frags a player can exceed before changing maps." mappedto [list mp_fraglimit]]\
         "int"  [list maxrounds "30" "Amount of rounds to play before server changes maps." mappedto [list mp_maxrounds]]\
         "int"  [list winlimit "30" "Max number of rounds one team can win before server changes maps." mappedto [list mp_winlimit]]\
