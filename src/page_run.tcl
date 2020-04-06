@@ -12,8 +12,9 @@ variable runConfig [CreateConfig \
         saveProc "SaveConfigFileRun" \
     ] \
     [list \
-        "enum" [list gamemodetype "Classic Casual" "Select the kind of game you want to play." [dict keys $gameModeMapper]]\
+        "enum" [list gamemodetype "Classic Casual" "Select the kind of game you want to play." [dict keys $gameModeMapper] onchange "RunGameModeTypeChanged"]\
         "enum" [list mapgroup "<allmaps>" "Select which maps you want to play, defined in the map group editor.\nIf you enter a workshop collection id here that collection will be hosted." [dict keys $mapGroupsMapper] onchange "RunMapGroupChanged"]\
+        "bool" [list automapgroup "1" "If enabled, mapgroup \"auto_<current gamemodetype>\" will be automatically selected.\nE.g. If gamemodetype is \"Armsrace\" mapgroup \"auto_Armsrace\" will be selected.\nNote: Spaces in gamemodetype will be ignored, i.e. create map group without spaces, e.g. \"auto_ClassicCasual\"." onchange "RunAutoMapGroupChanged"]\
         "enum" [list startmap "de_dust2" "The first maps the server starts hosting. If you enter a workshop map id here that map will be hosted." ""]\
         "bool" [list randomstartmap "0" "Select a random start map from the selected map group when the server is started" onchange "RunRandomStartMapChanged"]\
         "int"  [list players "16" "Defines max number of players including bots." mappedto [list bot_quota]]\
@@ -63,6 +64,7 @@ variable runLayout [CreateLayout \
         parm    [list mapgroup] \
         parm    [list startmap] \
         parm    [list randomstartmap] \
+        parm    [list automapgroup] \
         space   [list] \
         h2      [list "Players"] \
         line    [list] \
@@ -109,9 +111,21 @@ variable runLayout [CreateLayout \
     ] \
 ]
 
+proc RunGameModeTypeChanged { value1 {value2 ""} } {
+    set value [string trim "$value1 $value2"]
+    Trace "RunGameModeTypeChanged::value=\"$value\""
+    UpdateRunPage
+    return "$value"
+}
+
 proc RunMapGroupChanged { value } {
     UpdateRunPage
-    return $value
+    return "$value"
+}
+
+proc RunAutoMapGroupChanged { value } {
+    UpdateRunPage
+    return "$value"
 }
 
 proc RunSetBotsState { value } {

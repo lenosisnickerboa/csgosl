@@ -8,6 +8,7 @@ source [file join $starkit::topdir hyperlink.tcl]
 source [file join $starkit::topdir config_file.tcl]
 source [file join $starkit::topdir browser.tcl]
 source [file join $starkit::topdir tooltip.tcl]
+source [file join $starkit::topdir trace.tcl]
 
 proc Shift {parms} {
     return [lreplace $parms 0  0]
@@ -397,7 +398,23 @@ proc UpdateRunPage {} {
     $mapGroupsSel configure -values $values
     set mapGroupName [GetGlobalConfigVariableName Run mapgroup]
     global $mapGroupName
+    # This is the selected map group
     set mapGroup [set $mapGroupName]
+    # See if we should autoselect a map group from gamemodetype
+    set autoMapGroupName [GetGlobalConfigVariableName Run automapgroup]
+    global $autoMapGroupName
+    set autoMapGroup [set $autoMapGroupName]
+    if { "$autoMapGroup" == "1" } {
+        set gameModeTypeName [GetGlobalConfigVariableName Run gamemodetype]
+        global $gameModeTypeName
+        set gameModeType [set $gameModeTypeName]
+        set autoSelectedMapGroup [string map {" " ""} "auto_$gameModeType"]
+        if { "$autoSelectedMapGroup" != "$mapGroup" } {
+            # Now this is the selected map group
+            set mapGroup $autoSelectedMapGroup
+            set $mapGroupName $mapGroup
+        }
+    }
     if { [lsearch -exact $values $mapGroup] == -1 } {
         set mapGroup [lindex $values 0]
         set $mapGroupName $mapGroup

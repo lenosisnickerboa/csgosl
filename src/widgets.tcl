@@ -194,8 +194,7 @@ proc CreateCheckbox {at lead variableName default help disableParmsArgs onChange
 }
 
 proc UpdateSelectorChangedStatus {w value default onChangeCmd} {
-#    puts "UpdateSelectorChangedStatus w=$w, value=$value, default=$default"
-    if { $onChangeCmd != "" } {
+    if { "$onChangeCmd" != "" } {
         set value [eval $onChangeCmd $value]
     }
     if { "$value" != "$default" } {
