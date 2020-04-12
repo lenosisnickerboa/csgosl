@@ -410,9 +410,11 @@ proc UpdateRunPage {} {
         set gameModeType [set $gameModeTypeName]
         set autoSelectedMapGroup [string map {" " ""} "auto_$gameModeType"]
         if { "$autoSelectedMapGroup" != "$mapGroup" } {
-            # Now this is the selected map group
-            set mapGroup $autoSelectedMapGroup
-            set $mapGroupName $mapGroup
+            if { [lsearch -exact $values $autoSelectedMapGroup] != -1 } {
+                # Now this is the selected map group
+                set mapGroup $autoSelectedMapGroup
+                set $mapGroupName $mapGroup
+            }
         }
     }
     if { [lsearch -exact $values $mapGroup] == -1 } {
