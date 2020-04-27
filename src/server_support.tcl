@@ -107,6 +107,7 @@ proc GetStartServerCommand {} {
     set steamAccountOption ""
     set apiAuthKeyOption ""
     set serverLanOption "+sv_lan 1"
+    set serverNetPortTry ""
     if { $banProtection != 0 } {
         set serverLan [GetConfigValue $serverConfig lanonly]
         set serverLanOption "+sv_lan $serverLan"
@@ -115,6 +116,7 @@ proc GetStartServerCommand {} {
             if {$steamAccount != ""} {
                 set steamAccountOption "+sv_setsteamaccount $steamAccount"
             }
+            set serverNetPortTry "-net_port_try 1"
         }
         set apiAuthKey [GetConfigValue $steamConfig apiauthkey]
         set apiAuthKeyOption ""
@@ -210,6 +212,7 @@ proc GetStartServerCommand {} {
             $mapGroupOption \
             $mapOption \
             $steamAccountOption $apiAuthKeyOption \
+            $serverNetPortTry \
             -maxplayers_override $players \
             -tickrate $tickRate \
             $passwordOption \
@@ -223,6 +226,7 @@ proc GetStartServerCommand {} {
             $mapGroupOption \
             $mapOption \
             $steamAccountOption $apiAuthKeyOption \
+            $serverNetPortTry \
             $autoServerUpdateOption \
             -maxplayers_override $players \
             -tickrate $tickRate \
