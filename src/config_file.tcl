@@ -18,6 +18,10 @@ proc StoreHeader {fp {prefix "//"}} {
     global version currentConfigVersion 
     puts $fp "$prefix csgosl $version config $currentConfigVersion at [clock format [clock seconds]] (DO NOT TOUCH THIS HEADER LINE!!!)"
 }
+proc StoreWarningDontEdit {fp {prefix "//"}} {
+    puts $fp "$prefix DON'T EDIT, WILL BE OVERWRITTEN NEXT TIME YOU SAVE!!!"
+}
+
 proc StoreHeaderInScript {fp} {
     global currentOs
     if {$currentOs == "windows"} {
@@ -278,7 +282,7 @@ proc IsValidIp {ip} {
 proc SaveSimpleAdminsFile {filename admins} {
     set fp [open "$filename" "w"]
     StoreHeader $fp
-    puts $fp "//DON'T EDIT, WILL BE OVERWRITTEN NEXT TIME YOU SAVE!!!"
+    StoreWarningDontEdit $fp
     foreach admin $admins {
         if { [IsValidIp $admin] } {
             puts $fp "\"!$admin\" \"98:z\""            
@@ -290,11 +294,17 @@ proc SaveSimpleAdminsFile {filename admins} {
 }
 
 proc SaveMaps {filename maps} {
+    global allMapsMeta
     set fp [open "$filename" "w"]
     StoreHeader $fp
-    puts $fp "//DON'T EDIT, WILL BE OVERWRITTEN NEXT TIME YOU SAVE!!!"
+    StoreWarningDontEdit $fp
     foreach map $maps {
-        puts $fp $map
+        set mapPath $map
+        set workshopPath [GetWorkshopMapPath $map]
+        if { $workshopPath != "" } {
+            set mapPath "$workshopPath/$map"
+        }
+        puts $fp $mapPath
     }
     close $fp    
 }
@@ -485,7 +495,7 @@ proc SaveSourceModAdmins {configName} {
     set fileName "$modsFolder/sourcemod/configs/admins.cfg"
     set fileid [open "$fileName" "w"]
     StoreHeader $fileid
-    puts $fileid "//DON'T EDIT, WILL BE OVERWRITTEN NEXT TIME YOU SAVE!!!"
+    StoreWarningDontEdit $fileid
     puts $fileid "//Disable generation by disabling makemeadmin in Steam tab"
     puts $fileid "Admins"
     puts $fileid "{"
@@ -510,7 +520,7 @@ proc SaveGameModesServer {filename} {
     global mapGroupsMapper
     set fileid [open "$filename" "w"]
     StoreHeader $fileid
-    puts $fileid "//DON'T EDIT, WILL BE OVERWRITTEN NEXT TIME YOU SAVE!!!"
+    StoreWarningDontEdit $fileid
     puts $fileid "//For simplicity allows all map groups in all game modes/game types"
     puts $fileid "\"GameModes_Server.txt\""
     puts $fileid "{"
@@ -544,7 +554,7 @@ proc SaveGameModesServer {filename} {
 	puts $fileid "\t{"    
 
     global applicationConfig
-    set includeworkshopmappath [GetConfigValue $applicationConfig includeworkshopmappath]
+#    set includeworkshopmappath [GetConfigValue $applicationConfig includeworkshopmappath]
     
     dict for {mapGroup maps} $mapGroupsMapper {        
 		puts $fileid "\t\t\"$mapGroup\""
@@ -557,15 +567,15 @@ proc SaveGameModesServer {filename} {
             set maps $allMaps
         }
         foreach map $maps {
-            if { $includeworkshopmappath == "1" } {
+#            if { $includeworkshopmappath == "1" } {
                 set path [GetWorkshopMapPath $map]
                 if { $path != "" } {
                     set map "$path/$map"
                 }
        			puts $fileid "\t\t\t\t\"$map\" \"\""                                
-            } else {
-       			puts $fileid "\t\t\t\t\"$map\" \"\""                                
-            }
+#            } else {
+#       			puts $fileid "\t\t\t\t\"$map\" \"\""                                
+#            }
         }
         puts $fileid "\t\t\t}"
         puts $fileid "\t\t}"
