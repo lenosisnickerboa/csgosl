@@ -24,10 +24,10 @@ variable mapsLayout [CreateLayout \
     ] \
     [list \
         space   [list] \
-        h1      [list "These are all installed maps with name and preview picture"] \
+        h1      [list "View your installed maps here and add preview pictures if missing"] \
         space   [list] \
         line    [list] \
         space   [list] \
-        func    [list LayoutFuncMaps] \
+        func    [list LayoutFuncMapsNew] \
     ] \
 ]

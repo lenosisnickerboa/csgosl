@@ -3,6 +3,25 @@
 # The next line is executed by /bin/sh, but not tcl \
 exec wish "$0" ${1+"$@"}
 
+proc LoadMapPreview {url map type id} {
+    global serverFolder
+    set dest [GetWorkshopMapPath "$map"]
+    if {"$dest" != ""} {
+        set dest "$serverFolder/csgo/maps/$dest/$map.jpg"
+        Trace "Trying to load workshop map preview for map $map from $url to $dest"
+    } else {
+        set dest "$serverFolder/csgo/maps/$map.jpg"
+        Trace "Trying to load internal map preview for map $map from $url to $dest"
+    }
+    Wget $url $dest
+    if { ! [file exists $dest] } {
+        Trace "Failed to download jpeg map preview for map $map from $url to $dest"
+        return 0
+    }
+    CacheMap "$map" "$type" "$id"
+    return 1
+}
+
 proc WorkshopMapStillExistsAtSteam {id tmpPath} {
     set htmlFile "$tmpPath/temp.html"
     Trace "Checking if workshop map with $id is still available at Steam..."
@@ -168,12 +187,31 @@ proc LoadMapImageFromWorkshop {url workshopDir id map} {
     file delete $htmlFile
 }
 
-proc CacheMaps {maps mapsMeta} {
+proc CacheMap {map type id} {
     global serverFolder
     global installFolder
     set serverMapsDir "$serverFolder/csgo/maps"
-
     set cachedMapsDir "$installFolder/maps/cached"
+    if {"$type" == "internal"} {
+        if { [file exists "$serverMapsDir/$map.jpg" ] } {
+            ImportMapPicture "$map" "$serverMapsDir" "$installFolder/maps/cached"
+        }
+    } else {
+        set workshopMapsDir "$serverMapsDir/workshop"
+        if { ! [file exists "$workshopMapsDir/$id/$map.jpg"]} {
+            LoadMapImageFromWorkshop "http://steamcommunity.com/sharedfiles/filedetails/?id=$id" "$workshopMapsDir" "$id" "$map"                    
+        }
+        if { [file exists "$workshopMapsDir/$id/$map.jpg" ] } {
+            ImportMapPicture "$map" "$workshopMapsDir/$id" "$installFolder/maps/cached"
+        }
+    }
+}
+
+proc CacheMaps {maps mapsMeta} {
+    global serverFolder
+    global installFolder
+    set cachedMapsDir "$installFolder/maps/cached"
+
     if { ! [file isdirectory "$cachedMapsDir" ] } {
         file mkdir "$cachedMapsDir"
     }
@@ -182,20 +220,11 @@ proc CacheMaps {maps mapsMeta} {
         if { ! [file exists "$installFolder/maps/cached/$map.jpg"] } {
             set meta [dict get $mapsMeta $map]
             set type [dict get $meta type]
-            if {$type == "internal"} {
-                if { [file exists "$serverMapsDir/$map.jpg" ] } {
-                    ImportMapPicture "$map" "$serverMapsDir" "$installFolder/maps/cached"
-                }
-            } else {
+            set id ""
+            if { [dict exists $meta id] } {
                 set id [dict get $meta id]
-                set workshopMapsDir "$serverMapsDir/workshop"
-                if { ! [file exists "$workshopMapsDir/$id/$map.jpg"]} {
-                    LoadMapImageFromWorkshop "http://steamcommunity.com/sharedfiles/filedetails/?id=$id" "$workshopMapsDir" "$id" "$map"                    
-                }
-                if { [file exists "$workshopMapsDir/$id/$map.jpg" ] } {
-                    ImportMapPicture "$map" "$workshopMapsDir/$id" "$installFolder/maps/cached"
-                }
             }
+            CacheMap "$map" "$type" "$id"
         }
     }
 }

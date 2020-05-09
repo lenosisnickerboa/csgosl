@@ -113,7 +113,6 @@ variable runLayout [CreateLayout \
 
 proc RunGameModeTypeChanged { value1 {value2 ""} } {
     set value [string trim "$value1 $value2"]
-    Trace "RunGameModeTypeChanged::value=\"$value\""
     UpdateRunPage
     return "$value"
 }

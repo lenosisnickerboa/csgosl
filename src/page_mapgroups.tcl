@@ -27,11 +27,11 @@ variable mapGroupsLayout [CreateLayout \
         space   [list] \
         h1      [list "Create custom map groups using your installed maps."] \
         space   [list] \
-        text    [list "Enter a name for your new group, click Add and then Edit to define which maps to include"] \
-        text    [list "in this groups. Simply close the maps windows when you have finished maps selection."] \
+        text    [list "Enter a name for your new group in the text entry box below the map group list and click Add."] \
+        text    [list "Select the group to edit it or click Delete to delete the map group."] \
         line    [list] \
         space   [list] \
         space   [list] \
-        func    [list LayoutFuncMapGroups] \
+        func    [list LayoutFuncMapGroupsNew] \
     ] \
 ]

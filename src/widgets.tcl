@@ -41,6 +41,12 @@ proc CreateSetDefaultImage {} {
     image create photo setDefaultImage
     setDefaultImage copy setDefaultImageOrig -subsample 2            
 }
+variable reloadImage
+proc CreateReloadImage {} {
+    image create photo reloadImageOrig -width 32 -height 32 -file [file join $starkit::topdir "reload.png"]
+    image create photo reloadImage
+    reloadImage copy reloadImageOrig -subsample 2
+}
 variable deleteCustomImage
 proc CreateDeleteCustomImage {} {
     image create photo deleteCustomImageOrig -width 32 -height 32 -file [file join $starkit::topdir "delete.png"]

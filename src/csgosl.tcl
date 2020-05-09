@@ -217,6 +217,7 @@ CreateWindow $mainWinGeometry $name $version
 SetTitle "$name $version - loading configuration..."
 
 CreateSetDefaultImage
+CreateReloadImage
 CreateDeleteCustomImage
 
 source [file join $starkit::topdir page_server.tcl]
@@ -534,11 +535,18 @@ proc SaveConfigFileSourcemod {} {
 }
 
 ## Maps config
+proc LoadMaps {} {
+    global allMaps
+    global allMapsMeta
+    global serverFolder
+    GetMaps "$serverFolder/csgo/maps/" allMaps allMapsMeta
+    CacheMaps $allMaps $allMapsMeta
+}
+
 SetTitle "$name $version - loading maps..."
 variable allMaps
 variable allMapsMeta
-GetMaps "$serverFolder/csgo/maps/" allMaps allMapsMeta
-CacheMaps $allMaps $allMapsMeta
+LoadMaps
 source [file join $starkit::topdir page_maps.tcl]
 
 SetTitle "$name $version - loading configuration..."
