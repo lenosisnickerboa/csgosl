@@ -27,8 +27,10 @@ variable mapGroupsLayout [CreateLayout \
         space   [list] \
         h1      [list "Create custom map groups using your installed maps."] \
         space   [list] \
-        text    [list "Enter a name for your new group in the text entry box below the map group list and click Add."] \
-        text    [list "Select the group to edit it or click Delete to delete the map group."] \
+        text    [list "Select map group to work on in the left view. Add/remove maps in middle view using normal selection, i.e."] \
+        text    [list "SHIFT-click starts and ends selection, CTRL-click toggles selection, just clicking selects one map and deselects all other."] \
+        text    [list "When done press the \"Update\" button to update map group, or the \"Restore\" button to discard your changes."] \
+        text    [list "At any time right-click a map to watch a preview of that map in the right pane."] \
         line    [list] \
         space   [list] \
         space   [list] \

@@ -366,10 +366,10 @@ variable SelectedMapType
 variable SelectedMapId
 variable SelectedMapPreviewUrl
 
-proc RefreshMaps {name} {
+proc RefreshMaps {} {
     global allMaps
     global MapCountVariable
-    Trace "Refreshing all maps... $name"
+    Trace "Refreshing all maps..."
     LoadMaps
     set MapCountVariable "Number of maps: [llength $allMaps]"
 }
@@ -421,7 +421,7 @@ proc CreateSelectedMapPreviewUrl {at} {
     button $at.d -image reloadImage -command "LoadPreview"
     SetTooltip $at.d "Will attempt to load a preview picture using this URL"
     pack $at.l -side left -anchor w
-    set help "Enter a URL to a picture you want to use as preview for this map"
+    set help "Enter a URL to a JPG picture you want to use as preview for this map"
     SetTooltip $at.l "$help" 
     pack $at.e -side left -anchor w -fill x -expand true
     SetTooltip $at.e "$help"
@@ -485,7 +485,7 @@ proc LayoutFuncMapsNew {at help layout parms} {
     frame $at.maps
     pack $at.maps -side left -fill both -expand true
 
-    button $at.maps.refresh -text "Refresh maps" -command "RefreshMaps nisse"
+    button $at.maps.refresh -text "Refresh maps" -command "RefreshMaps"
     pack $at.maps.refresh -side top -anchor w
 
     frame $at.maps.lbframe
@@ -596,18 +596,21 @@ proc UpdateRunPage {} {
 }
 
 proc FixMapGroupName { name } {
-    return [regsub -all {\s+} $name "_"]
+    set name [regsub -all {\-+} $name "_"]
+    set name [regsub -all {\s+} $name "_"]
+    return $name
 }
 
 proc AddMapGroup {lb} {
     set mapGroupsName [GetGlobalConfigVariableName MapGroups mapGroups]
     global $mapGroupsName
-    global addMapGroupName
+    set addMapGroupName "empty-group"
     global mapGroupsMapper
     if { $addMapGroupName != "" && $addMapGroupName != "<allmaps>" } {
         set addMapGroupName [FixMapGroupName $addMapGroupName]
         set addMapGroupName [regsub -all {\s+} $addMapGroupName _]
         $lb insert end "$addMapGroupName"
+        $lb see end
         set mapGroups [set $mapGroupsName]
         set mapGroupsMapper [dict set mapGroupsMapper $addMapGroupName [list]]
         set $mapGroupsName [lsearch -all -inline -not -exact [lsort [dict keys $mapGroupsMapper]] "<allmaps>"]
@@ -616,26 +619,6 @@ proc AddMapGroup {lb} {
         UpdateRunPage
     }
 }
-#proc AddMapGroupZ {lb} {
-#    AddMapGroup $lb
-#    global addMapGroupName
-#    set addMapGroupName ""
-#}
-
-#proc EditMapGroup {lb} {
-#    global mapGroupsMapper
-#    set mapGroupsName [GetGlobalConfigVariableName MapGroups mapGroups]
-#    global $mapGroupsName
-#    set idx [$lb curselection]
-#    set mapGroups [set $mapGroupsName]
-#    set sel [lindex $mapGroups $idx]
-#    global allMaps
-#    SetMapsState $allMaps [dict get $mapGroupsMapper $sel]
-#    CreateMapsSelectorWindow "Select maps which should be included in map group $sel and then close the window when done." $allMaps true
-#    set mapGroup [GetMapsState $allMaps]
-#    set mapGroupsMapper [dict set mapGroupsMapper $sel $mapGroup]
-#    UpdateRunPage
-#}
 
 proc DeleteMapGroup {lb} {
     set mapGroupsName [GetGlobalConfigVariableName MapGroups mapGroups]
@@ -653,6 +636,39 @@ proc DeleteMapGroup {lb} {
     }
 }
 
+variable RenameMapGroupNewName 
+
+proc RenameMapGroup {lb} {
+    set mapGroupsName [GetGlobalConfigVariableName MapGroups mapGroups]
+    global $mapGroupsName
+    global mapGroupsMapper
+    set mapGroups [set $mapGroupsName]
+    set idx [$lb curselection]
+    if { $idx >= 0 } {
+        #copy from selected
+    	set sel [lindex $mapGroups $idx]
+        global RenameMapGroupNewName
+        set RenameMapGroupNewName $sel
+        if {[tk_getString .valueDlg RenameMapGroupNewName "Rename map group" "Please enter a new name"]} {
+            if { "$RenameMapGroupNewName" != "$sel" } {
+                set source [dict get $mapGroupsMapper $sel]
+                #replace
+                set addMapGroupName [FixMapGroupName $RenameMapGroupNewName]
+                set addMapGroupName [regsub -all {\s+} $addMapGroupName _]
+                $lb delete $idx
+            	set mapGroupsMapper [dict remove $mapGroupsMapper $sel]
+                $lb insert end "$addMapGroupName"
+                $lb see end
+                set mapGroups [set $mapGroupsName]
+                set mapGroupsMapper [dict set mapGroupsMapper $addMapGroupName $source]
+                set $mapGroupsName [lsearch -all -inline -not -exact [lsort [dict keys $mapGroupsMapper]] "<allmaps>"]
+                #update
+            	UpdateRunPage
+            }
+        }
+    }
+}
+
 proc CopyMapGroup {lb} {
     set mapGroupsName [GetGlobalConfigVariableName MapGroups mapGroups]
     global $mapGroupsName
@@ -662,12 +678,13 @@ proc CopyMapGroup {lb} {
     if { $idx >= 0 } {
         #copy from selected
     	set sel [lindex $mapGroups $idx]
-        set copied "CopyOf$sel"
+        set copied "${sel}_copy"
         set source [dict get $mapGroupsMapper $sel]
         #add copy
         set addMapGroupName [FixMapGroupName $copied]
         set addMapGroupName [regsub -all {\s+} $addMapGroupName _]
         $lb insert end "$addMapGroupName"
+        $lb see end
         set mapGroups [set $mapGroupsName]
         set mapGroupsMapper [dict set mapGroupsMapper $addMapGroupName $source]
         set $mapGroupsName [lsearch -all -inline -not -exact [lsort [dict keys $mapGroupsMapper]] "<allmaps>"]
@@ -685,10 +702,7 @@ proc SetSelectedMapGroup {lbMapGroups lbMaps} {
     global $mapGroupsName
     set mapGroups [set $mapGroupsName]
     set sel [lindex $mapGroups [$lbMapGroups curselection]]
-    global addMapGroupName
-    set addMapGroupName "$sel"
-    set includedMaps [dict get $mapGroupsMapper $addMapGroupName]
-    Trace "Maps: $includedMaps"
+    set includedMaps [dict get $mapGroupsMapper $sel]
     set seeIx 0
     $lbMaps selection clear 0 end
     foreach map $includedMaps {
@@ -699,18 +713,53 @@ proc SetSelectedMapGroup {lbMapGroups lbMaps} {
         $lbMaps selection set $ix $ix
     }
     $lbMaps see $seeIx
+    $lbMaps activate $ix
     global SelectedMapCountVariable
     set SelectedMapCountVariable "Number of selected maps: [llength $includedMaps]/[llength $allMaps]"
 }
 
+proc UpdateMapGroup {lbMapGroups lbMaps} {
+    global mapGroupsMapper
+    global allMaps
+    set mapGroupsName [GetGlobalConfigVariableName MapGroups mapGroups]
+    global $mapGroupsName
+    set mapGroups [set $mapGroupsName]
+    set sel [lindex $mapGroups [$lbMapGroups curselection]]
+    set includedMapIxs [$lbMaps curselection]
+    set includedMaps {}
+    foreach mapIx $includedMapIxs {
+        lappend includedMaps [lindex $allMaps $mapIx]
+    }
+    set mapGroupsMapper [dict set mapGroupsMapper $sel $includedMaps]
+}
+
+proc RestoreMapGroup {lbMapGroups lbMaps} {
+    SetSelectedMapGroup $lbMapGroups $lbMaps
+    UpdateMapGroup $lbMapGroups $lbMaps
+}
+
+variable CurrentMouseYInMaps 0
+proc UpdateCurrentMouseYInMaps {lbMaps} {
+    global CurrentMouseYInMaps
+    set CurrentMouseYInMaps [winfo pointery $lbMaps]
+}
+
 proc ShowMapPreview {lbMaps} {
     global SelectedPreviewMapName
-    Trace "Currently active  : [$lbMaps get active]"
-    set SelectedPreviewMapName [$lbMaps get active]
+    global CurrentMouseYInMaps
+    set wBaseY [winfo rooty $lbMaps]
+    set scrollBoxYView [$lbMaps yview]
+    set scrollBoxY [lindex $scrollBoxYView 0]
+    set scrollBoxElems [$lbMaps size]
+    set scrollLines [expr round($scrollBoxY * $scrollBoxElems)]
+    set bbox [$lbMaps bbox $scrollLines]
+    set listItemHeight [lindex $bbox 3]
+    incr listItemHeight
+    set hooverIdx [expr round($scrollLines + ($CurrentMouseYInMaps - $wBaseY) / $listItemHeight)]
+    set SelectedPreviewMapName [$lbMaps get $hooverIdx]
     UpdateMapPreview
 }
 
-variable addMapGroupName
 variable mapGroupListBox
 variable MapGroupCountVariable
 variable SelectedMapCountVariable
@@ -749,7 +798,6 @@ proc LayoutFuncMapGroupsNew {at help layout parms} {
     global $configName
     set config [set $configName]
     set values [dict get $config values]
-    global addMapGroupName
     global mapGroupListBox
     set mapGroups [lsort [dict get $values mapGroups]]
     set mapGroupsName [GetGlobalConfigVariableName MapGroups mapGroups]
@@ -769,17 +817,19 @@ proc LayoutFuncMapGroupsNew {at help layout parms} {
     $groupsLbFrame.lb configure -yscrollcommand "$groupsLbFrame.sb set"
     pack $groupsLbFrame -side top -anchor w
     pack $groupsFrame -side left -anchor nw
-    frame $groupsFrame.e
-    entry $groupsFrame.e.sel -width 40 -relief sunken -textvariable addMapGroupName
-    pack $groupsFrame.e.sel -side left -anchor w -fill x
-    pack $groupsFrame.e -side top -anchor w -fill x
     frame $groupsFrame.buttons
     button $groupsFrame.buttons.add -text "+" -command "AddMapGroup $mapGroupListBox"
+    SetTooltip $groupsFrame.buttons.add "Adds a new empty map group, rename it to set a better name"
     button $groupsFrame.buttons.delete -text "-" -command "DeleteMapGroup $mapGroupListBox"
+    SetTooltip $groupsFrame.buttons.delete "Deletes currently selected map group"
     button $groupsFrame.buttons.copy -text "Copy" -command "CopyMapGroup $mapGroupListBox"
+    SetTooltip $groupsFrame.buttons.copy "Copies currently selected map group to a new group named <old name>_copy"
+    button $groupsFrame.buttons.rename -text "Rename" -command "RenameMapGroup $mapGroupListBox"
+    SetTooltip $groupsFrame.buttons.rename "Renames currently selected map group. Spaces and - are not allowed in a map group name."
     pack $groupsFrame.buttons.add -side left -anchor w
     pack $groupsFrame.buttons.delete -side left
     pack $groupsFrame.buttons.copy -side left
+    pack $groupsFrame.buttons.rename -side left
     pack $groupsFrame.buttons -side top -anchor w -fill x
 
     #maps    
@@ -794,20 +844,30 @@ proc LayoutFuncMapGroupsNew {at help layout parms} {
     $mapsLbFrame.lb configure -yscrollcommand "$mapsLbFrame.sb set"
     pack $mapsLbFrame -side top -anchor w
     pack $mapsFrame -side left -anchor n
+    frame $mapsFrame.buttons
+    button $mapsFrame.buttons.update -text "<-- Update" -command "UpdateMapGroup $mapGroupListBox $mapsListBox"
+    SetTooltip $mapsFrame.buttons.update "Updates map group with selected maps"
+    button $mapsFrame.buttons.restore -text "--> Restore" -command "RestoreMapGroup $mapGroupListBox $mapsListBox"
+    SetTooltip $mapsFrame.buttons.restore "Restores map group with old settings, i.e. overwrites your currently selected maps"
+    pack $mapsFrame.buttons.update -side top -anchor w
+    pack $mapsFrame.buttons.restore -side top -anchor w
+    pack $mapsFrame.buttons -side top -anchor w -fill x
     
     #map preview
     set mapPreviewFrame [frame $at.mappreview]
-    label $mapPreviewFrame.previewtext -text "Preview here..."
+    label $mapPreviewFrame.previewtext -text "Press right mouse button over a map to preview it"
     pack $mapPreviewFrame.previewtext -side top -anchor w
     pack [CreateMapPreview $mapPreviewFrame.previewimage] -side top -fill x
     pack $mapPreviewFrame -side left -anchor ne
-    
+
     pack $at -side top
 
     bind $mapGroupListBox <<ListboxSelect>> "SetSelectedMapGroup %W $mapsListBox"
 #    bind $mapsListBox <<ListboxSelect>> "ShowMapPreview %W"
     event add <<MyEvent>> <Return>
     bind $mapsListBox <<MyEvent>> "ShowMapPreview %W"
+    bind $mapsListBox <3> "ShowMapPreview %W"
+    bind $mapsListBox <Motion> "UpdateCurrentMouseYInMaps %W"
 #    bind $mapsListBox <Double-B1-ButtonRelease> "ShowMapPreview $mapsListBox"
 #    bind $at.e.sel <Return> [subst "AddMapGroupZ $mapGroupListBox"]
 #    bind $at.e.sel <KP_Enter> [subst "AddMapGroupZ $mapGroupListBox"]

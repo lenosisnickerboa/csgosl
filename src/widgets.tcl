@@ -9,6 +9,56 @@ source [file join $starkit::topdir restart.tcl]
 
 package require Tk
 
+#source: https://wiki.tcl-lang.org/page/Another+little+value+dialog
+proc tk_getString {w var title text} {
+   variable ::tk::Priv
+   upvar $var result
+   catch {destroy $w}
+   set focus [focus]
+   set grab [grab current .]
+
+   toplevel $w -bd 1 -relief raised -class TkSDialog
+   wm title $w $title
+   wm iconname  $w $title
+   wm protocol  $w WM_DELETE_WINDOW {set ::tk::Priv(button) 0}
+   wm transient $w [winfo toplevel [winfo parent $w]]
+
+   global $var
+   entry  $w.entry -width 20 -textvariable $var
+   button $w.ok -bd 1 -width 5 -text Ok -default active -command {set ::tk::Priv(button) 1}
+   button $w.cancel -bd 1 -text Cancel -command {set ::tk::Priv(button) 0}
+   label  $w.label -text $text
+
+   grid $w.label -columnspan 2 -sticky ew -padx 3 -pady 3
+   grid $w.entry -columnspan 2 -sticky ew -padx 3 -pady 3
+   grid $w.ok $w.cancel -padx 3 -pady 3
+   grid rowconfigure $w 2 -weight 1
+   grid columnconfigure $w {0 1} -uniform 1 -weight 1
+
+   bind $w <Return>  {set ::tk::Priv(button) 1}
+   bind $w <Destroy> {set ::tk::Priv(button) 0}
+   bind $w <Escape>  {set ::tk::Priv(button) 0}
+
+   wm withdraw $w
+   update idletasks
+   focus $w.entry
+   set x [expr {[winfo screenwidth  $w]/2 - [winfo reqwidth  $w]/2 - [winfo vrootx $w]}]
+   set y [expr {[winfo screenheight $w]/2 - [winfo reqheight $w]/2 - [winfo vrooty $w]}]
+   wm geom $w +$x+$y
+   wm deiconify $w
+   grab $w
+
+   tkwait variable ::tk::Priv(button)
+   set result [$w.entry get]
+   bind $w <Destroy> {}
+   grab release $w
+   destroy $w
+   focus -force $focus
+   if {$grab != ""} {grab $grab}
+   update idletasks
+   return $::tk::Priv(button)
+}
+
 proc Help {subject} {
     Browser "https://github.com/lenosisnickerboa/csgosl/wiki/Help-on-$subject"
 }

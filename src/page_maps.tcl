@@ -24,8 +24,11 @@ variable mapsLayout [CreateLayout \
     ] \
     [list \
         space   [list] \
-        h1      [list "View your installed maps here and add preview pictures if missing"] \
+        h1      [list "View your installed maps here and add a preview picture if it is missing."] \
         space   [list] \
+        text    [list "Make sure the preview URL references a single JPG picture file. Use something like \"Open image in new tab\""] \
+        text    [list "and then \"Copy image address\" to ensure you get a proper URL to paste in \"Preview URL\" below."] \
+        text    [list "Hint: Use map previews from Steam Workshop, they are JPGs and work fine in csgosl."] \
         line    [list] \
         space   [list] \
         func    [list LayoutFuncMapsNew] \
