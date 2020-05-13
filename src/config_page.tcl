@@ -674,6 +674,9 @@ proc SetSelectedMapGroup {lbMapGroups lbMaps} {
     global $mapGroupsName
     set mapGroups [set $mapGroupsName]
     set sel [lindex $mapGroups [$lbMapGroups curselection]]
+    if { "$sel" == "" } {
+        return
+    }
     set includedMaps [dict get $mapGroupsMapper $sel]
     set seeIx 0
     set ix 0
