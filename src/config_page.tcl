@@ -9,6 +9,7 @@ source [file join $starkit::topdir config_file.tcl]
 source [file join $starkit::topdir browser.tcl]
 source [file join $starkit::topdir tooltip.tcl]
 source [file join $starkit::topdir trace.tcl]
+source [file join $starkit::topdir openfolder.tcl]
 
 proc Shift {parms} {
     return [lreplace $parms 0  0]
@@ -342,6 +343,12 @@ proc RefreshMaps {} {
     Trace "Refreshing all maps..."
     LoadMaps
     set MapCountVariable "Number of maps: [llength $allMaps]"
+    UpdateRunPage
+    global mapsListBox
+    global mapGroupListBox
+    global mapsListBoxMultiSelect
+    SetSelectedMap $mapsListBox 
+    SetSelectedMapGroup $mapGroupListBox $mapsListBoxMultiSelect
 }
 
 proc LoadPreview {} {
@@ -372,15 +379,36 @@ proc CreateSelectedMapType {at} {
     return $at
 }
 
+proc OpenWorkshopFolder {} {
+    global serverFolder
+    global SelectedMapId
+    if { $SelectedMapId != "" } {
+        OpenFolder "$serverFolder/csgo/maps/workshop/$SelectedMapId"
+    } else {
+        tk_dialog .myDialog "Will not open folder" "This is not a workshop map" "" 0 "OK"
+    }
+}
+
+proc CreateSelectedMapId {at} {
+    frame $at
+    global SelectedMapId
+    label $at.e -width 40 -relief sunken -background lightgrey -textvariable SelectedMapId
+    pack $at.e -side left -anchor w -fill x -expand true
+    button $at.d -image folderImage -command "OpenWorkshopFolder"
+    SetTooltip $at.d "Will open file explorer where this map is stored to allow you to inspect and potentially delete it."
+    pack $at.d -side right
+    return $at
+}
+
 proc CreateSelectedMapPreviewUrl {at} {
     frame $at 
     global SelectedMapPreviewUrl
     entry $at.e -width 40 -relief sunken -textvariable SelectedMapPreviewUrl -background white
+    set help "Enter a URL to a JPG picture you want to use as preview for this map and click load button"
+    SetTooltip $at.e "$help"
     button $at.d -image reloadImage -command "LoadPreview"
     SetTooltip $at.d "Will attempt to load a preview picture using this URL"
-    set help "Enter a URL to a JPG picture you want to use as preview for this map and click load button"
     pack $at.e -side left -anchor w -fill x -expand true -padx 0
-    SetTooltip $at.e "$help"
     pack $at.d -side right
     return $at
 }
@@ -409,7 +437,7 @@ proc CreateSelectedMapPreview {at} {
     return $at
 }
 
-proc SetSelectedMap {at lb} {
+proc SetSelectedMap {lb} {
     global allMaps
     global allMapsMeta
     global SelectedMapName
@@ -432,6 +460,7 @@ proc SetSelectedMap {at lb} {
 }
 
 variable MapCountVariable "?"
+variable mapsListBox
 proc LayoutFuncMaps {at help layout parms} {
     global allMaps
     global MapCountVariable
@@ -443,12 +472,13 @@ proc LayoutFuncMaps {at help layout parms} {
 
     frame $at.maps.lbframe
     #-exportselection 0 -> listbox does not lose selection when something is selected in the entry widget (weird)
+    global mapsListBox
     set mapsListBox [tk::listbox $at.maps.lbframe.listbox -listvariable allMaps -height 15 -width 40 -activestyle none -exportselection 0]
     pack $mapsListBox -side left
     pack [ttk::scrollbar $at.maps.lbframe.sb -command "$at.maps.lbframe.listbox yview" -orient vertical] -side left -fill y -expand true
     $at.maps.lbframe.listbox configure -yscrollcommand "$at.maps.lbframe.sb set"
     $mapsListBox select set 0
-    bind $mapsListBox <<ListboxSelect>> "SetSelectedMap $at %W"
+    bind $mapsListBox <<ListboxSelect>> "SetSelectedMap %W"
     pack $at.maps.lbframe -side top
 
     set MapCountVariable "Number of maps: [llength $allMaps]"
@@ -462,11 +492,12 @@ proc LayoutFuncMaps {at help layout parms} {
     pack $at.map -side right -fill both -expand true -padx 20
             
     pack [CreateSelectedMapName $at.map.name] -side top -fill x
-    pack [CreateSelectedMapType $at.map.type] -side top -fill x
+    pack [CreateSelectedMapType $at.map.id] -side top -fill x
+    pack [CreateSelectedMapId $at.map.type] -side top -fill x
     pack [CreateSelectedMapPreviewUrl $at.map.previewurl] -side top -fill x
     pack [CreateSelectedMapPreview $at.map.preview] -side top -fill x
         
-    SetSelectedMap $at $mapsListBox
+    SetSelectedMap $mapsListBox
     
     pack $at -side top -fill both -expand true
     
@@ -528,6 +559,26 @@ proc FixMapGroupName { name } {
     set name [regsub -all {\-+} $name "_"]
     set name [regsub -all {\s+} $name "_"]
     return $name
+}
+
+proc ValidateMapGroupsMapper {} {
+    global mapGroupsMapper
+    global allMaps
+    if { ! [info exists mapGroupsMapper] } {
+        return
+    }
+    dict for {mapGroup maps} $mapGroupsMapper {
+        foreach map $maps {
+            if { [lsearch -exact -sorted $allMaps $map] == -1 } {
+                Trace "Map $map no longer exists, will be removed from mapgroup $mapGroup"
+                set oldMaps [dict get $mapGroupsMapper $mapGroup]
+            	set mapGroupsMapper [dict remove $mapGroupsMapper $mapGroup]
+                set idx [lsearch -exact -sorted $oldMaps $map]
+                set newMaps [lreplace $oldMaps $idx $idx]                
+                set mapGroupsMapper [dict set mapGroupsMapper $mapGroup $newMaps]
+            }
+        }
+    }
 }
 
 proc GetSelectedMapGroup {lbMapGroups} {
@@ -754,6 +805,7 @@ proc ClickedMapsListBox {lbMapGroups lbMaps} {
 }
 
 variable mapGroupListBox
+variable mapsListBoxMultiSelect
 variable MapGroupCountVariable
 variable SelectedMapCountVariable
 variable imgSelectedPreviewMap
@@ -823,8 +875,9 @@ proc LayoutFuncMapGroups {at help layout parms} {
     label $mapsFrame.mapcount -textvariable SelectedMapCountVariable
     pack $mapsFrame.mapcount -side top -anchor w
     set mapsLbFrame [frame $mapsFrame.lbframe]
-    set mapsListBox [tk::listbox $mapsLbFrame.lb -listvariable allMaps -height 15 -width 40 -activestyle none -exportselection 0 -selectmode extended]
-    pack $mapsListBox -side left
+    global mapsListBoxMultiSelect
+    set mapsListBoxMultiSelect [tk::listbox $mapsLbFrame.lb -listvariable allMaps -height 15 -width 40 -activestyle none -exportselection 0 -selectmode extended]
+    pack $mapsListBoxMultiSelect -side left
     pack [ttk::scrollbar $mapsLbFrame.sb -command "$mapsLbFrame.lb yview" -orient vertical] -side right -fill y -expand true
     $mapsLbFrame.lb configure -yscrollcommand "$mapsLbFrame.sb set"
     pack $mapsLbFrame -side top -anchor w
@@ -832,22 +885,22 @@ proc LayoutFuncMapGroups {at help layout parms} {
 
     # update buttons
     frame $synchFrame.buttons
-    button $synchFrame.buttons.update -text "<--" -command "UpdateMapGroup $mapGroupListBox $mapsListBox"
+    button $synchFrame.buttons.update -text "<--" -command "UpdateMapGroup $mapGroupListBox $mapsListBoxMultiSelect"
     SetTooltip $synchFrame.buttons.update "Updates map group with selected maps"
-    button $synchFrame.buttons.restore -text "-->" -command "RestoreMapGroup $mapGroupListBox $mapsListBox"
+    button $synchFrame.buttons.restore -text "-->" -command "RestoreMapGroup $mapGroupListBox $mapsListBoxMultiSelect"
     SetTooltip $synchFrame.buttons.restore "Restores map group with old settings, i.e. overwrites your currently selected maps"
     pack $synchFrame.buttons.update -side top -fill x
     pack $synchFrame.buttons.restore -side top -fill x
     pack $synchFrame.buttons -side top -anchor center
 
     # map group buttons
-    button $groupsFrame.buttons.add -text "+" -command "AddMapGroup $mapGroupListBox  $mapsListBox"
+    button $groupsFrame.buttons.add -text "+" -command "AddMapGroup $mapGroupListBox  $mapsListBoxMultiSelect"
     SetTooltip $groupsFrame.buttons.add "Adds a new empty map group \"empty_mapgroup\", rename it to set a better name"
-    button $groupsFrame.buttons.delete -text "-" -command "DeleteMapGroup $mapGroupListBox $mapsListBox"
+    button $groupsFrame.buttons.delete -text "-" -command "DeleteMapGroup $mapGroupListBox $mapsListBoxMultiSelect"
     SetTooltip $groupsFrame.buttons.delete "Deletes currently selected map group"
-    button $groupsFrame.buttons.copy -text "Copy" -command "CopyMapGroup $mapGroupListBox $mapsListBox"
+    button $groupsFrame.buttons.copy -text "Copy" -command "CopyMapGroup $mapGroupListBox $mapsListBoxMultiSelect"
     SetTooltip $groupsFrame.buttons.copy "Copies currently selected map group to a new group named <old name>_copy"
-    button $groupsFrame.buttons.rename -text "Rename" -command "RenameMapGroup $mapGroupListBox $mapsListBox"
+    button $groupsFrame.buttons.rename -text "Rename" -command "RenameMapGroup $mapGroupListBox $mapsListBoxMultiSelect"
     SetTooltip $groupsFrame.buttons.rename "Renames currently selected map group. Spaces and - are not allowed in a map group name."
     pack $groupsFrame.buttons.add -side left -anchor w
     pack $groupsFrame.buttons.delete -side left
@@ -863,16 +916,16 @@ proc LayoutFuncMapGroups {at help layout parms} {
 
     pack $at -side top
 
-    bind $mapGroupListBox <<ListboxSelect>> "SetSelectedMapGroup %W $mapsListBox"
-    bind $mapsListBox <<ListboxSelect>> "ClickedMapsListBox $mapGroupListBox %W"
+    bind $mapGroupListBox <<ListboxSelect>> "SetSelectedMapGroup %W $mapsListBoxMultiSelect"
+    bind $mapsListBoxMultiSelect <<ListboxSelect>> "ClickedMapsListBox $mapGroupListBox %W"
     event add <<MyEvent>> <Return>
-    bind $mapsListBox <<MyEvent>> "ShowMapPreview %W"
-    bind $mapsListBox <3> "ShowMapPreview %W"
-    bind $mapsListBox <Motion> "UpdateCurrentMouseYInMaps %W"
-    bind $mapGroupListBox <Double-B1-ButtonRelease> "RenameMapGroup $mapGroupListBox $mapsListBox"
+    bind $mapsListBoxMultiSelect <<MyEvent>> "ShowMapPreview %W"
+    bind $mapsListBoxMultiSelect <3> "ShowMapPreview %W"
+    bind $mapsListBoxMultiSelect <Motion> "UpdateCurrentMouseYInMaps %W"
+    bind $mapGroupListBox <Double-B1-ButtonRelease> "RenameMapGroup $mapGroupListBox $mapsListBoxMultiSelect"
 
     $mapGroupListBox select set 0
-    SetSelectedMapGroup $mapGroupListBox $mapsListBox
+    SetSelectedMapGroup $mapGroupListBox $mapsListBoxMultiSelect
     
     return $at
 }

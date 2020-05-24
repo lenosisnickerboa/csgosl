@@ -97,6 +97,12 @@ proc CreateReloadImage {} {
     image create photo reloadImage
     reloadImage copy reloadImageOrig -subsample 2
 }
+variable folderImage
+proc CreateFolderImage {} {
+    image create photo folderImageOrig -width 32 -height 32 -file [file join $starkit::topdir "folder.png"]
+    image create photo folderImage
+    folderImage copy folderImageOrig -subsample 2
+}
 variable deleteCustomImage
 proc CreateDeleteCustomImage {} {
     image create photo deleteCustomImageOrig -width 32 -height 32 -file [file join $starkit::topdir "delete.png"]

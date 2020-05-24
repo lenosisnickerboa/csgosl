@@ -219,6 +219,7 @@ SetTitle "$name $version - loading configuration..."
 CreateSetDefaultImage
 CreateReloadImage
 CreateDeleteCustomImage
+CreateFolderImage
 
 source [file join $starkit::topdir page_server.tcl]
 
@@ -541,6 +542,7 @@ proc LoadMaps {} {
     global serverFolder
     GetMaps "$serverFolder/csgo/maps/" allMaps allMapsMeta
     CacheMaps $allMaps $allMapsMeta
+    ValidateMapGroupsMapper
 }
 
 SetTitle "$name $version - loading maps..."
@@ -567,6 +569,7 @@ proc SaveConfigFileMapGroups {} {
 variable mapGroupsMapper [dict create]
 EnsureEmptyFile "$configFolder/mapGroupsMapper.cfg"
 LoadMapGroupsMapper "$configFolder/mapGroupsMapper.cfg"
+ValidateMapGroupsMapper
 
 ## Run config
 variable gameModeMapper [dict create \

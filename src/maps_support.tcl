@@ -225,6 +225,14 @@ proc CacheMaps {maps mapsMeta} {
                 set id [dict get $meta id]
             }
             CacheMap "$map" "$type" "$id"
+        } 
+    }
+    set cachedMaps [glob -nocomplain -tails -type f -path "$installFolder/maps/cached/" *.jpg]
+    foreach m $cachedMaps {
+        set m [file rootname $m]
+        if {$m ni $maps} {
+            Trace "Removing cached image for no longer existing map $m"
+            file delete -force $installFolder/maps/cached/$m.jpg
         }
     }
 }
