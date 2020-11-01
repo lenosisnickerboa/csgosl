@@ -140,6 +140,14 @@ proc GetStartServerCommand {} {
         set serverPortOption "-port $serverPort"
     }
 
+    global gotvConfig
+    set tvPortOption ""
+    set goTvEnable [GetConfigValue $gotvConfig gotvenable]
+    if { $goTvEnable != 0 } {
+        set goTvPort [GetConfigValue $gotvConfig gotvport]
+        set tvPortOption "+tv_port $goTvPort"
+    }
+
     global runConfig
     set gameModeTypeString [GetConfigValue $runConfig gamemodetype]
     global gameModeMapper
@@ -224,6 +232,7 @@ proc GetStartServerCommand {} {
             $serverNetPortTry \
             -maxplayers_override $players \
             -tickrate $tickRate \
+            $tvPortOption \
             $passwordOption \
             $ipOption \
             +hostname \"$serverName\" $serverPortOption $serverLanOption \
@@ -239,6 +248,7 @@ proc GetStartServerCommand {} {
             $autoServerUpdateOption \
             -maxplayers_override $players \
             -tickrate $tickRate \
+            $tvPortOption \
             $passwordOption \
             $ipOption \
             +hostname \\\"$serverName\\\" $serverPortOption $serverLanOption \
