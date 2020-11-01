@@ -75,10 +75,18 @@ proc StartServer {} {
     SaveAll skipStandalone
     global sourcemodConfig
     set banProtection [GetConfigValue $sourcemodConfig banprotection]
+    set allowBannedInPublicServers [GetConfigValue $sourcemodConfig allowbannedinpublicservers]
     if { $banProtection == 0 } {
-        Trace "====================================================================="
-        Trace "Sourcemod banprotection is disabled, enforcing GSLT-less lanonly mode"
-        Trace "====================================================================="
+        if { $allowBannedInPublicServers != 0 }  {
+            Trace "======================================================================="
+            Trace "Sourcemod banprotection is disabled and allowbannedinpublicservers is"
+            Trace "enabled. You're on your own, don't blame me if your server gets banned."
+            Trace "======================================================================="
+        } else {
+            Trace "======================================================================="
+            Trace "Sourcemod banprotection is disabled, enforcing GSLT-less lanonly mode"
+            Trace "======================================================================="
+        }
     }
     global installFolder
 
@@ -104,11 +112,12 @@ proc GetStartServerCommand {} {
 
     global sourcemodConfig
     set banProtection [GetConfigValue $sourcemodConfig banprotection]
+    set allowBannedInPublicServers [GetConfigValue $sourcemodConfig allowbannedinpublicservers]
     set steamAccountOption ""
     set apiAuthKeyOption ""
     set serverLanOption "+sv_lan 1"
     set serverNetPortTry ""
-    if { $banProtection != 0 } {
+    if { $banProtection != 0 || $allowBannedInPublicServers != 0 } {
         set serverLan [GetConfigValue $serverConfig lanonly]
         set serverLanOption "+sv_lan $serverLan"
         if { $serverLan == 0 } {

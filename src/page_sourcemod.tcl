@@ -40,7 +40,8 @@ variable sourcemodConfig [CreateConfig \
     [list \
         "bool"      [list enable "1" "Controls if sourcemod functionality is enabled. If disabled ALL other plugins below are also disabled." onchange "SetSourcemodState"]\
         "bool"      [list lanonly "0" "Only enable sourcemod in lanonly mode"]\
-        "bool"      [list banprotection "1" "Disables all known unsafe plugins and sets FollowCSGOServerGuidelines to \"yes\".\nWhen you disable ban protection FollowCSGOServerGuidelines is set to \"no\" to allow plugins full access.\nDO NOT DISABLE THIS OPTION UNLESS YOU HAVE READ THE HELP PAGE FIRST!\nYOUR SERVER MAY BE BANNED!"]\
+        "bool"      [list banprotection "1" "Disables all known unsafe plugins and sets FollowCSGOServerGuidelines to \"yes\".\nWhen you disable ban protection FollowCSGOServerGuidelines is set to \"no\" to allow plugins full access.\nDO NOT DISABLE THIS OPTION UNLESS YOU HAVE READ THE HELP PAGE FIRST! YOUR SERVER MAY BE BANNED!"]\
+        "bool"      [list allowbannedinpublicservers "0" "If enabled allows banned plugins to be used in public servers.\nI take no responsibility, you're on your own.\nYOUR SERVER MAY BE BANNED!"]\
         "string"    [list admins "" "List all users (separated by space) you want to give admin permissions on your server\nA user is identified by their steam id (e.g STEAM_1:1:12345678) or ip address (e.g. 192.168.1.123).\nSee help page for more information about how to obtain your steam id or find users ip address."]\
         "bool"      [list sm_mapchooser_enable "0" "Controls if this sourcemod plugin is enabled." onchange "SetSourcemodMapChooserState"]\
         "bool"      [list sm_mapchooser_lanonly "1" "Only enable this sourcemod plugin in lanonly mode"]\
@@ -199,7 +200,8 @@ variable sourcemodLayout [CreateLayout \
         line    [list] \
         space   [list] \
         parm    [list banprotection] \
-        warning [list "The first time you enable banprotection you need to update the server by clicking the \"Update Server\" button"] \
+        parm    [list allowbannedinpublicservers]\
+        warning [list "The first time you disable banprotection you need to update the server by clicking the \"Update Server\" button"] \
         warning [list "above. This will install the plugins below. The plugins will still be disabled until you enable them below. If you"] \
         warning [list "decide to reenable banprotection read the help page for instructions on how to ensure that plugins below are"] \
         warning [list "completely removed from the file system."] \
@@ -224,7 +226,7 @@ proc SetSourcemodState { value } {
     global sourcemodLayout
     set cp [GetCp]
     set enabled $value
-    foreach parm [list lanonly banprotection admins sm_mapchooser_enable sm_mapchooser_lanonly sm_mapchooser_mapvote_endvote\
+    foreach parm [list lanonly banprotection allowbannedinpublicservers admins sm_mapchooser_enable sm_mapchooser_lanonly sm_mapchooser_mapvote_endvote\
                   sm_nominations_enable sm_nominations_lanonly sm_rockthevote_enable sm_rockthevote_lanonly\
                   sm_nextmap_enable sm_nextmap_lanonly sm_randomcycle_enable sm_randomcycle_lanonly\
                   sm_warmod_enable sm_warmod_lanonly sm_multi1v1_enable sm_multi1v1_lanonly sm_multi1v1_flashbangs_enable\
