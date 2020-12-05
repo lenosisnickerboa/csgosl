@@ -2,11 +2,11 @@
 TARGET=windows
 include ../common.mk
 METAMOD_HOME_URL="http://www.metamodsource.net/"
-METAMOD_URL="https://mms.alliedmods.net/mmsdrop/1.10/mmsource-1.10.7-git971-windows.zip"
-METAMOD_VERSION="1.10.7-git971"
+METAMOD_URL="https://mms.alliedmods.net/mmsdrop/1.11/mmsource-1.11.0-git1143-windows.zip"
+METAMOD_VERSION="1.11.0-git1143"
 SOURCEMOD_HOME_URL="http://www.sourcemod.net/"
-SOURCEMOD_URL="https://sm.alliedmods.net/smdrop/1.10/sourcemod-1.10.0-git6499-windows.zip"
-SOURCEMOD_VERSION="1.10.0-git6499"
+SOURCEMOD_URL="https://sm.alliedmods.net/smdrop/1.10/sourcemod-1.10.0-git6501-windows.zip"
+SOURCEMOD_VERSION="1.10.0-git6501"
 export
 
 all: mods
@@ -16,6 +16,7 @@ contribs:
 	@echo "$(TARGET) sourcemod $(SOURCEMOD_VERSION) $(SOURCEMOD_HOME_URL) $(SOURCEMOD_URL)"
 	$(MAKE) -C ../mods/franug-knifes contrib
 	$(MAKE) -C ../mods/franug-weapon-paint contrib
+	$(MAKE) -C ../mods/weapon_restrict contrib
 	$(MAKE) -C ../mods/warmod contrib
 	$(MAKE) -C ../mods/multi1v1 contrib
 	$(MAKE) -C ../mods/gunmenu contrib
@@ -37,6 +38,7 @@ mods: dl-metamod dl-sourcemod
 	mkdir -p $(MODS_ROOT)
 	(cd $(MODS_ROOT) ; unzip -o ../metamod.zip)
 	(cd $(MODS_ROOT) ; unzip -o ../sourcemod.zip)
+	$(MAKE) -C ../mods/weapon_restrict
 	$(MAKE) -C ../mods/warmod
 	$(MAKE) -C ../mods/multi1v1
 	$(MAKE) -C ../mods/gunmenu
@@ -58,6 +60,7 @@ mods: dl-metamod dl-sourcemod
 clean:
 	$(MAKE) -C ../mods/franug-knifes clean
 	$(MAKE) -C ../mods/franug-weapon-paint clean
+	$(MAKE) -C ../mods/weapon_restrict clean
 	$(MAKE) -C ../mods/warmod clean
 	$(MAKE) -C ../mods/multi1v1 clean
 	$(MAKE) -C ../mods/gunmenu clean

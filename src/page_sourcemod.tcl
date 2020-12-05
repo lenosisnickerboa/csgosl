@@ -10,6 +10,7 @@ variable sourcemodPlugins [list \
     rockthevote [list false sm_rockthevote_enable sm_rockthevote_lanonly rockthevote.smx] \
     nextmap [list false sm_nextmap_enable sm_nextmap_lanonly nextmap.smx] \
     randomcycle [list false sm_randomcycle_enable sm_randomcycle_lanonly randomcycle.smx] \
+    weapon_restrict [list false sm_weapon_restrict_enable sm_weapon_restrict_lanonly weapon_restrict.smx] \
     warmod [list false sm_warmod_enable sm_warmod_lanonly warmod.smx] \
     multi1v1 [list false sm_multi1v1_enable sm_multi1v1_lanonly multi1v1.smx] \
     multi1v1_flashbangs [list false sm_multi1v1_flashbangs_enable sm_multi1v1_flashbangs_lanonly multi1v1_flashbangs.smx] \
@@ -45,7 +46,7 @@ variable sourcemodConfig [CreateConfig \
         "string"    [list admins "" "List all users (separated by space) you want to give admin permissions on your server\nA user is identified by their steam id (e.g STEAM_1:1:12345678) or ip address (e.g. 192.168.1.123).\nSee help page for more information about how to obtain your steam id or find users ip address."]\
         "bool"      [list sm_mapchooser_enable "0" "Controls if this sourcemod plugin is enabled." onchange "SetSourcemodMapChooserState"]\
         "bool"      [list sm_mapchooser_lanonly "1" "Only enable this sourcemod plugin in lanonly mode"]\
-        "bool"      [list sm_mapchooser_mapvote_endvote "1" "Specifies if MapChooser should run an end of map vote."]\
+        "bool"      [list sm_mapchooser_mapvote_endvote "0" "Specifies if MapChooser should run on end of map vote."]\
         "bool"      [list sm_nominations_enable "0" "Controls if this sourcemod plugin is enabled.\nRequires mapchooser enabled." onchange "SetSourcemodNominationsState"]\
         "bool"      [list sm_nominations_lanonly "1" "Only enable this sourcemod plugin in lanonly mode"]\
         "bool"      [list sm_rockthevote_enable "0" "Controls if this sourcemod plugin is enabled.\nRequires mapchooser enabled." onchange "SetSourcemodRockTheVoteState"]\
@@ -54,6 +55,8 @@ variable sourcemodConfig [CreateConfig \
         "bool"      [list sm_nextmap_lanonly "1" "Only enable this sourcemod plugin in lanonly mode"]\
         "bool"      [list sm_randomcycle_enable "0" "Controls if this sourcemod plugin is enabled." onchange "SetSourcemodRandomCycleState"]\
         "bool"      [list sm_randomcycle_lanonly "1" "Only enable this sourcemod plugin in lanonly mode"]\
+        "bool"      [list sm_weapon_restrict_enable "0" "Controls if this sourcemod plugin is enabled." onchange "SetSourcemodWeaponRestrictState"]\
+        "bool"      [list sm_weapon_restrict_lanonly "1" "Only enable this sourcemod plugin in lanonly mode"]\
         "bool"      [list sm_warmod_enable "0" "Controls if this sourcemod plugin is enabled." onchange "SetSourcemodWarmodState"]\
         "bool"      [list sm_warmod_lanonly "1" "Only enable this sourcemod plugin in lanonly mode"]\
         "bool"      [list sm_multi1v1_enable "0" "Controls if this sourcemod plugin is enabled." onchange "SetSourcemodMulti1v1State"]\
@@ -70,11 +73,11 @@ variable sourcemodConfig [CreateConfig \
         "bool"      [list sm_cksurf_lanonly "1" "Only enable this sourcemod plugin in lanonly mode"]\
         "bool"      [list sm_retakes_enable "0" "Controls if this sourcemod plugin is enabled." onchange "SetSourcemodRetakesState"]\
         "bool"      [list sm_retakes_lanonly "1" "Only enable this sourcemod plugin in lanonly mode"]\
-        "bool"      [list sm_retakes_sitepicker_enable "0" "Controls if this sourcemod plugin is enabled."]\
+        "bool"      [list sm_retakes_sitepicker_enable "0" "Controls if this sourcemod plugin is enabled." onchange "SetSourcemodRetakesSitePickerState"]\
         "bool"      [list sm_retakes_sitepicker_lanonly "1" "Only enable this sourcemod plugin in lanonly mode"]\
-        "bool"      [list sm_retakes_standardallocator_enable "0" "Controls if this sourcemod plugin is enabled.\nExcludes sm_retakes_pistolallocator" onchange "SetSourcemodRetakesPistolAllocatorValue"]\
+        "bool"      [list sm_retakes_standardallocator_enable "0" "Controls if this sourcemod plugin is enabled.\nExcludes sm_retakes_pistolallocator" onchange "SetSourcemodRetakesStandardAllocatorStateAndValue"]\
         "bool"      [list sm_retakes_standardallocator_lanonly "1" "Only enable this sourcemod plugin in lanonly mode"]\
-        "bool"      [list sm_retakes_pistolallocator_enable "0" "Controls if this sourcemod plugin is enabled.\nExcludes sm_retakes_standardallocator" onchange "SetSourcemodRetakesStandardAllocatorValue"]\
+        "bool"      [list sm_retakes_pistolallocator_enable "0" "Controls if this sourcemod plugin is enabled.\nExcludes sm_retakes_standardallocator" onchange "SetSourcemodRetakesPistolAllocatorStateAndValue"]\
         "bool"      [list sm_retakes_pistolallocator_lanonly "1" "Only enable this sourcemod plugin in lanonly mode"]\
         "bool"      [list sm_influx_enable "0" "Controls if this sourcemod plugin is enabled." onchange "SetSourcemodInfluxState"]\
         "bool"      [list sm_influx_lanonly "1" "Only enable this sourcemod plugin in lanonly mode"]\
@@ -133,6 +136,10 @@ variable sourcemodLayout [CreateLayout \
         h2      [list "Plugin: randomcycle"] \
         parm    [list sm_randomcycle_enable] \
         parm    [list sm_randomcycle_lanonly] \
+        space   [list] \
+        h2      [list "Plugin: weapon_restrict"] \
+        parm    [list sm_weapon_restrict_enable] \
+        parm    [list sm_weapon_restrict_lanonly] \
         space   [list] \
         h2      [list "Plugin: warmod"] \
         parm    [list sm_warmod_enable] \
@@ -229,6 +236,7 @@ proc SetSourcemodState { value } {
     foreach parm [list lanonly banprotection allowbannedinpublicservers admins sm_mapchooser_enable sm_mapchooser_lanonly sm_mapchooser_mapvote_endvote\
                   sm_nominations_enable sm_nominations_lanonly sm_rockthevote_enable sm_rockthevote_lanonly\
                   sm_nextmap_enable sm_nextmap_lanonly sm_randomcycle_enable sm_randomcycle_lanonly\
+                  sm_weapon_restrict_enable sm_weapon_restrict_lanonly\
                   sm_warmod_enable sm_warmod_lanonly sm_multi1v1_enable sm_multi1v1_lanonly sm_multi1v1_flashbangs_enable\
                   sm_multi1v1_flashbangs_lanonly sm_multi1v1_kniferounds_enable sm_multi1v1_kniferounds_lanonly\
                   sm_multi1v1_online_stats_viewer_enable sm_multi1v1_online_stats_viewer_enable sm_multi1v1_online_stats_viewer_lanonly\
@@ -250,6 +258,7 @@ proc SetSourcemodState { value } {
     SetSourcemodRockTheVoteState [expr $enabled && [GetConfigItem $sourcemodConfig sm_rockthevote_enable]]
     SetSourcemodNextMapState [expr $enabled && [GetConfigItem $sourcemodConfig sm_nextmap_enable]]
     SetSourcemodRandomCycleState [expr $enabled && [GetConfigItem $sourcemodConfig sm_randomcycle_enable]]
+    SetSourcemodWeaponRestrictState [expr $enabled && [GetConfigItem $sourcemodConfig sm_weapon_restrict_enable]]
     SetSourcemodWarmodState [expr $enabled && [GetConfigItem $sourcemodConfig sm_warmod_enable]]
     SetSourcemodMulti1v1State [expr $enabled && [GetConfigItem $sourcemodConfig sm_multi1v1_enable]]
     SetSourcemodGunMenuState [expr $enabled && [GetConfigItem $sourcemodConfig sm_gunmenu_enable]]
@@ -313,6 +322,15 @@ proc SetSourcemodRandomCycleState { value } {
     }
     return $value
 }
+proc SetSourcemodWeaponRestrictState { value } {
+    global sourcemodLayout
+    set cp [GetCp]
+    set enabled $value
+    foreach parm [list sm_weapon_restrict_lanonly] {
+        SetConfigItemState $cp.sourcemod $sourcemodLayout $parm $enabled
+    }
+    return $value
+}
 proc SetSourcemodWarmodState { value } {
     global sourcemodLayout
     set cp [GetCp]
@@ -355,34 +373,78 @@ proc SetSourcemodRetakesState { value } {
     global sourcemodLayout
     set cp [GetCp]
     set enabled $value
-    foreach parm [list sm_retakes_lanonly sm_retakes_sitepicker_enable\
-                  sm_retakes_sitepicker_lanonly sm_retakes_standardallocator_enable sm_retakes_standardallocator_lanonly\
-                  sm_retakes_pistolallocator_enable sm_retakes_pistolallocator_lan_only] {
+    foreach parm [list sm_retakes_lanonly sm_retakes_sitepicker_enable sm_retakes_standardallocator_enable sm_retakes_pistolallocator_enable] {
+        SetConfigItemState $cp.sourcemod $sourcemodLayout $parm $enabled
+    }
+    if { "$value" == "0" } {
+        global sourcemodConfig
+        SetConfigItem $sourcemodConfig sm_retakes_sitepicker_enable "0"
+        SetConfigItem $sourcemodConfig sm_retakes_standardallocator_enable "0"
+        SetConfigItem $sourcemodConfig sm_retakes_pistolallocator_enable "0"
+    } else {
+        global sourcemodConfig
+        SetSourcemodRetakesSitePickerState [GetConfigItem $sourcemodConfig sm_retakes_sitepicker_enable]
+        SetSourcemodRetakesStandardAllocatorState [GetConfigItem $sourcemodConfig sm_retakes_standardallocator_enable]
+        SetSourcemodRetakesPistolAllocatorState [GetConfigItem $sourcemodConfig sm_retakes_pistolallocator_enable]
+    }
+    return $value
+}
+proc SetSourcemodRetakesSitePickerState { value } {
+    global sourcemodLayout
+    set cp [GetCp]
+    set enabled $value
+    foreach parm [list sm_retakes_sitepicker_lanonly] {
+        SetConfigItemState $cp.sourcemod $sourcemodLayout $parm $enabled
+    }
+    return $value
+}
+proc SetSourcemodRetakesStandardAllocatorState { value } {
+    global sourcemodLayout
+    set cp [GetCp]
+    set enabled $value
+    foreach parm [list sm_retakes_standardallocator_lanonly] {
+        SetConfigItemState $cp.sourcemod $sourcemodLayout $parm $enabled
+    }
+    return $value
+}
+proc SetSourcemodRetakesStandardAllocatorValue { value } {
+    if { $value != "0" } {
+        global sourcemodConfig
+        set otherValue [GetConfigItem $sourcemodConfig sm_retakes_standardallocator_enable]
+        if { $otherValue == "1"} {
+            SetConfigItem $sourcemodConfig sm_retakes_standardallocator_enable "0"
+            SetSourcemodRetakesStandardAllocatorState "0"
+        }
+    }
+    return $value
+}
+proc SetSourcemodRetakesStandardAllocatorStateAndValue { value } {
+    SetSourcemodRetakesStandardAllocatorState "$value"
+    SetSourcemodRetakesPistolAllocatorValue "$value"
+}
+proc SetSourcemodRetakesPistolAllocatorState { value } {
+    global sourcemodLayout
+    set cp [GetCp]
+    set enabled $value
+    foreach parm [list sm_retakes_pistolallocator_lanonly] {
         SetConfigItemState $cp.sourcemod $sourcemodLayout $parm $enabled
     }
     return $value
 }
 proc SetSourcemodRetakesPistolAllocatorValue { value } {
-    global sourcemodConfig
-    if { $value == "0" } {
-        return $value
-    }
-    set otherValue [GetConfigItem $sourcemodConfig sm_retakes_pistolallocator_enable]
-    if { $otherValue == "1"} {
-        SetConfigItem $sourcemodConfig sm_retakes_pistolallocator_enable "0"
+    if { $value != "0" } {
+        global sourcemodConfig
+        set otherValue [GetConfigItem $sourcemodConfig sm_retakes_pistolallocator_enable]
+        if { $otherValue == "1"} {
+            SetConfigItem $sourcemodConfig sm_retakes_pistolallocator_enable "0"
+            SetSourcemodRetakesPistolAllocatorState "0"
+        }
     }
     return $value
 }
-proc SetSourcemodRetakesStandardAllocatorValue { value } {
-    global sourcemodConfig
-    if { $value == "0" } {
-        return $value
-    }
-    set otherValue [GetConfigItem $sourcemodConfig sm_retakes_standardallocator_enable]
-    if { $otherValue == "1"} {
-        SetConfigItem $sourcemodConfig sm_retakes_standardallocator_enable "0"
-    }
-    return $value
+proc SetSourcemodRetakesPistolAllocatorStateAndValue { value } {
+    SetSourcemodRetakesPistolAllocatorState "$value"
+    SetSourcemodRetakesStandardAllocatorValue "$value"
 }
 proc SetSourcemodInfluxState { value } {
     global sourcemodLayout
