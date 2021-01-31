@@ -599,6 +599,9 @@ proc GetSelectedMaps {lbMaps} {
 }
 
 proc GetMapsFromSelectedMapGroup {mapGroup} {
+    if { "$mapGroup" == "" } {
+        return ""
+    }
     global mapGroupsMapper
     return [dict get $mapGroupsMapper $mapGroup]
 }
@@ -794,8 +797,14 @@ proc ShowMapPreview {lbMaps} {
 
 proc ClickedMapsListBox {lbMapGroups lbMaps} {
     set selectedMapGroup [GetSelectedMapGroup $lbMapGroups]
+    if { "$selectedMapGroup" == "" } {
+        return 
+    }
     set selectedMapGroupIx [$lbMapGroups curselection]
     set mapsFromSelectedMapGroup [GetMapsFromSelectedMapGroup $selectedMapGroup]
+    if { "$mapsFromSelectedMapGroup" == "" } {
+        return
+    }
     set selectedMaps [GetSelectedMaps $lbMaps]
     if { $mapsFromSelectedMapGroup != $selectedMaps } {
         $lbMapGroups itemconfigure $selectedMapGroupIx -selectbackground red
