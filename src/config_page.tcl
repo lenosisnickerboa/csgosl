@@ -615,12 +615,71 @@ proc SetSelectedInListbox {lb ix} {
     $lb see $ix
 }
 
+#Source:https://wiki.tcl-lang.org/page/Another+little+value+dialog
+ proc tk_getStringAlternate {w var title text} {
+    variable ::tk::Priv
+    upvar $var result
+    catch {destroy $w}
+    set focus [focus]
+    set grab [grab current .]
+
+    toplevel $w -bd 1 -relief raised -class TkSDialog
+    wm title $w $title
+    wm iconname  $w $title
+    wm protocol  $w WM_DELETE_WINDOW {set ::tk::Priv(button) 0}
+    wm transient $w [winfo toplevel [winfo parent $w]]
+
+    entry  $w.entry -width 20
+    button $w.ok -bd 1 -width 5 -text Ok -default active -command {set ::tk::Priv(button) 1}
+    button $w.cancel -bd 1 -text Cancel -command {set ::tk::Priv(button) 0}
+    label  $w.label -text $text
+
+    grid $w.label -columnspan 2 -sticky ew -padx 3 -pady 3
+    grid $w.entry -columnspan 2 -sticky ew -padx 3 -pady 3
+    grid $w.ok $w.cancel -padx 3 -pady 3
+    grid rowconfigure $w 2 -weight 1
+    grid columnconfigure $w {0 1} -uniform 1 -weight 1
+
+    bind $w <Return>  {set ::tk::Priv(button) 1}
+    bind $w <Destroy> {set ::tk::Priv(button) 0}
+    bind $w <Escape>  {set ::tk::Priv(button) 0}
+
+    wm withdraw $w
+    update idletasks
+    focus $w.entry
+    # My mod, make dialog appear centered on mainwindow, on multi-monitor setups as well
+#original    set x [expr {[winfo screenwidth  $w]/2 - [winfo reqwidth  $w]/2 - [winfo vrootx $w]}]
+#original    set y [expr {[winfo screenheight $w]/2 - [winfo reqheight $w]/2 - [winfo vrooty $w]}]
+    set parentx [winfo rootx .]
+    set parentw [winfo width .]
+    set parenty [winfo rooty .]
+    set parenth [winfo height .]
+    set childw [winfo reqwidth $w]
+    set childh [winfo reqheight $w]
+    set x [expr $parentx + $parentw / 2 - $childw / 2]
+    set y [expr $parenty + $parenth / 2 - $childh / 2]
+    # End of my mod
+    wm geom $w +$x+$y
+    wm deiconify $w
+    grab $w
+
+    tkwait variable ::tk::Priv(button)
+    set result [$w.entry get]
+    bind $w <Destroy> {}
+    grab release $w
+    destroy $w
+    focus -force $focus
+    if {$grab != ""} {grab $grab}
+    update idletasks
+    return $::tk::Priv(button)
+ }
+
 proc AddMapGroup {lb lbMaps} {
     set mapGroupsName [GetGlobalConfigVariableName MapGroups mapGroups]
     global $mapGroupsName
     global mapGroupsMapper
     set addMapGroupName ""
-    if {[tk_getString .valueDlg addMapGroupName "Add new mapgroup" "Please enter a new mapgroup name"]} {
+    if {[tk_getStringAlternate .valueDlg addMapGroupName "Add new mapgroup XXX" "Please enter a new mapgroup name" ]} {
         if { $addMapGroupName != "" && $addMapGroupName != "<allmaps>" } {
             set addMapGroupName [FixMapGroupName $addMapGroupName]
             if { ! [dict exists $mapGroupsMapper $addMapGroupName] } {

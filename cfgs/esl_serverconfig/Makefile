@@ -8,7 +8,8 @@ contrib:
 	@echo "all esl_serverconfig $(ESL_SERVERCONFIG_VERSION) $(ESL_SERVERCONFIG_HOME_URL) $(ESL_SERVERCONFIG_URL)"
 
 dl:
-	wget $(ESL_SERVERCONFIG_URL) -O esl_serverconfig.zip
+#	wget $(ESL_SERVERCONFIG_URL) -O esl_serverconfig.zip
+	cp esl_serverconfig.zip.downloaded esl_serverconfig.zip
 
 build: dl
 	mkdir -p esl_serverconfig_out
