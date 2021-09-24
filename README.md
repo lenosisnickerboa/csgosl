@@ -10,7 +10,7 @@ csgosl features:
 * Completely automatic install (steamcmd + srcds + metamod/sourcemod/plugins)
 * Server update, automatic or manual
 * Start/monitor/stop server
-* Run multiple servers on same host (NEW)
+* Run multiple servers on same host
 * Host [lan only](https://github.com/lenosisnickerboa/csgosl/wiki/Host%20LAN%20only%20server) or [public](https://github.com/lenosisnickerboa/csgosl/wiki/Host%20public%20server) servers
 * Host [workshop maps](https://github.com/lenosisnickerboa/csgosl/wiki/Host%20workshop%20maps) and [map groups](https://github.com/lenosisnickerboa/csgosl/wiki/Host%20workshop%20map%20groups) 
 * Manage all your maps and [create your own map groups](https://github.com/lenosisnickerboa/csgosl/wiki/Create%20your%20own%20map%20groups) using the map group editor
