@@ -111,7 +111,7 @@ variable runLayout [CreateLayout \
     ] \
 ]
 
-proc RunGameModeTypeChanged { value1 {value2 ""} } {
+proc RunGameModeTypeChanged { value1 {value2 ""}} {
     set value [string trim "$value1 $value2"]
     UpdateRunPage
     return "$value"

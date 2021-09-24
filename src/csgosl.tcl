@@ -572,17 +572,29 @@ LoadMapGroupsMapper "$configFolder/mapGroupsMapper.cfg"
 ValidateMapGroupsMapper
 
 ## Run config
+# Can deal with at most one space in name, see RunGameModeTypeChanged
 variable gameModeMapper [dict create \
-                         "Classic Casual"      [dict create type 0 mode 0] \
-                         "Classic Competitive" [dict create type 0 mode 1] \
-                         "Armsrace"            [dict create type 1 mode 0] \
-                         "Demolition"          [dict create type 1 mode 1] \
-                         "Deathmatch"          [dict create type 1 mode 2] \
-                         "Training"            [dict create type 2 mode 0] \
-                         "Custom"              [dict create type 3 mode 0] \
-                         "Cooperative"         [dict create type 4 mode 0] \
-                         "Wingman"             [dict create type 0 mode 2] \
-                         "Danger Zone"         [dict create type 6 mode 0]]
+                         "Classic Casual"      [dict create type 0 mode 0 skirmish 0] \
+                         "Classic Competitive" [dict create type 0 mode 1 skirmish 0] \
+                         "Wingman"             [dict create type 0 mode 2 skirmish 0] \
+                         "Weapon Expert"       [dict create type 0 mode 3 skirmish 0] \
+                         "Armsrace"            [dict create type 1 mode 0 skirmish 0] \
+                         "Demolition"          [dict create type 1 mode 1 skirmish 0] \
+                         "Deathmatch"          [dict create type 1 mode 2 skirmish 0] \
+                         "Training"            [dict create type 2 mode 0 skirmish 0] \
+                         "Custom"              [dict create type 3 mode 0 skirmish 0] \
+                         "Cooperative"         [dict create type 4 mode 0 skirmish 0] \
+                         "Cooperative Guardian" [dict create type 4 mode 0 skirmish 0] \
+                         "Cooperative Strike"   [dict create type 4 mode 1 skirmish 0] \
+                         "Danger Zone"         [dict create type 6 mode 0 skirmish 0] \
+                         "Skirmish-Stab-Stab-Zap"       [dict create type 5 mode 0 skirmish 1] \
+                         "Skirmish-Free-For-All"        [dict create type 5 mode 0 skirmish 2] \
+                         "Skirmish-Flying-Scoutsman"    [dict create type 5 mode 0 skirmish 3] \
+                         "Skirmish-Trigger-Discipline"  [dict create type 5 mode 0 skirmish 4] \
+                         "Skirmish-Boom!-Headshot!"     [dict create type 5 mode 0 skirmish 6] \
+                         "Skirmish-Hunter-Gatherers"    [dict create type 5 mode 0 skirmish 7] \
+                         "Skirmish-Heavy-Assault-Suit"  [dict create type 5 mode 0 skirmish 8] \
+                         "Skirmish-Retakes"             [dict create type 5 mode 0 skirmish 12]]
 
 variable botSkillMapper [dict create \
                          "Easy" 0 \
