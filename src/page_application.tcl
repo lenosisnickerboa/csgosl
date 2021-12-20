@@ -21,6 +21,7 @@ variable applicationConfig [CreateConfig \
         "bool"      [list showdonation "1" "Disable to stop showing donation button. Please consider donating first though :)"]\
         "bool"      [list generategamemodeservers "1" "Disable automatic regeneration of gamemode_servers.txt."]\
         "string"    [list mainwingeometry "1200x800+100+100" "last saved windows size and location."]\
+        "bool"      [list loadmapfromworkshop "1" "Controls if maps are loaded from Steam workshop or not."]\
     ] \
 ]
 
@@ -48,6 +49,7 @@ variable applicationLayout [CreateLayout \
         parm    [list trace] \
         parm    [list showdonation] \
         parm    [list generategamemodeservers] \
+        parm    [list loadmapfromworkshop] \
         space   [list] \
         func    [list LayoutFuncSetDefaultsAll] \
         space   [list] \

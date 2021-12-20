@@ -162,6 +162,12 @@ proc GetMapImageUrl {htmlfile protocol matcherBegin matcherEnd} {
 #<link rel="image_src" href="http://images.akamai.steamusercontent.com/ugc/884098384874424133/13068CB677948EC551F775C8603445E2CDD14BCC/?interpolation=lanczos-none&output-format=jpeg&output-quality=95&fit=inside|512:*">
 #<link rel="image_src" href="https://steamuserimages-a.akamaihd.net/ugc/3281180873728311819/394154653C6BD4B8410C781B94898BDFC01002D2/?interpolation=lanczos-none&output-format=jpeg&output-quality=95&fit=inside%7C512%3A*">
 proc LoadMapImageFromWorkshop {url workshopDir id map} {
+    global applicationConfig
+    set loadMapFromWorkshop [GetConfigValue $applicationConfig loadmapfromworkshop]
+    if {$loadMapFromWorkshop == 0} {
+        Trace "Skipping loading map $map from Steam workshop"
+        return 0
+    }
     set mapDir "$workshopDir/$id"
     set htmlFile "$mapDir/temp.html"
     Wget $url $htmlFile
