@@ -154,6 +154,7 @@ proc GetStartServerCommand {} {
     set gameModeType [dict get $gameModeMapper "$gameModeTypeString"]
     set gameType [dict get $gameModeType type]
     set gameMode [dict get $gameModeType mode]
+    set gameModeFlags [dict get $gameModeType flags]
     set skirmish [dict get $gameModeType skirmish]
 
     set players [GetConfigValue $runConfig players]
@@ -226,7 +227,7 @@ proc GetStartServerCommand {} {
     if { $currentOs == "windows" } {
         return "\"[file nativename $serverFolder/$srcdsName]\" \
             -game csgo $consoleCommand $rconCommand \
-            +game_type $gameType +game_mode $gameMode +sv_skirmish_id $skirmish \
+            +game_type $gameType +game_mode $gameMode +sv_game_mode_flags $gameModeFlags +sv_skirmish_id $skirmish \
             $mapGroupOption \
             $mapOption \
             $steamAccountOption $apiAuthKeyOption \
@@ -241,7 +242,7 @@ proc GetStartServerCommand {} {
     } else {
         return "\"$serverFolder/$srcdsName\" \
             -game csgo $consoleCommand $rconCommand \
-            +game_type $gameType +game_mode $gameMode +sv_skirmish_id $skirmish \
+            +game_type $gameType +game_mode $gameMode +sv_game_mode_flags $gameModeFlags +sv_skirmish_id $skirmish \
             $mapGroupOption \
             $mapOption \
             $steamAccountOption $apiAuthKeyOption \
