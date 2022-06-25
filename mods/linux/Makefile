@@ -2,11 +2,11 @@
 TARGET=linux
 include ../common.mk
 METAMOD_HOME_URL="http://www.metamodsource.net/"
-METAMOD_URL="https://mms.alliedmods.net/mmsdrop/1.11/mmsource-1.11.0-git1145-linux.tar.gz"
-METAMOD_VERSION="1.11.0-git1145"
+METAMOD_URL="https://mms.alliedmods.net/mmsdrop/1.11/mmsource-1.11.0-git1147-linux.tar.gz"
+METAMOD_VERSION="1.11.0-git1147"
 SOURCEMOD_HOME_URL="http://www.sourcemod.net/"
-SOURCEMOD_URL="https://sm.alliedmods.net/smdrop/1.10/sourcemod-1.10.0-git6528-linux.tar.gz"
-SOURCEMOD_VERSION="1.10.0-git6528"
+SOURCEMOD_URL="https://sm.alliedmods.net/smdrop/1.10/sourcemod-1.10.0-git6544-linux.tar.gz"
+SOURCEMOD_VERSION="1.10.0-git6544"
 export
 
 all: mods

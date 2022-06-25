@@ -398,8 +398,8 @@ proc UpdateServer {} {
 
     set validateInstall [GetConfigValue $steamConfig validateinstall]
     set fileId [open "$steamUpdateFilename" "w"]
-    puts $fileId "login anonymous"
     puts $fileId "force_install_dir \"$serverFolder\""
+    puts $fileId "login anonymous"
     if { $validateInstall == "1"} {
         puts $fileId "app_update 740 validate"
     } else {

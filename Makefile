@@ -2,6 +2,9 @@ ifndef CSGOSL_ROOT
 $(error CSGOSL_ROOT is not set, source env.sh in root directory)
 endif
 
+# When just fixing csgosl stuff: make
+# When updating sourcemod/metamod/other mods: make clean-mods && make install-mods && make
+
 OUT=$(CSGOSL_ROOT)/out
 CONTRIBOUT=$(CSGOSL_ROOT)/contribs.txt
 CONTRIBOUTTCL=$(CSGOSL_ROOT)/src/contribs.tcl
