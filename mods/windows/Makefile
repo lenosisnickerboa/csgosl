@@ -2,11 +2,11 @@
 TARGET=windows
 include ../common.mk
 METAMOD_HOME_URL="http://www.metamodsource.net/"
-METAMOD_URL="https://mms.alliedmods.net/mmsdrop/1.11/mmsource-1.11.0-git1147-windows.zip"
-METAMOD_VERSION="1.11.0-git1147"
+METAMOD_URL="https://mms.alliedmods.net/mmsdrop/1.11/mmsource-1.11.0-git1148-windows.zip"
+METAMOD_VERSION="1.11.0-git1148"
 SOURCEMOD_HOME_URL="http://www.sourcemod.net/"
-SOURCEMOD_URL="https://sm.alliedmods.net/smdrop/1.10/sourcemod-1.10.0-git6544-windows.zip"
-SOURCEMOD_VERSION="1.10.0-git6544"
+SOURCEMOD_URL="https://sm.alliedmods.net/smdrop/1.11/sourcemod-1.11.0-git6906-windows.zip"
+SOURCEMOD_VERSION="1.11.0-git6906"
 export
 
 all: mods
