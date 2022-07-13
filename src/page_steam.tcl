@@ -24,6 +24,8 @@ variable steamConfig [CreateConfig \
         "bool"      [list validateinstall "0" "Perform install validation when updating, i.e the downloaded server update is checked for validity."]\
         "url"       [list steamcmdurl "$steamCmdUrl" "URL to steamcmd. Leave as is if you don't have a very good reason to change this."]\
         "bool"      [list validateworkshopmaps "0" "On csgosl startup always check that installed workshop maps are still present at Steam.\nNo longer existing maps will be moved to a folder named workshop-DISABLED next to the workshop folder."]\
+        "string"    [list hostworkshopmap "" "The steam id of a workshop map to *permanently* host, i.e. this map will always be hosted\nuntil cleared in this setting."]\
+        "string"    [list hostworkshopmapgroup "" "The steam id of a workshop mapgroup to *permanently* host, i.e. this mapgroup will always be hosted\nuntil cleared in this setting."]\
     ] \
 ]
 
@@ -51,5 +53,15 @@ variable steamLayout [CreateLayout \
         parm    [list validateinstall] \
         parm    [list steamcmdurl] \
         parm    [list validateworkshopmaps] \
+        space   [list] \
+        h2      [list "Host a workshop mapgroup or map"] \
+        line    [list] \
+        space   [list] \
+        parm    [list hostworkshopmap] \
+        buttons [list [list push SteamWorkshopMaps SteamWorkshopMaps {Browser "https://steamcommunity.com/workshop/browse?appid=730"} "Go to Steam Workshop, maps section."] \
+                      ] \
+        parm    [list hostworkshopmapgroup] \
+        buttons [list [list push SteamWorkshopMaps SteamWorkshopMaps {Browser "https://steamcommunity.com/workshop/browse/?section=collections&appid=730"} "Go to Steam Workshop, mapgroups section."] \
+                      ] \
     ] \
 ]

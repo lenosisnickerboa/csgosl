@@ -175,6 +175,16 @@ proc GetStartServerCommand {} {
         Trace "Selected start map $startMap"
     }
 
+    set hostMap [GetConfigValue $steamConfig hostworkshopmap]
+    set hostMapGroup [GetConfigValue $steamConfig hostworkshopmapgroup]
+
+    if { $hostMapGroup != "" } {
+        set mapGroup $hostMapGroup
+        Trace "Overriding mapgroup with hosted mapgroup $hostMapGroup"
+    } elseif { $hostMap != "" } {
+        set startMap $hostMap
+        Trace "Overriding map with hosted map $hostMap"
+    }
     set mapGroupOption "+mapgroup \"$mapGroup\""
     set mapOption "+map $startMap"
 
