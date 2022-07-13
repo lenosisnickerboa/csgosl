@@ -27,7 +27,7 @@ proc GetContributors {} {
             h2      [list "Author"] \
             line    [list] \
             space   [list] \
-            text    [list "Lennart Oscarsson, lennart@oscarssons.com"] \
+            text    [list "Lennart Oscarsson, lennart.oscarsson@gmail.com"] \
             space   [list] \
             h2      [list "Contributors"] \
             line    [list] \
