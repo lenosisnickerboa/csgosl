@@ -48,6 +48,7 @@ variable serverConfig [CreateConfig \
         "bool"      [list logonefile "0" "Log server information to only one file." mappedto [list sv_log_onefile]]\
         "bool"      [list alltalk "0" "Players can hear all other players, no team restrictions." mappedto [list sv_alltalk]]\
         "bool"      [list cheats "0" "Allow cheats on server." mappedto [list sv_cheats]]\
+        "bool"      [list insecure "0" "Start the server without Valve anticheat"]\
         "int"       [list gravity "800" "World Gravity" mappedto [list sv_gravity]]\
         "bool"      [list autoteambalance "0" "Enable to force clients to auto-join the opposite team if they are not balanced." mappedto [list mp_autoteambalance]]\
         "bool"      [list autokick "0" "Kick idle/team-killing players."]\
@@ -131,6 +132,7 @@ variable serverLayout [CreateLayout \
         parm    [list voice] \
         parm    [list alltalk] \
         parm    [list cheats] \
+        parm    [list insecure] \
         parm    [list autokick] \
         parm    [list autoteambalance] \
         parm    [list tkpunish] \

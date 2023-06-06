@@ -88,6 +88,9 @@ proc StartServer {} {
             Trace "======================================================================="
         }
     }
+
+    FixOldLibgcc
+
     global installFolder
 
     global currentOs
@@ -138,6 +141,10 @@ proc GetStartServerCommand {} {
     set serverPortOption "-port 27015"
     if { "$serverPort" != "" } {
         set serverPortOption "-port $serverPort"
+    }
+    set insecureOption [GetConfigValue $serverConfig insecure]
+    if { "$insecureOption" != "1" } {
+        set insecureOption ""
     }
 
     global gotvConfig
@@ -248,6 +255,7 @@ proc GetStartServerCommand {} {
             $passwordOption \
             $ipOption \
             +hostname \"$serverName\" $serverPortOption $serverLanOption \
+            $insecureOption \
             $options"
     } else {
         return "\"$serverFolder/$srcdsName\" \
@@ -264,6 +272,7 @@ proc GetStartServerCommand {} {
             $passwordOption \
             $ipOption \
             +hostname \\\"$serverName\\\" $serverPortOption $serverLanOption \
+            $insecureOption \
             $options"
     }
 }
@@ -676,6 +685,20 @@ proc UpdateModsFixForMetamodSourcemodInstallBug {} {
     if { [file exists "$addonsFolder/sourcemod/extensions/bintools.ext.so"] } {
         Trace "Applying sourcemod install bug fix #2"
         file delete -force "$addonsFolder/sourcemod/extensions"
+    }
+}
+
+#Fix for old libgcc_s.so.1 packaged with game files
+proc FixOldLibgcc {} {
+    global currentOs
+    if { $currentOs == "windows" } {
+        return 0
+    }
+    global serverFolder
+    set binFolder "$serverFolder/bin"
+    if { [file exists "$binFolder/libgcc_s.so.1"] } {
+        Trace "Applying bug fix, moving outdated libgcc_s.so.1"
+        file rename -force "$binFolder/libgcc_s.so.1" "$binFolder/libgcc_s.so.1.FIXED"
     }
 }
 
