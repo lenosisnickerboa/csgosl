@@ -142,9 +142,10 @@ proc GetStartServerCommand {} {
     if { "$serverPort" != "" } {
         set serverPortOption "-port $serverPort"
     }
-    set insecureOption [GetConfigValue $serverConfig insecure]
-    if { "$insecureOption" != "1" } {
-        set insecureOption ""
+    set insecureOptionValue [GetConfigValue $serverConfig insecure]
+    set insecureOption ""
+    if { "$insecureOptionValue" == "1" } {
+        set insecureOption "-insecure "
     }
 
     global gotvConfig
