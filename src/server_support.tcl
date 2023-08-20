@@ -457,8 +457,16 @@ proc UpdateServer {} {
 
 proc DetectServerInstalled {sd} {
     global srcdsName
-    if { [file exists "$sd"] && [file isdirectory "$sd"] && [file executable "$sd/$srcdsName"] && [file isdirectory "$sd/csgo"]} {
-        return true
+    global currentOs
+    if { $currentOs == "windows" } {
+        # Windows for some reason no longer consider the executable executable, accept if it exists in windows
+        if { [file exists "$sd"] && [file isdirectory "$sd"] && [file exists "$sd/$srcdsName"] && [file isdirectory "$sd/csgo"]} {
+            return true
+        }
+    } else {
+        if { [file exists "$sd"] && [file isdirectory "$sd"] && [file executable "$sd/$srcdsName"] && [file isdirectory "$sd/csgo"]} {
+            return true
+        }
     }
     return false
 }
