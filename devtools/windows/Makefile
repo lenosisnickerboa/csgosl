@@ -14,8 +14,8 @@ IMG_HOME_URL="http://www.tcl.tk/starkits/"
 IMG_URL="http://www.tcl.tk/starkits/img.kit"
 IMG_VERSION="1.3"
 WGET_HOME_URL="https://www.gnu.org/software/wget"
-WGET_URL="https://eternallybored.org/misc/wget/releases/wget-1.21.3-win32.zip"
-WGET_VERSION="1.21.3-win32"
+WGET_URL="https://eternallybored.org/misc/wget/releases/wget-1.21.4-win32.zip"
+WGET_VERSION="1.24.4-win32"
 
 all: wget tclkit sdx img unzip
 

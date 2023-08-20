@@ -4,6 +4,7 @@ endif
 
 # When just fixing csgosl stuff: make
 # When updating sourcemod/metamod/other mods: make clean-mods && make install-mods && make
+# When installing from scratch: make install && make
 
 OUT=$(CSGOSL_ROOT)/out
 CONTRIBOUT=$(CSGOSL_ROOT)/contribs.txt
