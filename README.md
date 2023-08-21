@@ -3,6 +3,9 @@
 Quickie: [Get started](https://github.com/lenosisnickerboa/csgosl/wiki). Download **2.19** : [Linux](https://github.com/lenosisnickerboa/csgosl/releases/download/v2.19/csgosl-linux.zip) [Windows](https://github.com/lenosisnickerboa/csgosl/releases/download/v2.19/csgosl-windows.zip) 
 <br>Download stats [here](https://somsubhra.github.io/github-release-stats/?username=lenosisnickerboa&repository=csgosl&page=1&per_page=99)
 
+<b>NOTE: Due to github changing the releases page format csgosl prior to 2.19 will not automatically detect new releases. You must perform a manual upgrade to at least 2.19 to get automatic updates working again. Sorry about that...</b> 
+<br>Perform the upgrade according to https://github.com/lenosisnickerboa/csgosl/wiki/Upgrade-a-server
+
 csgosl is a graphical user interface (GUI) for a [Counter Striker Global Offensive server](https://developer.valvesoftware.com/wiki/Counter-Strike:_Global_Offensive_Dedicated_Servers) (CSGO server from now on).  csgosl supports one-click install, update, start and stop server on windows and linux platforms ([supported platforms](https://github.com/lenosisnickerboa/csgosl/wiki/Platform-support)). If you just want your own CSGO server up and running in no time this is the place for you. csgosl provides a graphical user interface supporting most mainstream server options. For the control freak there is also an advanced mode providing support for nearly any imaginable setting and on top of that GUI support for adding custom cvars to the advanced mode tabs.
 
 csgosl features:
