@@ -19,6 +19,10 @@ proc GetLatestRelease {} {
             Trace "Found latest release $version"
             return $version
         }
+        if { [regexp {.*\/github\.com\/lenosisnickerboa\/csgosl\/releases\/tag\/v(.*)\".*} $line -> version] } {
+            Trace "Found latest release $version"
+            return $version
+        }
     }
     return ""
 }
