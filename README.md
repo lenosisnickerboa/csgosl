@@ -1,5 +1,7 @@
 # csgosl
 
+# csgosl is currently broken due to the cs2 release. Read more here: https://github.com/lenosisnickerboa/csgosl/issues/358#issuecomment-1746731718
+<br>
 Quickie: [Get started](https://github.com/lenosisnickerboa/csgosl/wiki). Download **2.19** : [Linux](https://github.com/lenosisnickerboa/csgosl/releases/download/v2.19/csgosl-linux.zip) [Windows](https://github.com/lenosisnickerboa/csgosl/releases/download/v2.19/csgosl-windows.zip) 
 <br>Download stats [here](https://somsubhra.github.io/github-release-stats/?username=lenosisnickerboa&repository=csgosl&page=1&per_page=99)
 
